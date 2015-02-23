@@ -1,6 +1,7 @@
 package Code;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class Group {
 
@@ -17,6 +18,43 @@ public class Group {
 		this.responsible = responsible;
 	}
 	
+	
+	public String getGroupName() {
+		return groupName;
+	}
+
+
+
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
+
+
+
+	public String getDescription() {
+		return description;
+	}
+
+
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+
+
+	public Employee getResponsible() {
+		return responsible;
+	}
+
+
+
+	public void setResponsible(Employee responsible) {
+		this.responsible = responsible;
+	}
+
+
+
 	public Boolean addEmployee(Employee employee){
 		return true;
 	}
@@ -26,7 +64,7 @@ public class Group {
 	}
 	
 	public ArrayList<Employee> printParticipants(){
-		return this.participants;
+		return (ArrayList<Employee>) this.participants;
 	}
 	
 	
