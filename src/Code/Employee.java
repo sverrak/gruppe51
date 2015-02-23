@@ -1,5 +1,6 @@
 package Code;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class Employee {
@@ -18,6 +19,8 @@ public class Employee {
 		this.position = position;
 		this.username = username;
 		this.password = password;
+		groups = new ArrayList<Group>();
+		upcomingEvents = new ArrayList<Event>();
 	}
 	
 	

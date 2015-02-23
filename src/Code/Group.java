@@ -16,6 +16,7 @@ public class Group {
 		this.groupName = groupName;
 		this.description = description;
 		this.responsible = responsible;
+		participants = new ArrayList<Employee>();
 	}
 	
 	

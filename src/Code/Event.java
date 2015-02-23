@@ -9,7 +9,19 @@ public class Event {
 	private Date endTime;
 	private String description;
 	private String image;
+	private Room room;
 	
+	public Event(String title, Date startTime, Date endTime,
+			String description, String image) {
+		super();
+		this.title = title;
+		this.startTime = startTime;
+		this.endTime = endTime;
+		this.description = description;
+		this.image = image;
+		this.room = null;
+	}
+
 	public void fireChange(){
 		
 	}
