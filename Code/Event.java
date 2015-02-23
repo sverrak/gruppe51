@@ -1,4 +1,4 @@
-package Code;
+/*package Code;
 
 import java.util.Collection;
 import java.util.Date;
@@ -16,7 +16,6 @@ public class Event {
 	
 	public Collection<Room> findLocation(){
 		
-		
 		return null;
 	}
 	
@@ -29,3 +28,4 @@ public class Event {
 	}
 	
 }
+*/
