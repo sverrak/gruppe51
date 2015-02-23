@@ -1,4 +1,4 @@
-/*package Code;
+package Code;
 
 import java.util.Collection;
 import java.util.Date;
@@ -28,4 +28,3 @@ public class Event {
 	}
 	
 }
-*/
