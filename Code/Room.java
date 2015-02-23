@@ -8,6 +8,7 @@ public class Room {
 	private int capacity;
 	private String description;
 	private Collection<Event> roomSchedule;
+	
 	public Room(String name, int capacity, String description) {
 		super();
 		this.name = name;
