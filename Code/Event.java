@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Scanner;
 
 public class Event implements Comparable<Event>{
 	private String title;
@@ -30,10 +31,6 @@ public class Event implements Comparable<Event>{
 		this.peopleDeclined = new ArrayList<Employee>();
 		this.creator = creator;
 	}
-
-	public void fireChange(){
-		
-	}
 	
 	public String getTitle() {
 		return title;
@@ -41,22 +38,24 @@ public class Event implements Comparable<Event>{
 
 	public void setTitle(String title) {
 		this.title = title;
+		fireChange("title");
 	}
 
 	public Date getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(Date startTime) {
-		this.startTime = startTime;
+	// Må også sjekke om det er ledige rom på tidspunktet
+	public void setTime(Date startTime, Date endTime) {
+		if(this.creator.isAvailable(startTime, endTime)){
+			this.startTime = startTime;	
+			this.endTime = endTime;
+			fireChange("time");
+		}
 	}
 
 	public Date getEndTime() {
 		return endTime;
-	}
-
-	public void setEndTime(Date endTime) {
-		this.endTime = endTime;
 	}
 
 	public String getDescription() {
@@ -64,7 +63,11 @@ public class Event implements Comparable<Event>{
 	}
 
 	public void setDescription(String description) {
-		this.description = description;
+		// For eksempel. Bare for at man ikke skal være helt dust og sette dritlang description
+		if(description.length() > 255){
+			this.description = description;
+			fireChange("description");
+		}
 	}
 
 	public Room getRoom() {
@@ -87,9 +90,11 @@ public class Event implements Comparable<Event>{
 		return creator;
 	}
 	
-	// Skal vi ha støtte for dette?
+	// Skal vi ha støtte for dette? Ikke implementert
 	public void setRoom(Room room) {
-		this.room = room;
+		if(this.room == null || false){
+			this.room = room;			
+		}
 	}
 
 	public void employeeAcceptedInvitation(Employee employee){
@@ -100,19 +105,33 @@ public class Event implements Comparable<Event>{
 		peopleDeclined.add(employee);
 	}
 	
+	
+	// Ikke implementert
 	public Room findLocation(){
 		
 		return null;
 	}
 	
-	public boolean inviteEmployee(Employee sender, Employee receiver){
-		
-		Message msg = new Message(sender, receiver);
-		
+	public void fireChange(String attribute){
+		for (Employee employee : peopleInvited) {
+			employee.reactOnUpdate(this, attribute);
+		}
 	}
+	
+	//
+	public void sendMessage(Employee sender, Employee receiver){
+		Scanner user_input = new Scanner(System.in);
+		String subject = user_input.nextLine();
+		String content = user_input.nextLine();
+		Message msg = new Message(sender, receiver, false, subject, content);
+		msg.sendMessage();
+	}
+	
 	// Ikke implementert
-	public boolean removeEmployee(){
-		return true;
+	public void removeEmployee(Employee employee){
+		if peopleInvited.contains(employee){
+			
+		}
 	}
 	
 	@Override
