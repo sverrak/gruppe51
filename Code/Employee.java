@@ -125,6 +125,7 @@ public class Employee {
 			
 			
 			
+			
 		}
 	}
 	// Answer er true hvis personen takker ja til invite, nei hvis ikke. Returnerer  false hvis  hva?
