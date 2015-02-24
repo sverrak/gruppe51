@@ -129,6 +129,7 @@ public class Employee {
 		}
 	}
 	// Answer er true hvis personen takker ja til invite, nei hvis ikke. Returnerer  false hvis  hva?
+	//Mangler støtte for utsending av varsel til andre deltakere
 	public Boolean answerRequest(Event event, Boolean answer) {
 		if(answer){
 			event.employeeAcceptedInvitation(this);
@@ -140,6 +141,8 @@ public class Employee {
 	
 	
 	public Boolean cancelEvent(Event event, String reason){
+		// her trengs det fyll. Må huske at event må fjernes fra upcomingEvents osv til hvert Employee-objekt som er deltaker
+		// samt upcomingEvents til tilknyttet Room-objektet
 		return true;
 	}
 	
