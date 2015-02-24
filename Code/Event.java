@@ -71,6 +71,21 @@ public class Event implements Comparable<Event>{
 		return room;
 	}
 	
+	public Collection<Employee> getPeopleInvited() {
+		return peopleInvited;
+	}
+	
+	public Collection<Employee> getPeopleDeclined() {
+		return peopleDeclined;
+	}
+	
+	public Collection<Employee> getPeopleGoing() {
+		return peopleGoing;
+	}
+	
+	public Employee getCreator() {
+		return creator;
+	}
 	
 	// Skal vi ha støtte for dette?
 	public void setRoom(Room room) {

@@ -140,6 +140,7 @@ public class Employee {
 	public Boolean cancelEvent(Event event, String reason){
 		// her trengs det fyll. Må huske at event må fjernes fra upcomingEvents osv til hvert Employee-objekt som er deltaker
 		// samt upcomingEvents til tilknyttet Room-objektet
+		event.getPeopleInvited()
 		return true;
 	}
 	
