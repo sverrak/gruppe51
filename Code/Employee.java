@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
 
 public class Employee {
@@ -13,7 +14,7 @@ public class Employee {
 	private String username;
 	private String password;
 	private Collection<Group> groups;
-	private Collection<Event> upcomingEvents;
+	private List<Event> upcomingEvents;
 	private Collection<Event> declinedEvents;
 	private String telnum;
 	private Collection<Message> inbox;
@@ -31,56 +32,34 @@ public class Employee {
 		upcomingEvents = new ArrayList<Event>();
 		declinedEvents = new ArrayList<Event>();
 	}
-	
-	
 
 	public String getName() {
 		return name;
 	}
-
-
-
 	public void setName(String name) {
 		this.name = name;
 	}
-
-
-
 	public String getPosition() {
 		return position;
 	}
-
-
-
 	public void setPosition(String position) {
 		this.position = position;
 	}
-
-
-
 	public String getUsername() {
 		return username;
 	}
-
-
-
 	public void setUsername(String username) {
 		this.username = username;
 	}
-
-
-
 	public String getPassword() {
 		return password;
 	}
-
-
-
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
-
+	public String getTelnum(){
+		return telnum;
+	}
 
 	//Returnerer true hvis ansatt ble lagt til i gruppen
 	public Boolean joinGroup(Group group){
@@ -94,19 +73,24 @@ public class Employee {
 		
 	}
 	
-	
+	//Det er her man lager en ny Event
 	//Returnerer true hvis event ble lagt til i timeplanen til den ansatte
-	public Boolean addEvent(Event event){
+	public Boolean addNewEvent(Event event){
+		String title = "";
+		String description = "";
+		Date startTime;
+		Date endTime;
+		
 		try{
 			Scanner user_input = new Scanner(System.in);
-			String title = user_input.nextLine();
-			String description = user_input.nextLine();
+			title = user_input.nextLine();
+			description = user_input.nextLine();
 			
 			//formatering av datogreier
 			String startTimeString = user_input.nextLine();
 			String endTimeString = user_input.nextLine();
-			Date startTime = null;
-			Date endTime = null;
+			startTime = null;
+			endTime = null;
 			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy H:m:s");
 			try { 
 				startTime = formatter.parse(startTimeString);
@@ -118,26 +102,39 @@ public class Employee {
 				e.printStackTrace();
 			}
 			
+		} finally{
 			Event newEvent = new Event(title, startTime, endTime, description, this);
 			
 			Room room = event.findLocation();
-			
-			
-			
-			
-			
 		}
 	}
+	
 	// Answer er true hvis personen takker ja til invite, nei hvis ikke. Returnerer  false hvis  hva?
 	public Boolean answerRequest(Event event, Boolean answer) {
 		if(answer){
-			event.employeeAcceptedInvitation(this);
+			// Hvis man har tid på tidspunktet
+			if(isAvailable(event.getStartTime(), event.getEndTime())){
+				event.employeeAcceptedInvitation(this);				
+			} else{
+				System.out.println("Du er opptatt på dette tidspunktet");
+			}
+			
+			
 		} else{
 			event.employeeDeclinedInvitation(this);
 		}
 		return true;
 	}
 	
+	private Boolean isAvailable(Date startTime, Date endTime){
+		for (int i = 0; i < upcomingEvents.size() - 1; i++) {
+			if(upcomingEvents.get(i).getEndTime().compareTo(startTime) < 0 && endTime.compareTo(upcomingEvents.get(i+1).getStartTime()) < 0){
+				return true;
+			}
+		}
+		
+		return false;	
+	}
 	
 	public Boolean cancelEvent(Event event, String reason){
 		return true;
@@ -147,11 +144,15 @@ public class Employee {
 	public void reactOnUpdate(Event event, String change){
 		
 	}
-
-
-
+	
 	public Collection<Message> getInbox() {
 		return inbox;
+	}
+	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return this.name;
 	}
 	
 	

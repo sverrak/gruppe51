@@ -67,6 +67,11 @@ public class Group {
 	public ArrayList<Employee> printParticipants(){
 		return (ArrayList<Employee>) this.participants;
 	}
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return this.groupName;
+	}
 	
 	
 }
