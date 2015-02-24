@@ -106,7 +106,6 @@ public class Event implements Comparable<Event>{
 		return this.title;
 	}
 	
-	
 	// Metodene nedenfor brukes i compareTo()-metoden
 	public String getYear(){
 		return getStartTime().toString().substring(0, 4);
