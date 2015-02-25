@@ -87,7 +87,7 @@ public class Employee {
 	
 	//Det er her man lager en ny Event
 	//Returnerer true hvis event ble lagt til i timeplanen til den ansatte
-	public void addNewEvent(Event event){
+	public void addEvent(Event event){
 		String title = "";
 		String description = "";
 		Date startTime;
