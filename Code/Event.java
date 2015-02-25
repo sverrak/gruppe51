@@ -128,16 +128,21 @@ public class Event implements Comparable<Event>{
 	}
 	
 	// Ikke implementert
-	public void removeEmployee(Employee employee){
-		if peopleInvited.contains(employee){
-			
+	public boolean removeEmployee(Employee employee){
+		if (peopleInvited.contains(employee)){
+			peopleInvited.remove(employee);
+			return true;
 		}
+		return false;
 	}
 	
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return this.title;
+		String str = this.title + " kl: " + this.startTime.getHours() + ":";
+		if (this.startTime.getMinutes() < 10){
+			str += "0";
+		}
+		return  str + this.startTime.getMinutes() + ", den " + this.getDay() + ". " + this.getMonth();		// måneden blir ikke omgjort til streng som ønskelig :(
 	}
 	
 	// Metodene nedenfor brukes i compareTo()-metoden

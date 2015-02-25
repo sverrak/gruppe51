@@ -87,7 +87,7 @@ public class Employee {
 	
 	//Det er her man lager en ny Event
 	//Returnerer true hvis event ble lagt til i timeplanen til den ansatte
-	public void addEvent(Event event){
+/*	public void addEvent(Event event){
 		String title = "";
 		String description = "";
 		Date startTime;
@@ -99,14 +99,13 @@ public class Employee {
 			description = user_input.nextLine();
 			
 			//formatering av datogreier
-			String startTimeString = user_input.nextLine();
+			String startTimeString = user_input.nextLine();			// formatet på disse må vi ha orden på
 			String endTimeString = user_input.nextLine();
-			startTime = null;
-			endTime = null;
+	
 			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy H:m:s");
 			try { 
 				startTime = formatter.parse(startTimeString);
-				endTime = formatter.parse(startTimeString);
+				endTime = formatter.parse(endTimeString);
 				System.out.println(startTimeString);
 				
 		 
@@ -120,6 +119,12 @@ public class Employee {
 			
 			Room room = event.findLocation();
 		}
+	}
+	*/
+	
+	public void addEvent(Event event){
+		upcomingEvents.add(event);
+		event.getPeopleInvited().add(this);
 	}
 	
 	// Answer er true hvis personen takker ja til invite, nei hvis ikke. Returnerer  false hvis  hva?
@@ -151,8 +156,6 @@ public class Employee {
 	}
 	
 	public boolean cancelEvent(Event event, String reason){
-		// her trengs det fyll. Må huske at event må fjernes fra upcomingEvents osv til hvert Employee-objekt som er deltaker
-		// samt upcomingEvents til tilknyttet Room-objektet
 		if (event.getCreator() != this){
 			return false;
 		}
