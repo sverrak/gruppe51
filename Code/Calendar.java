@@ -51,10 +51,12 @@ public class Calendar {
 		
 		biti.addEvent(birthdayAgain);
 		System.out.println(biti.getUpcomingEvents());
-		/*
+		biti.inviteEmployeeToEvent(sverre, birthday);
+		System.out.println(birthday.getPeopleInvited());
+		
 		biti.cancelEvent(birthday, "Ingen ville komme :(");		// oppst�r feil her. 
 		System.out.println(biti.getUpcomingEvents());
-		*/
+		
 		
 	}
 

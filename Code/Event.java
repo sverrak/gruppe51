@@ -24,7 +24,9 @@ public class Event implements Comparable<Event>{
 		super();
 		setTitle(title);
 		this.creator = creator;
-		setTime(startTime, endTime);
+		//setTime(startTime, endTime);
+		this.startTime = startTime;
+		this.endTime = endTime;
 		setDescription(description);
 		this.room = null;
 		this.peopleInvited = new ArrayList<Employee>();
@@ -135,15 +137,15 @@ public class Event implements Comparable<Event>{
 	
 	@Override
 	public String toString() {
-		String str = this.title + " har foelgende deltakere " + peopleGoing.toString() + "og avholdes kl: " + getHour() + ":";
-		if (Integer.parseInt(getMinute()) < 10){
+		String str = this.title + " har foelgende deltakere " + peopleGoing.toString() + "og avholdes kl: " + this.getHour() + ":";
+		if (Integer.parseInt(this.getMinute()) < 10){
 			str += "0";
 		}
 		return  str + this.getMinute() + ", den " + this.getDay() + ". " + this.getMonth();		// maaneden blir ikke omgjort til streng som oenskelig :(
 	}
 	
 	// Metodene nedenfor brukes i compareTo()-metoden
-	public String getYear(){		// det du har gjort her med loCaleToString() osv fungerer ikke. Nå klarer jeg ikke skrive ut Events. Får NullPointerException :(
+	public String getYear(){		// det du har gjort her med loCaleToString() osv fungerer ikke. Nï¿½ klarer jeg ikke skrive ut Events. Fï¿½r NullPointerException :(
 		return getStartTime().toLocaleString().substring(7, 11);
 	}
 	public String getMonth(){

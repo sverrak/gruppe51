@@ -29,6 +29,7 @@ public class Employee {
 		this.username = username;
 		this.password = password;
 		this.telnum = telnum;
+		this.inbox = new ArrayList<Message>();
 		groups = new ArrayList<Group>();
 		upcomingEvents = new ArrayList<Event>();
 		declinedEvents = new ArrayList<Event>();
@@ -137,34 +138,42 @@ public class Employee {
 		
 	public void declineInvitation(Event event){
 		if (upcomingEvents.contains(event)){
-			event.getPeopleDeclined().add(this);		// skal vi fjerne fra peopleInvited også??
+			event.getPeopleDeclined().add(this);		// skal vi fjerne fra peopleInvited ogsï¿½??
 			upcomingEvents.remove(event);
 		}
 	}
 	
 	public Boolean isAvailable(Date startTime, Date endTime){
+		if(this.upcomingEvents.size() == 0){
+			return true;
+		}
 		for (int i = 0; i < upcomingEvents.size() - 1; i++) {
 			if(upcomingEvents.get(i).getEndTime().compareTo(startTime) < 0 && endTime.compareTo(upcomingEvents.get(i+1).getStartTime()) < 0){
 				return true;
 			}
 		}
-		
 		return false;	
 	}
-	
+	// Ikkke ferdig
 	public boolean cancelEvent(Event event, String reason){
+		
 		if (event.getCreator() != this){
 			return false;
 		}
+		System.out.println(event.getPeopleInvited());
+		return true;
+		/*
 		for (Employee employee : event.getPeopleInvited()) {
 			employee.removeEvent(event);
 		}
+		return false;
+		
 		for (Employee employee : event.getPeopleDeclined()) {
 			employee.removeEvent(event);
 		}
 		event.getRoom().getRoomSchedule().remove(event);
 		
-		return true;
+		return true;*/
 	}
 	
 	//vet ikke om dette er lurt, men proever
@@ -203,7 +212,12 @@ public class Employee {
 		
 		Message msg = new Message(this, employee, false, "Jeg har invitert deg til eventen " + event.toString(), "Invitasjon til " + event.toString());
 		msg.sendMessage();
+		
+		// hvis eventen er upcoming
 		event.addEmployee(employee);
+		employee.upcomingEvents.add(event);
+		System.out.println(employee.upcomingEvents.toString());
+		
 		return true;
 	}
 
