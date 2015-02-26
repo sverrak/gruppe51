@@ -127,22 +127,19 @@ public class Employee {
 		event.getPeopleInvited().add(this);
 	}
 	
-	// Answer er true hvis personen takker ja til invite, nei hvis ikke. Returnerer  false hvis  hva?
-	//Mangler st�tte for utsending av varsel til andre deltakere
-	public Boolean answerRequest(Event event, Boolean answer) {
-		if(answer){
-			// Hvis man har tid på tidspunktet
-			if(isAvailable(event.getStartTime(), event.getEndTime())){
-				event.employeeAcceptedInvitation(this);				
-			} else{
-				System.out.println("Du er opptatt på dette tidspunktet");
-			}
-			
-			
-		} else{
-			event.employeeDeclinedInvitation(this);
+	public void acceptInvitation(Event event){
+		if(isAvailable(event.getStartTime(), event.getEndTime())){
+			event.getPeopleGoing().add(this);
+		}else{
+			System.out.println("Du er opptatt paa dette tidspunktet");
 		}
-		return true;
+	}
+		
+	public void declineInvitation(Event event){
+		if (upcomingEvents.contains(event)){
+			event.getPeopleDeclined().add(this);		// skal vi fjerne fra peopleInvited ogs�??
+			upcomingEvents.remove(event);
+		}
 	}
 	
 	public Boolean isAvailable(Date startTime, Date endTime){
@@ -159,39 +156,35 @@ public class Employee {
 		if (event.getCreator() != this){
 			return false;
 		}
-		Collection<Employee> invitedPeople = event.getPeopleInvited();
-		Collection<Employee> declinedPeople = event.getPeopleDeclined();
-		for (Employee employee : invitedPeople) {
+		for (Employee employee : event.getPeopleInvited()) {
 			employee.removeEvent(event);
-			event.removeEmployee(employee);
 		}
-		for (Employee employee : declinedPeople) {
+		for (Employee employee : event.getPeopleDeclined()) {
 			employee.removeEvent(event);
-			event.removeEmployee(employee);
 		}
-		Room room = event.getRoom();	
-		room.getRoomSchedule().remove(event);
+		event.getRoom().getRoomSchedule().remove(event);
 		
 		return true;
 	}
 	
-	//vet ikke om dette er lurt, men prøver
+	//vet ikke om dette er lurt, men proever
 	public void reactOnUpdate(Event event, String attribute){
 		System.out.println("Det har skjedd en endring av ");
 		System.out.println(attribute + " i eventen " + event.toString());
-		System.out.println("\nØnsker du å fjerne eventen på bakgrunn av dette? (true/false)");
+		System.out.println("\n + oensker du aa fjerne eventen paa bakgrunn av dette? (true/false)");
 		Scanner user_input = new Scanner(System.in);
 		Boolean answer = user_input.nextBoolean();
 		if(answer){
 			removeEvent(event);			
 		}
+		user_input.close();
 	}
 	
 	public Collection<Message> getInbox() {
 		return inbox;
 	}
 	
-	// Dette fjerner employeens deltakelse på eventen
+	// Dette fjerner employeens deltakelse paa eventen
 	private boolean removeEvent(Event event){
 		if (upcomingEvents.contains(event)){
 			upcomingEvents.remove(event);
@@ -200,8 +193,7 @@ public class Employee {
 		}
 		return false;
 	}
-	
-	// syns denne h�rer mer hjemme her enn i Event-klassen. Det er jo personer som inviterer til events
+		
 	public boolean inviteEmployeeToEvent(Employee employee, Event event){
 		if (event.getCreator() != this){
 			return false;
@@ -215,6 +207,18 @@ public class Employee {
 		return true;
 	}
 
+	
+	public boolean inviteGroupToEvent(Group group, Event event){
+		if (event.getCreator() != this){
+			return false;
+		}
+		for (Employee participant : group.getParticipants()) {
+			inviteEmployeeToEvent(participant, event);
+		}
+		return true;
+	}
+	
+	// hva er hensikten med denne? HVorfor skal man sende melding til seg selv?
 	public void addMessageToInbox(Message message) {
 		this.inbox.add(message);	
 	}

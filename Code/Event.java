@@ -16,6 +16,7 @@ public class Event implements Comparable<Event>{
 	private Collection<Employee> peopleInvited;
 	private Collection<Employee> peopleGoing;
 	private Collection<Employee> peopleDeclined;
+	public Object getPeopleDeclined;
 	
 	
 	public Event(String title, Date startTime, Date endTime,
@@ -31,6 +32,11 @@ public class Event implements Comparable<Event>{
 		this.peopleDeclined = new ArrayList<Employee>();
 		
 	}
+	
+	public Object getGetPeopleDeclined() {
+		return getPeopleDeclined;
+	}
+	
 	
 	public String getTitle() {
 		return title;
@@ -106,16 +112,6 @@ public class Event implements Comparable<Event>{
 			this.room = room;			
 		}
 	}
-
-	public void employeeAcceptedInvitation(Employee employee){
-		peopleGoing.add(employee);
-	}
-	
-	public void employeeDeclinedInvitation(Employee employee){
-		peopleDeclined.add(employee);
-	}
-	
-	
 	
 	public void fireChange(String attribute){
 		for (Employee employee : peopleInvited) {
@@ -127,7 +123,7 @@ public class Event implements Comparable<Event>{
 		this.peopleInvited.add(employee);
 	}
 	
-	// Dette er en hjelpemetode for employee.removeEvent() og b√∏r ikke kalles andre steder enn der(da f√•r vi inkonsistens)
+	// Dette er en hjelpemetode for employee.removeEvent() og Employee.cancelEvent() og boer ikke kalles andre steder enn der (da faar vi inkonsistens)
 	public boolean removeEmployee(Employee employee){
 		if (peopleInvited.contains(employee)){
 			Message msg = new Message(employee, this.creator, false, "Endringen av eventen har gjort at jeg dessverre ikke kan delta", "Varsel om at jeg ikke kan delta");
@@ -139,15 +135,15 @@ public class Event implements Comparable<Event>{
 	
 	@Override
 	public String toString() {
-		String str = this.title + " har f√∏lgende deltakere " + peopleGoing.toString() + "og avholdes kl: " + getHour() + ":";
+		String str = this.title + " har foelgende deltakere " + peopleGoing.toString() + "og avholdes kl: " + getHour() + ":";
 		if (Integer.parseInt(getMinute()) < 10){
 			str += "0";
 		}
-		return  str + this.getMinute() + ", den " + this.getDay() + ". " + this.getMonth();		// mÔøΩneden blir ikke omgjort til streng som ÔøΩnskelig :(
+		return  str + this.getMinute() + ", den " + this.getDay() + ". " + this.getMonth();		// maaneden blir ikke omgjort til streng som oenskelig :(
 	}
 	
 	// Metodene nedenfor brukes i compareTo()-metoden
-	public String getYear(){
+	public String getYear(){		// det du har gjort her med loCaleToString() osv fungerer ikke. NÂ klarer jeg ikke skrive ut Events. FÂr NullPointerException :(
 		return getStartTime().toLocaleString().substring(7, 11);
 	}
 	public String getMonth(){

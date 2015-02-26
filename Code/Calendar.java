@@ -39,17 +39,18 @@ public class Calendar {
 	
 
 	private void run() {
-		System.out.println(biti);
+//		System.out.println(biti);
 		
 		biti.addEvent(birthday);
-		biti.inviteEmployeeToEvent(sverre, birthday);
+		System.out.println(birthday);
+	//	biti.inviteEmployeeToEvent(sverre, birthday);
 		
 		//Dette funker ikke
 		//System.out.println(birthday);
-		System.out.println(dato1.toLocaleString());
+	//	System.out.println(dato1.toLocaleString());
 		
-		/*biti.addEvent(birthdayAgain);
-		System.out.println(biti.getUpcomingEvents());*/
+		biti.addEvent(birthdayAgain);
+		System.out.println(biti.getUpcomingEvents());
 		/*
 		biti.cancelEvent(birthday, "Ingen ville komme :(");		// oppst�r feil her. 
 		System.out.println(biti.getUpcomingEvents());
