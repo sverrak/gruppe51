@@ -99,7 +99,7 @@ public class Employee {
 			description = user_input.nextLine();
 			
 			//formatering av datogreier
-			String startTimeString = user_input.nextLine();			// formatet på disse må vi ha orden på
+			String startTimeString = user_input.nextLine();			// formatet pï¿½ disse mï¿½ vi ha orden pï¿½
 			String endTimeString = user_input.nextLine();
 	
 			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy H:m:s");
@@ -128,7 +128,7 @@ public class Employee {
 	}
 	
 	// Answer er true hvis personen takker ja til invite, nei hvis ikke. Returnerer  false hvis  hva?
-	//Mangler støtte for utsending av varsel til andre deltakere
+	//Mangler stï¿½tte for utsending av varsel til andre deltakere
 	public Boolean answerRequest(Event event, Boolean answer) {
 		if(answer){
 			// Hvis man har tid pÃ¥ tidspunktet
@@ -177,32 +177,51 @@ public class Employee {
 	
 	//vet ikke om dette er lurt, men prÃ¸ver
 	public void reactOnUpdate(Event event, String attribute){
-		
+		System.out.println("Det har skjedd en endring av ");
+		System.out.println(attribute + " i eventen " + event.toString());
+		System.out.println("\nÃ˜nsker du Ã¥ fjerne eventen pÃ¥ bakgrunn av dette? (true/false)");
+		Scanner user_input = new Scanner(System.in);
+		Boolean answer = user_input.nextBoolean();
+		if(answer){
+			removeEvent(event);			
+		}
 	}
 	
 	public Collection<Message> getInbox() {
 		return inbox;
 	}
 	
+	// Dette fjerner employeens deltakelse pÃ¥ eventen
 	private boolean removeEvent(Event event){
 		if (upcomingEvents.contains(event)){
 			upcomingEvents.remove(event);
+			event.removeEmployee(this);
 			return true;
 		}
 		return false;
 	}
 	
-	// syns denne hører mer hjemme her enn i Event-klassen. Det er jo personer som inviterer til events
+	// syns denne hï¿½rer mer hjemme her enn i Event-klassen. Det er jo personer som inviterer til events
 	public boolean inviteEmployeeToEvent(Employee employee, Event event){
 		if (event.getCreator() != this){
 			return false;
 		}else if(! employee.isAvailable(event.getStartTime(), event.getEndTime())){
 			return false;
 		}
-		event.sendMessage(this, employee, event);		// maa gaas over
 		
-		event.getPeopleInvited().add(employee);
+		Message msg = new Message(this, employee, false, "Jeg har invitert deg til eventen " + event.toString(), "Invitasjon til " + event.toString());
+		msg.sendMessage();
+		event.addEmployee(employee);
 		return true;
+	}
+
+	public void addMessageToInbox(Message message) {
+		this.inbox.add(message);	
+	}
+	
+	@Override
+	public String toString() {
+		return this.name;
 	}
 	
 }

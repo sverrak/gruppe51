@@ -50,14 +50,17 @@ public class Room {
 		
 		return false;	
 	}
-	// returnerer true hvis det gikk bra
+	// returnerer true hvis det gikk bra. Ikke implementert ferdig
 	public Boolean addEventToRoom(Event event){
 		if (isAvailable(event.getStartTime(), event.getEndTime())){
 			roomSchedule.add(event);
-			roomSchedule.sort(c);
-		} else{
-			
+			//Hvordan sortere roomSchedule på en hensiktsmessig måte?
+			//roomSchedule.sort(c);
+			return true;
 		}
+		return false;
+		
+		
 	}
 	
 	private boolean removeEvent(Event event){
