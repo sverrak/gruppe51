@@ -48,6 +48,9 @@ public class Group {
 		return responsible;
 	}
 
+	public Collection<Employee> getParticipants() {
+		return participants;
+	}
 
 
 	public void setResponsible(Employee responsible) {
@@ -55,11 +58,10 @@ public class Group {
 	}
 
 
-
+// "Grupper administreres utenfor systemet..." - kravlista fra DB.
 	public Boolean addEmployee(Employee employee){
 		return true;
 	}
-	
 	public Boolean removeEmployee(Employee employee){
 		return true;
 	}

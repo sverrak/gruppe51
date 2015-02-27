@@ -3,6 +3,7 @@ package Code;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 
 public class Calendar {
 	private List<Room> rooms;
@@ -23,11 +24,15 @@ public class Calendar {
 	Event birthday;
 	Event birthdayAgain;
 	
-	// Ikke implementert
-	public Room findLocation(){
+	public List<Room> findLocation(Date startTime, Date endTime){
+		List<Room> availableRooms = new ArrayList<Room>();
 		for (Room room : rooms) {
-			
+			room.getDescription();
+			if(room.isAvailable(startTime, endTime)){
+				availableRooms.add(room);
+			}
 		}
+		return availableRooms;
 	}
 	
 	public static void main(String[] args) {
@@ -38,18 +43,27 @@ public class Calendar {
 	
 
 	private void run() {
-		System.out.println(biti);
-		
-		/*
+//		System.out.println(biti);
+		Scanner user_input = new Scanner(System.in);
+		System.out.println("Hei\n\n");
+		System.out.println("1: Logg på\n");
+		System.out.println("2: Ny bruker\n\n");
 		biti.addEvent(birthday);
 		System.out.println(birthday);
+	//	biti.inviteEmployeeToEvent(sverre, birthday);
+		
+		//Dette funker ikke
+		//System.out.println(birthday);
+	//	System.out.println(dato1.toLocaleString());
 		
 		biti.addEvent(birthdayAgain);
 		System.out.println(biti.getUpcomingEvents());
+		biti.inviteEmployeeToEvent(sverre, birthday);
+		System.out.println(birthday.getPeopleInvited());
 		
 		biti.cancelEvent(birthday, "Ingen ville komme :(");		// oppst�r feil her. 
 		System.out.println(biti.getUpcomingEvents());
-		*/
+		
 		
 	}
 

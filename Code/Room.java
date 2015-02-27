@@ -41,24 +41,15 @@ public class Room {
 		return roomSchedule;
 	}
 	
-	private Boolean isAvailable(Date startTime, Date endTime){
-		for (int i = 0; i < roomSchedule.size() - 1; i++) {
-			if(roomSchedule.get(i).getEndTime().compareTo(startTime) < 0 && endTime.compareTo(roomSchedule.get(i+1).getStartTime()) < 0){
-				return true;
-			}
-		}
-		
-		return false;	
-	}
 	// returnerer true hvis det gikk bra. Ikke implementert ferdig
 	public Boolean addEventToRoom(Event event){
 		if (isAvailable(event.getStartTime(), event.getEndTime())){
 			roomSchedule.add(event);
 			//Hvordan sortere roomSchedule på en hensiktsmessig måte?
-			roomSchedule.sort(c);
-		} else{
-			
+			//roomSchedule.sort(c);
+			return true;
 		}
+		return false;	
 	}
 	
 	private boolean removeEvent(Event event){
@@ -67,6 +58,18 @@ public class Room {
 			return true;
 		}
 		return false;
+	}
+	
+	public Boolean isAvailable(Date startTime, Date endTime){
+		if(this.roomSchedule.size() == 0){
+			return true;
+		}
+		for (int i = 0; i < roomSchedule.size() - 1; i++) {
+			if(roomSchedule.get(i).getEndTime().compareTo(startTime) < 0 && endTime.compareTo(roomSchedule.get(i+1).getStartTime()) < 0){
+				return true;
+			}
+		}
+		return false;	
 	}
 	
 	@Override
