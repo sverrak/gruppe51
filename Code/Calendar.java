@@ -26,9 +26,8 @@ public class Calendar {
 	// Ikke implementert
 	public Room findLocation(){
 		for (Room room : rooms) {
-			room.getDescription();
+			
 		}
-		return rooms.get(0);
 	}
 	
 	public static void main(String[] args) {
@@ -39,24 +38,18 @@ public class Calendar {
 	
 
 	private void run() {
-//		System.out.println(biti);
+		System.out.println(biti);
 		
+		/*
 		biti.addEvent(birthday);
 		System.out.println(birthday);
-	//	biti.inviteEmployeeToEvent(sverre, birthday);
-		
-		//Dette funker ikke
-		//System.out.println(birthday);
-	//	System.out.println(dato1.toLocaleString());
 		
 		biti.addEvent(birthdayAgain);
 		System.out.println(biti.getUpcomingEvents());
-		biti.inviteEmployeeToEvent(sverre, birthday);
-		System.out.println(birthday.getPeopleInvited());
 		
 		biti.cancelEvent(birthday, "Ingen ville komme :(");		// oppst�r feil her. 
 		System.out.println(biti.getUpcomingEvents());
-		
+		*/
 		
 	}
 

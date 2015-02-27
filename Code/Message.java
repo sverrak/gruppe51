@@ -1,18 +1,19 @@
 package Code;
 
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.Receiver;
 
 public class Message {
 	private Employee sender;
-	private Employee receiver;
+	private Employee receiever;
 	private Boolean isRead;
 	private String content;
 	private String subject;
 	
-	public Message(Employee sender, Employee receiver, Boolean isRead,
+	public Message(Employee sender, Employee receiever, Boolean isRead,
 			String content, String subject) {
 		super();
 		this.sender = sender;
-		this.receiver = receiver;
+		this.receiever = receiever;
 		this.isRead = isRead;
 		this.content = content;
 		this.subject = subject;
@@ -21,7 +22,7 @@ public class Message {
 		return sender;
 	}
 	public Employee getReceiever() {
-		return receiver;
+		return receiever;
 	}
 	public Boolean getIsRead() {
 		return isRead;
@@ -39,13 +40,13 @@ public class Message {
 	}
 	
 	public void sendMessage(){
-		this.receiver.addMessageToInbox(this);
+		this.receiever.addMessageToInbox(this);
 	}
 	
 	@Override
 	public String toString() {
 		String str = "FROM: " +  this.sender + "\n";
-		str += "TO: " + this.receiver + "\n";
+		str += "TO: " + this.receiever + "\n";
 		str += "SUBJECT: " + this.subject + "\n";
 		str += "CONTENT:" + this.content + "\n";
 		return str;	

@@ -55,12 +55,10 @@ public class Room {
 		if (isAvailable(event.getStartTime(), event.getEndTime())){
 			roomSchedule.add(event);
 			//Hvordan sortere roomSchedule på en hensiktsmessig måte?
-			//roomSchedule.sort(c);
-			return true;
+			roomSchedule.sort(c);
+		} else{
+			
 		}
-		return false;
-		
-		
 	}
 	
 	private boolean removeEvent(Event event){
