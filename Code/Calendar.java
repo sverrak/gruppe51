@@ -1,5 +1,7 @@
 package Code;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -27,13 +29,19 @@ public class Calendar {
 	private Event birthday;
 	private Event birthdayAgain;
 	
+	
+	//login-felter
+	private String login_option;
+	private String username;
+	private String password;
+	
 	private Scanner user_input;
 	
-	public List<Room> findLocation(Date startTime, Date endTime){
+	public List<Room> findLocation(Date startTime, Date endTime, int capacity){
 		List<Room> availableRooms = new ArrayList<Room>();
 		for (Room room : rooms) {
 			room.getDescription();
-			if(room.isAvailable(startTime, endTime)){
+			if(room.isAvailable(startTime, endTime) && room.getCapacity() > capacity){
 				availableRooms.add(room);
 			}
 		}
@@ -44,108 +52,9 @@ public class Calendar {
 		Calendar calendar = new Calendar();
 		calendar.init();
 		calendar.run();
+		calendar.user_input.close();
 	}
 	
-	public Employee login(){
-		user_input = new Scanner(System.in);
-		String username = "";
-		System.out.println("Hei");
-		System.out.println("Har du bruker?");
-		
-		String login_option = user_input.nextLine();
-		if(login_option.equals("ja")){
-			username = "";
-			String password = null;
-			
-			while(current_user == null){
-				System.out.println("Brukernavn: ");
-				username = user_input.nextLine();
-				System.out.println("Passord: ");
-				password = user_input.nextLine();
-				System.out.println(username + password);
-				for (Employee employee : employees) {
-					if(employee.getUsername().equals(username) && employee.getPassword().equals(password)){
-						current_user = employee;
-						System.out.println(current_user);
-						break;
-					}
-				}
-				
-				if(current_user == null){
-					System.out.println("Feil brukernavn/passord. Prøv igjen");
-				} 
-			}
-			return current_user;
-		} else{
-			username = "";
-			while(username == null || username.equals("")){
-				System.out.println("Ønsket brukernavn: ");
-				username = user_input.nextLine();
-				if(employees.size() > 0){
-					for (Employee emp : employees) {
-						if(emp.getUsername().equals(username)){
-							username = null;
-							System.out.println("Brukernavn er opptatt.");
-							break;
-						}
-					}					
-				}
-			}
-			
-			System.out.println("Ønsket passord:");
-			String password = user_input.nextLine();
-			System.out.println("Ditt navn:");
-			String name = user_input.nextLine();
-			System.out.println("Stilling:");
-			String position = user_input.nextLine();
-			System.out.println("Telefonnummer:");
-			String telnum = user_input.nextLine();
-			
-			user_input.close();
-			Employee employee = new Employee(name, position, username, password, telnum);
-			employees.add(employee);
-			return employee;
-		}
-	}
-	
-
-	private void run() {
-//		System.out.println(biti);
-		biti.addEvent(birthday);
-		current_user = login();
-		
-		System.out.println("Nå har vi følgende brukere:");
-		for (Employee employee : employees) {
-			System.out.println(employee);
-		}
-		
-		
-		
-		current_user.addEvent(birthday);
-		System.out.println(birthday);
-		
-	//	System.out.println(dato1.toLocaleString());
-		
-		biti.addEvent(birthdayAgain);
-		System.out.println(birthdayAgain);
-		
-		System.out.println("Bendiks events: " + "\n- Events invited to: " + biti.getUpcomingEvents() + "\n- Events attending: " + biti.getEventsAttending());
-		System.out.println(birthday.getPeopleInvited());
-		biti.inviteEmployeeToEvent(sverre, birthday);
-		System.out.println(birthday.getPeopleInvited());
-		sverre.acceptInvitation(birthday);
-		System.out.println(sverre.getUpcomingEvents());
-		
-		System.out.println(birthday.getPeopleGoing());
-		biti.cancelEvent(birthday, "Ingen ville komme :(");
-		System.out.println("Bendiks events: " + "\n- Events invited to: " + biti.getUpcomingEvents() + "\n- Events attending: " + biti.getEventsAttending() + "\n");
-		
-		System.out.println(birthdayAgain.getPeopleGoing() + "" + birthdayAgain.getPeopleInvited());
-		
-		
-		
-	}
-
 	private void init() {
 		r1 = new Room("R1", 500, "Fint rom1");
 		r2 = new Room("R2", 400, "Fint rom2");
@@ -184,4 +93,216 @@ public class Calendar {
 	
 	}
 	
+	
+	public Employee login(){
+		user_input = new Scanner(System.in);
+		username = "";
+		System.out.println("Hei");
+		System.out.println("Har du bruker?");
+		
+		login_option = user_input.nextLine();
+		if(login_option.equals("ja")){
+			username = "";
+			password = null;
+			
+			while(current_user == null){
+				System.out.println("Brukernavn: ");
+				username = user_input.nextLine();
+				System.out.println("Passord: ");
+				password = user_input.nextLine();
+				System.out.println(username + password);
+				for (Employee employee : employees) {
+					if(employee.getUsername().equals(username) && employee.getPassword().equals(password)){
+						current_user = employee;
+						System.out.println(current_user);
+						break;
+					}
+				}
+				
+				if(current_user == null){
+					System.out.println("Feil brukernavn/passord. Prøv igjen");
+				} 
+			}
+			return current_user;
+		} else{
+			username = "";
+			while(username == null || username.equals("")){
+				System.out.println("Ønsket brukernavn: ");
+				username = user_input.nextLine();
+				if(employees.size() > 0){
+					for (Employee emp : employees) {
+						if(emp.getUsername().equals(username)){
+							username = null;
+							System.out.println("Brukernavn er opptatt.");
+							break;
+						}
+					}					
+				}
+			}
+			
+			System.out.println("Ønsket passord:");
+			password = user_input.nextLine();
+			
+			System.out.println("Ditt navn:");
+			String name = user_input.nextLine();
+			System.out.println("Stilling:");
+			String position = user_input.nextLine();
+			System.out.println("Telefonnummer:");
+			String telnum = user_input.nextLine();
+			
+			Employee employee = new Employee(name, position, username, password, telnum);
+			employees.add(employee);
+			System.out.println("Du er nå lagt til i databasen");
+			return employee;
+		}
+	}
+	
+	private void printEmployees(){
+		System.out.println("Nå har vi følgende brukere:");
+		for (int i = 0; i < employees.size(); i++) {
+			System.out.println("" + i + ": "+ employees.get(i).toString());
+		} 
+	}
+	public Event getEventInput(Employee employee){
+		String title = "";
+		String description = "";
+		Date startTime;
+		Date endTime;
+		
+	
+		Scanner user_input = new Scanner(System.in);
+		System.out.println("Tittel: ");
+		title = user_input.nextLine();
+		System.out.println("Beskrivelse: ");
+		description = user_input.nextLine();
+		
+		//formatering av datogreier
+		System.out.println("Starttidspunkt[dd/MM/yyyy H:m:s]: ");
+		String startTimeString = user_input.nextLine();			// formatet p� disse m� vi ha orden p�
+		System.out.println("Sluttidspunkt[dd/MM/yyyy H:m:s]: ");
+		String endTimeString = user_input.nextLine();
+		System.out.println("Kapasitet: ");
+		int capacity = Integer.parseInt(user_input.nextLine());
+
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy H:m:s");
+		try { 
+			startTime = formatter.parse(startTimeString);
+			endTime = formatter.parse(endTimeString);
+			System.out.println(startTimeString);
+			
+			Event newEvent = new Event(title, startTime, endTime, description, employee);
+			List<Room> availableRooms = findLocation(startTime, endTime, capacity);
+			String print = "";
+			for (int i = 0; i < availableRooms.size(); i++) {
+				print = i + "";
+				print += availableRooms.get(i);
+				System.out.println(print);
+			}
+			
+			System.out.println("Skriv nummer på rommet du vil ha");
+			String input = user_input.nextLine();
+			
+			newEvent.setRoom(availableRooms.get(Integer.parseInt(input)));
+			availableRooms.get(Integer.parseInt(input)).addEventToRoom(newEvent);
+			
+			//print roomSchedulen til Room
+			//System.out.println(availableRooms.get(Integer.parseInt(input)).getRoomSchedule().toString());
+			
+			for (int i = 0; i < getAvailableEmployees(startTime, endTime).size(); i++) {
+				System.out.println("" + i + ": " + getAvailableEmployees(startTime, endTime).get(i));	
+			}
+			
+			System.out.println("Hvem vil du invitere til dette arrangementet[tom streng for å avslutte]?");
+			input = user_input.nextLine();
+			while(input != ""){
+				newEvent.addEmployee(getAvailableEmployees(startTime, endTime).get(Integer.parseInt(input)));
+				System.out.println("Noen flere[tom streng for å avslutte]?");
+				input = user_input.nextLine();
+			}
+			
+			
+			return newEvent;
+			
+	 
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+		
+	}
+	private List<Employee> getAvailableEmployees(Date startTime, Date endTime) {
+		List<Employee> availableEmployees = new ArrayList<Employee>();
+		for (Employee employee : employees) {
+			if(employee.isAvailable(startTime, endTime)){
+				availableEmployees.add(employee);
+			}
+		}
+		return null;
+	}
+
+	private void run() {
+//		System.out.println(biti);
+		biti.addEvent(birthday);
+		current_user = login();
+		System.out.println("Du er nå logget inn. Skriv quit for å logge ut");
+		System.out.println("Hei, " + current_user.getName() + "!");
+		while(current_user != null){
+			System.out.println("Hva vil du gjøre?");
+			System.out.println("1: se alle upcoming events[goingTo] | 2: legg til ny event | 3: åpne innboks | 4: se dine invitasjoner | 5: quit");
+			
+			int option = 0;
+			
+			while(option < 1 || option > 5){
+				option = Integer.parseInt(user_input.nextLine());
+				if(option == 1){
+					current_user.printSchedule();
+				} else if(option == 2){
+					Event event = getEventInput(current_user);
+					current_user.addEvent(event);
+				} else if(option == 3){
+					
+				} else if(option == 4){
+					
+				} else{
+					current_user = null;
+					System.out.println("Du er nå logget ut.");
+					
+					//metode for å skrive tilbake til server mangler her
+					main(null);
+				}
+					
+				}
+				
+			}
+		}
+		
+	/*	current_user.addEvent(birthday);
+		System.out.println(birthday);
+		*/
+	
+	//	biti.inviteEmployeeToEvent(sverre, birthday);
+
+		
+	//	System.out.println(dato1.toLocaleString());
+	/*	
+		biti.addEvent(birthdayAgain);
+		System.out.println(birthdayAgain);
+		
+		System.out.println("Bendiks events: " + "\n- Events invited to: " + biti.getUpcomingEvents() + "\n- Events attending: " + biti.getEventsAttending());
+		System.out.println(birthday.getPeopleInvited());
+		biti.inviteEmployeeToEvent(sverre, birthday);
+		System.out.println(birthday.getPeopleInvited());
+		sverre.acceptInvitation(birthday);
+		System.out.println(sverre.getUpcomingEvents());
+		
+		System.out.println(birthday.getPeopleGoing());
+		biti.cancelEvent(birthday, "Ingen ville komme :(");
+		System.out.println("Bendiks events: " + "\n- Events invited to: " + biti.getUpcomingEvents() + "\n- Events attending: " + biti.getEventsAttending() + "\n");
+		
+		System.out.println(birthdayAgain.getPeopleGoing() + "" + birthdayAgain.getPeopleInvited());
+		biti.cancelEvent(birthday, "Ingen ville komme :(");		// oppst�r feil her. 
+		System.out.println(biti.getUpcomingEvents());
+		*/
+
 }
