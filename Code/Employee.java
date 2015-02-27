@@ -37,6 +37,9 @@ public class Employee {
 		eventsAttending = new ArrayList<Event>();
 	}
 
+	public List<Event> getEventsAttending() {
+		return eventsAttending;
+	}
 	public void setTelnum(String telnum) {
 		this.telnum = telnum;
 	}
@@ -126,17 +129,16 @@ public class Employee {
 	*/
 	
 	public void addEvent(Event event){
-		event.getPeopleInvited().add(this);
+		event.getPeopleGoing().add(this);
 		if (eventsAttending.size() == 0){
 			eventsAttending.add(event);
 		}else{
-			for (int i = 0; i < eventsAttending.size(); i++) {		// holder upcomingEvetns sortert på startTime
+			for (int i = 0; i < eventsAttending.size(); i++) {		// holder upcomingEvetns sortert på startTime	// ser ut til å feile her
 				if (eventsAttending.get(i).getStartTime().compareTo(event.getStartTime()) > 0){
 					eventsAttending.add(i, event);
 				}
 			}
 		}
-	//	sorter upcomingEvents
 	}
 	
 	// returnerer true hvis ja-svar ble sendt, false ellers
@@ -149,13 +151,15 @@ public class Employee {
 			return false;
 		}
 		event.getPeopleGoing().add(this);
+		eventsAttending.add(event);
+		upcomingEvents.remove(event);
 		return true;
 	}
 	
 	// returnerer true hvis event ble fjernet, false dersom event ikke i upcomingEvents
 	public boolean declineInvitation(Event event){
 		if (upcomingEvents.contains(event)){
-			event.getPeopleDeclined().add(this);		// skal vi fjerne fra peopleInvited ogsï¿½??
+			event.getPeopleDeclined().add(this);		// skal vi fjerne fra peopleInvited ogsaa??
 			upcomingEvents.remove(event);
 			return true;
 		}
@@ -181,21 +185,17 @@ public class Employee {
 		
 		if (event.getCreator() != this){
 			return false;
-		}
-		System.out.println(event.getPeopleInvited());
-		return true;
-		/*
+		}		
 		for (Employee employee : event.getPeopleInvited()) {
 			employee.removeEvent(event);
-		}
-		return false;
-		
+		}	
 		for (Employee employee : event.getPeopleDeclined()) {
 			employee.removeEvent(event);
 		}
-		event.getRoom().getRoomSchedule().remove(event);
-		
-		return true;*/
+		if (event.getRoom()!= null){
+			event.getRoom().getRoomSchedule().remove(event);
+		}
+		return true;
 	}
 	
 	//vet ikke om dette er lurt, men proever

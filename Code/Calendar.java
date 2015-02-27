@@ -46,25 +46,30 @@ public class Calendar {
 //		System.out.println(biti);
 		Scanner user_input = new Scanner(System.in);
 		System.out.println("Hei\n\n");
-		System.out.println("1: Logg på\n");
+		System.out.println("1: Logg paa\n");
 		System.out.println("2: Ny bruker\n\n");
 		
 		biti.addEvent(birthday);
 		System.out.println(birthday);
-		biti.inviteEmployeeToEvent(sverre, birthday);
 		
 	//	System.out.println(dato1.toLocaleString());
 		
 		biti.addEvent(birthdayAgain);
-		System.out.println(biti.getUpcomingEvents());
+		System.out.println(birthdayAgain);
+		
+		System.out.println("Bendiks events: " + "\n- Events invited to: " + biti.getUpcomingEvents() + "\n- Events attending: " + biti.getEventsAttending());
+		System.out.println(birthday.getPeopleInvited());
 		biti.inviteEmployeeToEvent(sverre, birthday);
 		System.out.println(birthday.getPeopleInvited());
-		boolean bolsk = sverre.acceptInvitation(birthday);		//problem her pga employee.isAvailable-metoden
-		System.out.println(bolsk);
+		sverre.acceptInvitation(birthday);
 		System.out.println(sverre.getUpcomingEvents());
-	//	System.out.println(birthday.getPeopleGoing());
-	//	biti.cancelEvent(birthday, "Ingen ville komme :(");
-	//	System.out.println(biti.getUpcomingEvents());
+		
+		System.out.println(birthday.getPeopleGoing());
+		biti.cancelEvent(birthday, "Ingen ville komme :(");
+		System.out.println("Bendiks events: " + "\n- Events invited to: " + biti.getUpcomingEvents() + "\n- Events attending: " + biti.getEventsAttending() + "\n");
+		
+		System.out.println(birthdayAgain.getPeopleGoing() + "" + birthdayAgain.getPeopleInvited());
+		
 		
 		
 	}
