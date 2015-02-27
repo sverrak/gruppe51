@@ -1,28 +1,33 @@
 package Code;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
 public class Calendar {
 	private List<Room> rooms;
-	Room r1;
-	Room r2;
-	Room r3;
-	Room r4;
-	Room r5;
-	Room r6;
-	Room r7;
-	Employee biti;
-	Employee sverre;
-	Employee yolo;
-	Date dato1;
-	Date dato2;
-	Date dato3;
-	Date dato4;
-	Event birthday;
-	Event birthdayAgain;
+	private Room r1;
+	private Room r2;
+	private Room r3;
+	private Room r4;
+	private Room r5;
+	private Room r6;
+	private Room r7;
+	private	List<Employee> employees;
+	private Employee biti;
+	private Employee sverre;
+	private Employee yolo;
+	private Employee current_user;
+	private Date dato1;
+	private Date dato2;
+	private Date dato3;
+	private Date dato4;
+	private Event birthday;
+	private Event birthdayAgain;
+	
+	private Scanner user_input;
 	
 	public List<Room> findLocation(Date startTime, Date endTime){
 		List<Room> availableRooms = new ArrayList<Room>();
@@ -41,14 +46,81 @@ public class Calendar {
 		calendar.run();
 	}
 	
+	public Employee login(){
+		user_input = new Scanner(System.in);
+		String username = "";
+		System.out.println("Hei");
+		System.out.println("Har du bruker?");
+		
+		String login_option = user_input.nextLine();
+		if(login_option.equals("ja")){
+			username = "";
+			String password = null;
+			
+			while(current_user == null){
+				System.out.println("Brukernavn: ");
+				username = user_input.nextLine();
+				System.out.println("Passord: ");
+				password = user_input.nextLine();
+				System.out.println(username + password);
+				for (Employee employee : employees) {
+					if(employee.getUsername().equals(username) && employee.getPassword().equals(password)){
+						current_user = employee;
+						System.out.println(current_user);
+						break;
+					}
+				}
+				
+				if(current_user == null){
+					System.out.println("Feil brukernavn/passord. Prøv igjen");
+				} 
+			}
+			return current_user;
+		} else{
+			username = "";
+			while(username == null || username.equals("")){
+				System.out.println("Ønsket brukernavn: ");
+				username = user_input.nextLine();
+				if(employees.size() > 0){
+					for (Employee emp : employees) {
+						if(emp.getUsername().equals(username)){
+							username = null;
+							System.out.println("Brukernavn er opptatt.");
+							break;
+						}
+					}					
+				}
+			}
+			
+			System.out.println("Ønsket passord:");
+			String password = user_input.nextLine();
+			System.out.println("Ditt navn:");
+			String name = user_input.nextLine();
+			System.out.println("Stilling:");
+			String position = user_input.nextLine();
+			System.out.println("Telefonnummer:");
+			String telnum = user_input.nextLine();
+			
+			user_input.close();
+			Employee employee = new Employee(name, position, username, password, telnum);
+			employees.add(employee);
+			return employee;
+		}
+	}
+	
 
 	private void run() {
 //		System.out.println(biti);
-		Scanner user_input = new Scanner(System.in);
-		System.out.println("Hei\n\n");
-		System.out.println("1: Logg på\n");
-		System.out.println("2: Ny bruker\n\n");
-		biti.addEvent(birthday);
+		current_user = login();
+		
+		System.out.println("Nå har vi følgende brukere:");
+		for (Employee employee : employees) {
+			System.out.println(employee);
+		}
+		
+		
+		
+		current_user.addEvent(birthday);
 		System.out.println(birthday);
 	//	biti.inviteEmployeeToEvent(sverre, birthday);
 		
@@ -87,6 +159,14 @@ public class Calendar {
 		biti = new Employee("Bendik", "Junior", "biti", "bata", "123");
 		sverre = new Employee("Sverre", "Senior", "sverrak", "heiia", "45884408");
 		yolo = new Employee("Jola", "Junior+", "bata", "biti", "123");
+		current_user = null;
+		
+		employees = new ArrayList<Employee>();
+		employees.add(biti);
+		employees.add(sverre);
+		employees.add(yolo);
+		
+		
 		dato1 = new Date(115, 2, 19, 19, 0, 0);
 		dato2 = new Date(115, 2, 19, 21, 0, 0);
 		dato3 = new Date(116, 2, 19, 18, 30, 0);
