@@ -204,6 +204,7 @@ public class Employee {
 		System.out.println(attribute + " i eventen " + event.toString());
 		System.out.println("\n + oensker du aa fjerne eventen paa bakgrunn av dette? (true/false)");
 		Scanner user_input = new Scanner(System.in);
+		
 		Boolean answer = user_input.nextBoolean();
 		if(answer){
 			removeEvent(event);			
