@@ -48,21 +48,23 @@ public class Calendar {
 		System.out.println("Hei\n\n");
 		System.out.println("1: Logg på\n");
 		System.out.println("2: Ny bruker\n\n");
+		
 		biti.addEvent(birthday);
 		System.out.println(birthday);
-	//	biti.inviteEmployeeToEvent(sverre, birthday);
+		biti.inviteEmployeeToEvent(sverre, birthday);
 		
-		//Dette funker ikke
-		//System.out.println(birthday);
 	//	System.out.println(dato1.toLocaleString());
 		
 		biti.addEvent(birthdayAgain);
 		System.out.println(biti.getUpcomingEvents());
 		biti.inviteEmployeeToEvent(sverre, birthday);
 		System.out.println(birthday.getPeopleInvited());
-		
-		biti.cancelEvent(birthday, "Ingen ville komme :(");		// oppst�r feil her. 
-		System.out.println(biti.getUpcomingEvents());
+		boolean bolsk = sverre.acceptInvitation(birthday);		//problem her pga employee.isAvailable-metoden
+		System.out.println(bolsk);
+		System.out.println(sverre.getUpcomingEvents());
+	//	System.out.println(birthday.getPeopleGoing());
+	//	biti.cancelEvent(birthday, "Ingen ville komme :(");
+	//	System.out.println(biti.getUpcomingEvents());
 		
 		
 	}

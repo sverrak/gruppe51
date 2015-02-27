@@ -15,8 +15,9 @@ public class Employee {
 	private String username;
 	private String password;
 	private Collection<Group> groups;
-	private List<Event> upcomingEvents;
+	private List<Event> upcomingEvents;		//sortert på startTime
 	private Collection<Event> declinedEvents;
+	private List<Event> eventsAttending;		// sortert på startTime. Må gå over alt og kanskje endre fra upcomingEvents til eventsAttending
 	private String telnum;
 	private Collection<Message> inbox;
 	
@@ -33,6 +34,7 @@ public class Employee {
 		groups = new ArrayList<Group>();
 		upcomingEvents = new ArrayList<Event>();
 		declinedEvents = new ArrayList<Event>();
+		eventsAttending = new ArrayList<Event>();
 	}
 
 	public void setTelnum(String telnum) {
@@ -124,33 +126,53 @@ public class Employee {
 	*/
 	
 	public void addEvent(Event event){
-		upcomingEvents.add(event);
 		event.getPeopleInvited().add(this);
+		if (eventsAttending.size() == 0){
+			eventsAttending.add(event);
+		}else{
+			for (int i = 0; i < eventsAttending.size(); i++) {		// holder upcomingEvetns sortert på startTime
+				if (eventsAttending.get(i).getStartTime().compareTo(event.getStartTime()) > 0){
+					eventsAttending.add(i, event);
+				}
+			}
+		}
+	//	sorter upcomingEvents
 	}
 	
-	public void acceptInvitation(Event event){
-		if(isAvailable(event.getStartTime(), event.getEndTime())){
-			event.getPeopleGoing().add(this);
-		}else{
-			System.out.println("Du er opptatt paa dette tidspunktet");
+	// returnerer true hvis ja-svar ble sendt, false ellers
+	public boolean acceptInvitation(Event event){
+		if (! upcomingEvents.contains(event)){
+			return false;
 		}
+		if(! this.isAvailable(event.getStartTime(), event.getEndTime())){
+			System.out.println("Du er opptatt paa dette tidspunktet");		// kan vurderes fjernes. Faar se hva vi trenger	
+			return false;
+		}
+		event.getPeopleGoing().add(this);
+		return true;
 	}
-		
-	public void declineInvitation(Event event){
+	
+	// returnerer true hvis event ble fjernet, false dersom event ikke i upcomingEvents
+	public boolean declineInvitation(Event event){
 		if (upcomingEvents.contains(event)){
 			event.getPeopleDeclined().add(this);		// skal vi fjerne fra peopleInvited ogsï¿½??
 			upcomingEvents.remove(event);
-		}
-	}
-	
-	public Boolean isAvailable(Date startTime, Date endTime){
-		if(this.upcomingEvents.size() == 0){
 			return true;
 		}
-		for (int i = 0; i < upcomingEvents.size() - 1; i++) {
+		return false;
+	}
+// returnerer true hvis employee-objektet er tilgjengelig i tidsrommet
+	public boolean isAvailable(Date startTime, Date endTime){
+		if(this.eventsAttending.size() == 0){		// kommer ikke inn her :(
+			return true;
+		}
+		for (int i = 0; i < upcomingEvents.size()-1; i++) {
 			if(upcomingEvents.get(i).getEndTime().compareTo(startTime) < 0 && endTime.compareTo(upcomingEvents.get(i+1).getStartTime()) < 0){
 				return true;
 			}
+		}
+		if (upcomingEvents.get(upcomingEvents.size()-1).getEndTime().compareTo(startTime) < 0){
+			return true;
 		}
 		return false;	
 	}
@@ -210,14 +232,12 @@ public class Employee {
 			return false;
 		}
 		
-		Message msg = new Message(this, employee, false, "Jeg har invitert deg til eventen " + event.toString(), "Invitasjon til " + event.toString());
+		Message msg = new Message(this, employee, false, "Jeg har invitert deg til eventen " + event, "Invitasjon til " + event.toString());
 		msg.sendMessage();
 		
 		// hvis eventen er upcoming
 		event.addEmployee(employee);
-		employee.upcomingEvents.add(event);
-		System.out.println(employee.upcomingEvents.toString());
-		
+		employee.upcomingEvents.add(event);	
 		return true;
 	}
 

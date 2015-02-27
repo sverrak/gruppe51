@@ -34,12 +34,7 @@ public class Event implements Comparable<Event>{
 		this.peopleDeclined = new ArrayList<Employee>();
 		
 	}
-	
-	public Object getGetPeopleDeclined() {
-		return getPeopleDeclined;
-	}
-	
-	
+		
 	public String getTitle() {
 		return title;
 	}
