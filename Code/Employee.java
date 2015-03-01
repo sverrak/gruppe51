@@ -223,18 +223,13 @@ public class Employee {
 	}
 	
 	// Dette fjerner employeens deltakelse paa eventen
-	// returnerer true hvis eventen fjernes, false ellers
-	private boolean removeEvent(Event event){		// boer kanskje vaere void
+	private void removeEvent(Event event){
 		if (upcomingEvents.contains(event)){
 			upcomingEvents.remove(event);
-			event.removeEmployee(this);
-			return true;
-		} else if (eventsAttending.contains(event)){
+		} else if (eventsAttending.contains(event)){	// dersom feil oppstår, kan vi gjøre denne til ren 'if'
 			eventsAttending.remove(event);
-			event.removeEmployee(this);
-			return true;
 		}
-		return false;
+		event.removeEmployee(this);
 	}
 		
 	public boolean inviteEmployeeToEvent(Employee employee, Event event){
@@ -267,6 +262,17 @@ public class Employee {
 	// hva er hensikten med denne? HVorfor skal man sende melding til seg selv?
 	public void addMessageToInbox(Message message) {
 		this.inbox.add(message);	
+	}
+	
+	public boolean withdrawInvitation(Employee employee, Event event){
+		if (event.getCreator() != this){
+			return false;
+		}
+		if(! (employee.getUpcomingEvents().contains(event) || employee.getEventsAttending().contains(event))){
+			return false;
+		}
+		employee.removeEvent(event);
+		return true;
 	}
 	
 	@Override

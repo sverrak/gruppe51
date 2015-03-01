@@ -1,6 +1,7 @@
 package Code;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
@@ -17,6 +18,8 @@ public class Event implements Comparable<Event>{
 	private Collection<Employee> peopleGoing;
 	private Collection<Employee> peopleDeclined;
 	public Object getPeopleDeclined;
+	
+	private static ArrayList<String> months = new ArrayList(Arrays.asList("jan","feb","mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"));
 	
 	
 	public Event(String title, Date startTime, Date endTime,
@@ -179,7 +182,9 @@ public class Event implements Comparable<Event>{
 				} else{
 					return 1;
 				}
-			} else if(Integer.parseInt(this.getMonth()) < Integer.parseInt(event.getMonth())){
+			} 
+	//		else if(Integer.parseInt(this.getMonth()) < Integer.parseInt(event.getMonth())){
+			else if(months.indexOf(this.getMonth()) < months.indexOf(event.getMonth())){
 				return -1;
 			} else{
 				return 1;

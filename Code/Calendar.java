@@ -178,7 +178,7 @@ public class Calendar {
 		
 		//formatering av datogreier
 		System.out.println("Starttidspunkt[16/03/2015 12:00:00]: ");
-		String startTimeString = user_input.nextLine();			// formatet p� disse m� vi ha orden p�
+		String startTimeString = user_input.nextLine();			// formatet paa disse maa vi ha orden paa
 		System.out.println("Sluttidspunkt[16/03/2015 12:00:00]: ");
 		String endTimeString = user_input.nextLine();
 		System.out.println("Kapasitet: ");
@@ -199,7 +199,7 @@ public class Calendar {
 				System.out.println(print);
 			}
 			
-			System.out.println("Skriv nummer på rommet du vil ha");
+			System.out.println("Skriv nummer paa rommet du vil ha");
 			String input = user_input.nextLine();
 			
 			newEvent.setRoom(availableRooms.get(Integer.parseInt(input)));
@@ -217,7 +217,7 @@ public class Calendar {
 			
 			while(input != ""){
 				newEvent.addEmployee(getAvailableEmployees(startTime, endTime).get(Integer.parseInt(input)));
-				System.out.println("Noen flere[tom streng for å avslutte]?");
+				System.out.println("Noen flere[tom streng for aa avslutte]?");
 				input = user_input.nextLine();
 			}
 			
@@ -286,7 +286,11 @@ public class Calendar {
 
 		Date dato5 = new Date(116, 3, 18, 20, 30, 0);
 		Date dato6 = new Date(116, 3, 19, 20, 30, 0);
+		
 		Event party = new Event("party", dato5, dato6, "kom paa party!", biti);
+		
+		System.out.println(party.getStartTime().toLocaleString());
+		
 		biti.addEvent(party);
 //		System.out.println(birthdayAgain);
 		
@@ -297,7 +301,10 @@ public class Calendar {
 		System.out.println(biti.getUpcomingEvents());
 
 		biti.inviteEmployeeToEvent(sverre, birthday);
-		System.out.println(birthday.getPeopleInvited());
+		System.out.println("Sverre invited: " + birthday.getPeopleInvited());
+		biti.withdrawInvitation(sverre, birthday);
+		System.out.println("After withdrawnInvitation: " + birthday.getPeopleInvited());				
+		
 		biti.inviteEmployeeToEvent(sverre, birthdayAgain);
 		
 		
