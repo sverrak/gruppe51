@@ -302,10 +302,7 @@ public class Calendar {
 		
 		
 		System.out.println(birthdayAgain.getPeopleGoing() + "" + birthdayAgain.getPeopleInvited());
-		biti.cancelEvent(birthday, "Ingen ville komme :(");		// oppstaar feil her. 
-		System.out.println(biti.getUpcomingEvents());
-		
-		biti.cancelEvent(birthday, "Ingen ville komme :(");		// oppst�r feil her. 
+		biti.cancelEvent(birthday, "Ingen ville komme :(");
 		System.out.println(biti.getUpcomingEvents());
 	}
 		

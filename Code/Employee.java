@@ -15,9 +15,9 @@ public class Employee {
 	private String username;
 	private String password;
 	private Collection<Group> groups;
-	private List<Event> upcomingEvents;		//sortert p� startTime
+	private List<Event> upcomingEvents;		//sortert paa startTime
 	private Collection<Event> declinedEvents;
-	private List<Event> eventsAttending;		// sortert p� startTime. M� g� over alt og kanskje endre fra upcomingEvents til eventsAttending
+	private List<Event> eventsAttending;		// sortert paa startTime. Maa gaa over alt og kanskje endre fra upcomingEvents til eventsAttending
 	private String telnum;
 	private Collection<Message> inbox;
 	
@@ -223,9 +223,14 @@ public class Employee {
 	}
 	
 	// Dette fjerner employeens deltakelse paa eventen
-	private boolean removeEvent(Event event){
+	// returnerer true hvis eventen fjernes, false ellers
+	private boolean removeEvent(Event event){		// boer kanskje vaere void
 		if (upcomingEvents.contains(event)){
 			upcomingEvents.remove(event);
+			event.removeEmployee(this);
+			return true;
+		} else if (eventsAttending.contains(event)){
+			eventsAttending.remove(event);
 			event.removeEmployee(this);
 			return true;
 		}
