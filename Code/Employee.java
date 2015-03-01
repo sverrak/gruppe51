@@ -15,9 +15,9 @@ public class Employee {
 	private String username;
 	private String password;
 	private Collection<Group> groups;
-	private List<Event> upcomingEvents;		//sortert på startTime
+	private List<Event> upcomingEvents;		//sortert pï¿½ startTime
 	private Collection<Event> declinedEvents;
-	private List<Event> eventsAttending;		// sortert på startTime. Må gå over alt og kanskje endre fra upcomingEvents til eventsAttending
+	private List<Event> eventsAttending;		// sortert pï¿½ startTime. Mï¿½ gï¿½ over alt og kanskje endre fra upcomingEvents til eventsAttending
 	private String telnum;
 	private Collection<Message> inbox;
 	
@@ -79,7 +79,13 @@ public class Employee {
 	public String getTelnum(){
 		return telnum;
 	}
-
+	
+	
+	//ikke implementert
+	public void printSchedule(){
+		
+	}
+	
 	//Returnerer true hvis ansatt ble lagt til i gruppen
 	public void joinGroup(Group group){
 	//	try{
@@ -134,7 +140,7 @@ public class Employee {
 			eventsAttending.add(event);
 		}else{
 			for (int i = 0; i < eventsAttending.size(); i++) {		// holder upcomingEvents sortert på startTime	// ser ut til å feile her
-				if (eventsAttending.get(i).getStartTime().compareTo(event.getStartTime()) < 0){	// fortegn her virker å stemme. Motsatt tegn får hele dritten til å henge
+				if (eventsAttending.get(i).getStartTime().compareTo(event.getStartTime()) > 0){	// fortegn her virker galt. Motsatt tegn får hele dritten til å henge, men det skyldes kanskje feil i compareTo
 					eventsAttending.add(i, event);
 				}
 			}

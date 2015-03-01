@@ -177,9 +177,9 @@ public class Calendar {
 		description = user_input.nextLine();
 		
 		//formatering av datogreier
-		System.out.println("Starttidspunkt[dd/MM/yyyy H:m:s]: ");
+		System.out.println("Starttidspunkt[16/03/2015 12:00:00]: ");
 		String startTimeString = user_input.nextLine();			// formatet p� disse m� vi ha orden p�
-		System.out.println("Sluttidspunkt[dd/MM/yyyy H:m:s]: ");
+		System.out.println("Sluttidspunkt[16/03/2015 12:00:00]: ");
 		String endTimeString = user_input.nextLine();
 		System.out.println("Kapasitet: ");
 		int capacity = Integer.parseInt(user_input.nextLine());
@@ -214,22 +214,26 @@ public class Calendar {
 			
 			System.out.println("Hvem vil du invitere til dette arrangementet[tom streng for å avslutte]?");
 			input = user_input.nextLine();
+			
 			while(input != ""){
 				newEvent.addEmployee(getAvailableEmployees(startTime, endTime).get(Integer.parseInt(input)));
 				System.out.println("Noen flere[tom streng for å avslutte]?");
 				input = user_input.nextLine();
 			}
 			
+				
+			
+			
 			
 			return newEvent;
+			
 			
 	 
 		} catch (ParseException e) {
 			e.printStackTrace();
+		} finally{
+			return null;
 		}
-		
-		return null;
-		
 	}
 	private List<Employee> getAvailableEmployees(Date startTime, Date endTime) {
 		List<Employee> availableEmployees = new ArrayList<Employee>();
@@ -243,7 +247,6 @@ public class Calendar {
 
 	private void run() {
 //		System.out.println(biti);
-		biti.addEvent(birthday);
 		current_user = login();
 		System.out.println("Du er nå logget inn. Skriv quit for å logge ut");
 		System.out.println("Hei, " + current_user.getName() + "!");
@@ -276,18 +279,11 @@ public class Calendar {
 				
 			}
 		}
-		
+	
 	public void run2(){
 		
 		biti.addEvent(birthday);		
-	
-	//	biti.inviteEmployeeToEvent(sverre, birthday);
 
-		
-	//	System.out.println(dato1.toLocaleString());
-	
-		biti.addEvent(birthdayAgain);
-		
 		Date dato5 = new Date(116, 3, 18, 20, 30, 0);
 		Date dato6 = new Date(116, 3, 19, 20, 30, 0);
 		Event party = new Event("party", dato5, dato6, "kom paa party!", biti);
@@ -296,18 +292,22 @@ public class Calendar {
 		
 		System.out.println("Bendiks events: " + "\n- Events invited to: " + biti.getUpcomingEvents() + "\n- Events attending: " + biti.getEventsAttending());
 		System.out.println(birthday.getPeopleInvited());
+		
+		biti.addEvent(birthdayAgain);
+		System.out.println(biti.getUpcomingEvents());
+
 		biti.inviteEmployeeToEvent(sverre, birthday);
 		System.out.println(birthday.getPeopleInvited());
-		sverre.acceptInvitation(birthday);
-		System.out.println(sverre.getUpcomingEvents());
+		biti.inviteEmployeeToEvent(sverre, birthdayAgain);
 		
-		System.out.println(birthday.getPeopleGoing());
-		biti.cancelEvent(birthday, "Ingen ville komme :(");
-		System.out.println("Bendiks events: " + "\n- Events invited to: " + biti.getUpcomingEvents() + "\n- Events attending: " + biti.getEventsAttending() + "\n");
 		
 		System.out.println(birthdayAgain.getPeopleGoing() + "" + birthdayAgain.getPeopleInvited());
 		biti.cancelEvent(birthday, "Ingen ville komme :(");		// oppstaar feil her. 
 		System.out.println(biti.getUpcomingEvents());
+		
+		biti.cancelEvent(birthday, "Ingen ville komme :(");		// oppst�r feil her. 
+		System.out.println(biti.getUpcomingEvents());
 	}
-	
+		
 }
+
