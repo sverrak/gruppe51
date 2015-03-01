@@ -40,6 +40,7 @@ public class Message {
 	
 	public void sendMessage(){
 		this.receiver.addMessageToInbox(this);
+		System.out.println(this.receiver.getInbox());
 	}
 	
 	@Override
@@ -49,6 +50,10 @@ public class Message {
 		str += "SUBJECT: " + this.subject + "\n";
 		str += "CONTENT:" + this.content + "\n";
 		return str;	
+	}
+	public void read() {
+		this.isRead = true;
+		
 	}
 	
 	

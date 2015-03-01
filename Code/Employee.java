@@ -19,7 +19,7 @@ public class Employee {
 	private Collection<Event> declinedEvents;
 	private List<Event> eventsAttending;		// sortert paa startTime. Maa gaa over alt og kanskje endre fra upcomingEvents til eventsAttending
 	private String telnum;
-	private Collection<Message> inbox;
+	private List<Message> inbox;
 	
 	
 	public Employee(String name, String position, String username,
@@ -82,7 +82,7 @@ public class Employee {
 	
 	
 	//ikke implementert
-	public void printSchedule(){
+	public void printWeeklySchedule(){
 		
 	}
 	
@@ -135,15 +135,19 @@ public class Employee {
 	*/
 	
 	public void addEvent(Event event){
+		System.out.println(event);
 		event.getPeopleGoing().add(this);
-		if (eventsAttending.size() == 0){
-			eventsAttending.add(event);
-		}else{
-			for (int i = 0; i < eventsAttending.size(); i++) {		// holder upcomingEvents sortert på startTime	// ser ut til å feile her
-				if (eventsAttending.get(i).getStartTime().compareTo(event.getStartTime()) > 0){	// fortegn her virker galt. Motsatt tegn får hele dritten til å henge, men det skyldes kanskje feil i compareTo
-					eventsAttending.add(i, event);
+		if(eventsAttending != null){
+			if (eventsAttending.size() == 0){
+				eventsAttending.add(event);
+			}else{
+				for (int i = 0; i < eventsAttending.size(); i++) {		// holder upcomingEvents sortert pï¿½ startTime	// ser ut til ï¿½ feile her
+					if (eventsAttending.get(i).getStartTime().compareTo(event.getStartTime()) > 0){	// fortegn her virker galt. Motsatt tegn fï¿½r hele dritten til ï¿½ henge, men det skyldes kanskje feil i compareTo
+						eventsAttending.add(i, event);
+					}
 				}
 			}
+			
 		}
 	}
 	
@@ -218,7 +222,7 @@ public class Employee {
 		user_input.close();
 	}
 	
-	public Collection<Message> getInbox() {
+	public List<Message> getInbox() {
 		return inbox;
 	}
 	
@@ -272,6 +276,16 @@ public class Employee {
 	@Override
 	public String toString() {
 		return this.name;
+	}
+
+	public int countUnreadMessages() {
+		int counter = 0;
+		for (Message msg : inbox) {
+			if (! msg.getIsRead()){
+				counter += 1;
+			}
+		}
+		return counter;
 	}
 	
 }

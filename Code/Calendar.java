@@ -51,7 +51,7 @@ public class Calendar {
 	public static void main(String[] args) {
 		Calendar calendar = new Calendar();
 		calendar.init();
-		calendar.run2();
+		calendar.run();
 	//	calendar.user_input.close();
 	}
 	
@@ -164,76 +164,86 @@ public class Calendar {
 		} 
 	}
 	public Event getEventInput(Employee employee){
+		//initalisering
 		String title = "";
 		String description = "";
-		Date startTime;
-		Date endTime;
+		Date startTime = new Date();
+		Date endTime = new Date();
 		
-	
+		//input begynnelse
+		@SuppressWarnings("resource")
 		Scanner user_input = new Scanner(System.in);
 		System.out.println("Tittel: ");
 		title = user_input.nextLine();
 		System.out.println("Beskrivelse: ");
 		description = user_input.nextLine();
-		
-		//formatering av datogreier
+
 		System.out.println("Starttidspunkt[16/03/2015 12:00:00]: ");
 		String startTimeString = user_input.nextLine();			// formatet p� disse m� vi ha orden p�
 		System.out.println("Sluttidspunkt[16/03/2015 12:00:00]: ");
 		String endTimeString = user_input.nextLine();
 		System.out.println("Kapasitet: ");
 		int capacity = Integer.parseInt(user_input.nextLine());
-
+		//input slutt
+		//formatering av datogreier
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy H:m:s");
-		try { 
+	 
+		try {
 			startTime = formatter.parse(startTimeString);
 			endTime = formatter.parse(endTimeString);
-			System.out.println(startTimeString);
-			
-			Event newEvent = new Event(title, startTime, endTime, description, employee);
-			List<Room> availableRooms = findLocation(startTime, endTime, capacity);
-			String print = "";
-			for (int i = 0; i < availableRooms.size(); i++) {
-				print = i + "";
-				print += availableRooms.get(i);
-				System.out.println(print);
-			}
-			
-			System.out.println("Skriv nummer på rommet du vil ha");
-			String input = user_input.nextLine();
-			
-			newEvent.setRoom(availableRooms.get(Integer.parseInt(input)));
-			availableRooms.get(Integer.parseInt(input)).addEventToRoom(newEvent);
-			
-			//print roomSchedulen til Room
-			//System.out.println(availableRooms.get(Integer.parseInt(input)).getRoomSchedule().toString());
-			
-			for (int i = 0; i < getAvailableEmployees(startTime, endTime).size(); i++) {
-				System.out.println("" + i + ": " + getAvailableEmployees(startTime, endTime).get(i));	
-			}
-			
-			System.out.println("Hvem vil du invitere til dette arrangementet[tom streng for å avslutte]?");
-			input = user_input.nextLine();
-			
-			while(input != ""){
-				newEvent.addEmployee(getAvailableEmployees(startTime, endTime).get(Integer.parseInt(input)));
-				System.out.println("Noen flere[tom streng for å avslutte]?");
-				input = user_input.nextLine();
-			}
-			
-				
-			
-			
-			
-			return newEvent;
-			
-			
-	 
 		} catch (ParseException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally{
-			return null;
 		}
+		System.out.println(startTimeString);
+		
+		
+		//oppretter event
+		Event newEvent = new Event(title, startTime, endTime, description, employee);
+		
+		//finner ledige rom
+		List<Room> availableRooms = findLocation(startTime, endTime, capacity);
+		String print = "";
+		
+		
+		for (int i = 0; i < availableRooms.size(); i++) {
+			print = i + ": ";
+			print += availableRooms.get(i);
+			System.out.println(print);
+		}
+		
+		//bruker velger rom
+		System.out.println("Skriv nummer på rommet du vil ha");
+		String input = user_input.nextLine();
+		newEvent.setRoom(availableRooms.get(Integer.parseInt(input)));
+		
+		//print roomSchedulen til Room
+		//System.out.println(newEvent.getRoom().getRoomSchedule().toString());
+		
+		//legge til deltakere
+		List<Employee> availableEmployees = getAvailableEmployees(startTime, endTime);
+		for (int i = 0; i < getAvailableEmployees(startTime, endTime).size(); i++) {
+			System.out.println("" + i + ": " + availableEmployees.get(i));
+		}
+		
+		System.out.println("Hvem vil du invitere til dette arrangementet[tom streng for å avslutte]?");
+		input = user_input.nextLine();
+		
+		int counter = 1;
+		while((! input.equals("")) && counter  < capacity){
+			newEvent.addEmployee(availableEmployees.get(Integer.parseInt(input)));
+			availableEmployees.get(Integer.parseInt(input)).addEvent(newEvent);
+			System.out.println("Noen flere[tom streng for å avslutte]?");
+			input = user_input.nextLine();
+			counter += 1;	
+		}
+		
+		current_user.addEvent(newEvent);
+		newEvent.addEmployee(current_user);
+		
+		
+		
+		return newEvent;
 	}
 	private List<Employee> getAvailableEmployees(Date startTime, Date endTime) {
 		List<Employee> availableEmployees = new ArrayList<Employee>();
@@ -242,14 +252,15 @@ public class Calendar {
 				availableEmployees.add(employee);
 			}
 		}
-		return null;
+		return availableEmployees;
 	}
 
 	private void run() {
-//		System.out.println(biti);
 		current_user = login();
 		System.out.println("Du er nå logget inn. Skriv quit for å logge ut");
 		System.out.println("Hei, " + current_user.getName() + "!");
+		
+		System.out.println("Du har " + current_user.countUnreadMessages() + " uleste meldinger i innboksen din\n");
 		while(current_user != null){
 			System.out.println("Hva vil du gjøre?");
 			System.out.println("1: se alle upcoming events[goingTo] | 2: legg til ny event | 3: åpne innboks | 4: se dine invitasjoner | 5: quit");
@@ -259,17 +270,27 @@ public class Calendar {
 			while(option < 1 || option > 5){
 				option = Integer.parseInt(user_input.nextLine());
 				if(option == 1){
-					current_user.printSchedule();
+					current_user.printWeeklySchedule();
 				} else if(option == 2){
 					Event event = getEventInput(current_user);
 					current_user.addEvent(event);
+					
+				
 				} else if(option == 3){
+					
+					System.out.println("Innboks");
+					System.out.println(current_user.getInbox());
+					for (int i = 0; i < current_user.getInbox().size(); i++) {
+						System.out.println("" + i + ": " + current_user.getInbox().get(i));
+						current_user.getInbox().get(i).read();
+					}
+					
 					
 				} else if(option == 4){
 					
 				} else{
 					current_user = null;
-					System.out.println("Du er nå logget ut.");
+					System.out.println("Du er nå logget ut.\n\n");
 					
 					//metode for å skrive tilbake til server mangler her
 					main(null);
