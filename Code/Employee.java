@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 public class Employee {
 	private String name;
@@ -16,11 +18,11 @@ public class Employee {
 	private String password;
 	private Collection<Group> groups;
 	private List<Event> upcomingEvents;		//sortert paa startTime
-	private Collection<Event> declinedEvents;
+	private Collection<Event> declinedEvents;	//boer også sorteres paa startTime
 	private List<Event> eventsAttending;		// sortert paa startTime. Maa gaa over alt og kanskje endre fra upcomingEvents til eventsAttending
 	private String telnum;
 	private Collection<Message> inbox;
-	
+		
 	
 	public Employee(String name, String position, String username,
 			String password, String telnum) {
@@ -79,13 +81,7 @@ public class Employee {
 	public String getTelnum(){
 		return telnum;
 	}
-	
-	
-	//ikke implementert
-	public void printSchedule(){
 		
-	}
-	
 	//Returnerer true hvis ansatt ble lagt til i gruppen
 	public void joinGroup(Group group){
 	//	try{
@@ -274,6 +270,67 @@ public class Employee {
 		employee.removeEvent(event);
 		return true;
 	}
+	
+	// oppretter "tom" matrise for ukeplan. Alle felter er 0
+	private ArrayList<ArrayList<Object>> generateEmptySchedule(){
+		ArrayList<ArrayList<Object>> matrix= new ArrayList<ArrayList<Object>>();
+		for (int row = 0; row < 20; row++) {
+			matrix.add(new ArrayList<Object>());
+			for (int col = 0; col < 7; col++) {
+				matrix.get(row).add(0);
+			}
+		}
+		return matrix;
+	}
+	
+	// UFERDIG! itererer over matrisa og fyller inn event-navn der employee er opptatt. Alle andre felter forblir 0
+	private ArrayList<ArrayList<Object>> generateWeeklySchedule(){
+		Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+		int weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);	
+		
+		ArrayList<ArrayList<Object>> matrix = generateEmptySchedule();
+		for (Event event : eventsAttending) {
+			// hvis event.startTidspunkt er denne uka
+				// col = event.getDaytOfWeek -1 							(index til kolonne i matrix)
+				// firstRow = (event.getStartTime().getHour() - 8)*0.5 		(index til rad i matrix)
+				// lastRow = (event.getEndTime().getHour() - 8)*0.5 		(index til rad i matrix
+				// for alle slots fra firstRow til lastRow
+					// matrix[rad i ][col] = event.getName() + "A"		// A'en er for attending
+		}
+		for (Event event : upcomingEvents) {
+			// hvis event.startTidspunkt er denne uka
+				// col = event.getDaytOfWeek -1 							(index til kolonne i matrix)
+				// firstRow = (event.getStartTime().getHour() - 8)*0.5 		(index til rad i matrix)
+				// lastRow = (event.getEndTime().getHour() - 8)*0.5 		(index til rad i matrix
+				// for alle slots fra firstRow til lastRow
+					// if matrix[rad i ][col] != 0													(if slot not filled)
+						// matrix[rad i ][col] = event.getName() + "U"		// U'en er for upcoming/unanswered
+		}
+		return matrix;		// 
+	}
+	
+	//UFERDIG! skal hente evente't som spenner seg over et tidspunkt.
+	private Event getEventAt(Date time){
+		
+		return event;
+	}
+	
+	//skal gi en visning i konsollen av innevaerende ukes plan man-søn. UFERDIG!
+		public void printWeeklySchedule(){
+			Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+			int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);		// ukedagen i dag
+			
+			System.out.println("\tMandag  Tirsdag  Onsdag  Torsdag   Fredag  Lørdag  Søndag");
+			
+			
+			for (int i = 0; i < 10; i++) {
+				
+				String str = (8+i) + ":00";
+				str += "\n";
+				str += ((8+i) + ":30");
+			}
+			
+		}
 	
 	@Override
 	public String toString() {
