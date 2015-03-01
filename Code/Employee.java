@@ -133,8 +133,8 @@ public class Employee {
 		if (eventsAttending.size() == 0){
 			eventsAttending.add(event);
 		}else{
-			for (int i = 0; i < eventsAttending.size(); i++) {		// holder upcomingEvetns sortert på startTime	// ser ut til å feile her
-				if (eventsAttending.get(i).getStartTime().compareTo(event.getStartTime()) > 0){
+			for (int i = 0; i < eventsAttending.size(); i++) {		// holder upcomingEvents sortert på startTime	// ser ut til å feile her
+				if (eventsAttending.get(i).getStartTime().compareTo(event.getStartTime()) < 0){	// fortegn her virker å stemme. Motsatt tegn får hele dritten til å henge
 					eventsAttending.add(i, event);
 				}
 			}

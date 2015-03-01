@@ -157,12 +157,12 @@ public class Event implements Comparable<Event>{
 	}
 	
 	@Override
-	public int compareTo(Event event) {
+	public int compareTo(Event event) {			// mistenker at det blir feil her. Kan være problem med å sammenlikne måneder (de er jo ikke tall med denne implementasjonen)  
 		if(this.getYear().equals(event.getYear())){
 			if(this.getMonth().equals(event.getMonth())){
 				if(this.getDay().equals(event.getDay())){
 					if(this.getHour().equals(event.getHour())){
-						if(this.getMinute().equals(event.getMinute())){
+						if(this.getMinute().equals(event.getMinute())){			// blåser i sekundforskjeller. Tidspunkt for events angis uansett ikke med mer enn minuttspresisjon
 							return 0;
 						} else if(Integer.parseInt(this.getMinute()) < Integer.parseInt(event.getMinute())){
 							return -1;

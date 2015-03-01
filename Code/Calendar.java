@@ -51,8 +51,8 @@ public class Calendar {
 	public static void main(String[] args) {
 		Calendar calendar = new Calendar();
 		calendar.init();
-		calendar.run();
-		calendar.user_input.close();
+		calendar.run2();
+	//	calendar.user_input.close();
 	}
 	
 	private void init() {
@@ -277,17 +277,22 @@ public class Calendar {
 			}
 		}
 		
-	/*	current_user.addEvent(birthday);
-		System.out.println(birthday);
-		*/
+	public void run2(){
+		
+		biti.addEvent(birthday);		
 	
 	//	biti.inviteEmployeeToEvent(sverre, birthday);
 
 		
 	//	System.out.println(dato1.toLocaleString());
-	/*	
+	
 		biti.addEvent(birthdayAgain);
-		System.out.println(birthdayAgain);
+		
+		Date dato5 = new Date(116, 3, 18, 20, 30, 0);
+		Date dato6 = new Date(116, 3, 19, 20, 30, 0);
+		Event party = new Event("party", dato5, dato6, "kom paa party!", biti);
+		biti.addEvent(party);
+//		System.out.println(birthdayAgain);
 		
 		System.out.println("Bendiks events: " + "\n- Events invited to: " + biti.getUpcomingEvents() + "\n- Events attending: " + biti.getEventsAttending());
 		System.out.println(birthday.getPeopleInvited());
@@ -301,8 +306,8 @@ public class Calendar {
 		System.out.println("Bendiks events: " + "\n- Events invited to: " + biti.getUpcomingEvents() + "\n- Events attending: " + biti.getEventsAttending() + "\n");
 		
 		System.out.println(birthdayAgain.getPeopleGoing() + "" + birthdayAgain.getPeopleInvited());
-		biti.cancelEvent(birthday, "Ingen ville komme :(");		// oppst�r feil her. 
+		biti.cancelEvent(birthday, "Ingen ville komme :(");		// oppstaar feil her. 
 		System.out.println(biti.getUpcomingEvents());
-		*/
-
+	}
+	
 }
