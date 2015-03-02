@@ -80,10 +80,6 @@ public class Employee {
 	public String getTelnum(){
 		return telnum;
 	}
-	
-	//ikke implementert
-	public void printWeeklySchedule(){
-
 		
 	//Returnerer true hvis ansatt ble lagt til i gruppen
 	public void joinGroup(Group group){
