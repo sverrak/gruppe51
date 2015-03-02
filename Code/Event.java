@@ -160,6 +160,7 @@ public class Event implements Comparable<Event>{
 		return getStartTime().toLocaleString().substring(15, 17);
 	}
 	
+	/*
 	@Override
 	public int compareTo(Event event) {			// mistenker at det blir feil her. Kan v�re problem med � sammenlikne m�neder (de er jo ikke tall med denne implementasjonen)  
 		if(this.getYear().equals(event.getYear())){
@@ -195,6 +196,11 @@ public class Event implements Comparable<Event>{
 		} else{
 			return 1;
 		}
+	}
+	*/	
+	@Override
+	public int compareTo(Event event) {			// mistenker at det blir feil her. Kan v�re problem med � sammenlikne m�neder (de er jo ikke tall med denne implementasjonen)  
+		return (this.startTime.getTime() < event.getStartTime().getTime() ? 1: 0);
 	}
 	
 }

@@ -27,7 +27,6 @@ public class CalendarProgram {
 	private Date dato4;
 	private Event birthday;
 	private Event birthdayAgain;
-	private CalendarProgram calendar;
 	
 	
 	//login-felter
@@ -157,12 +156,12 @@ public class CalendarProgram {
 	
 	public static void main(String[] args) {
 		CalendarProgram cp = new CalendarProgram();
-		cp.calendar = new CalendarProgram();
 		cp.init();
-		cp.run();
+		cp.run2();
 	}
 	
 	private void init() {
+		CalendarProgram cp = new CalendarProgram();
 		r1 = new Room("R1", 500, "Fint rom1");
 		r2 = new Room("R2", 400, "Fint rom2");
 		r3 = new Room("R3", 300, "Fint rom3");
@@ -171,13 +170,13 @@ public class CalendarProgram {
 		r6 = new Room("R6", 50, "Fint rom6");
 		r7 = new Room("R7", 60, "Fint rom7");
 		rooms = new ArrayList<Room>();
-		calendar.addRoom(r1);
-		calendar.addRoom(r2);
-		calendar.addRoom(r3);
-		calendar.addRoom(r4);
-		calendar.addRoom(r5);
-		calendar.addRoom(r6);
-		calendar.addRoom(r7);
+		cp.addRoom(r1);
+		cp.addRoom(r2);
+		cp.addRoom(r3);
+		cp.addRoom(r4);
+		cp.addRoom(r5);
+		cp.addRoom(r6);
+		cp.addRoom(r7);
 		
 		biti = new Employee("Bendik", "Junior", "biti", "bata", "123");
 		sverre = new Employee("Sverre", "Senior", "sverrak", "heiia", "45884408");
@@ -185,9 +184,9 @@ public class CalendarProgram {
 		current_user = null;
 		
 		employees = new ArrayList<Employee>();
-		calendar.addEmployee(biti);
-		calendar.addEmployee(sverre);
-		calendar.addEmployee(yolo);
+		cp.addEmployee(biti);
+		cp.addEmployee(sverre);
+		cp.addEmployee(yolo);
 		
 		dato1 = new Date(115, 2, 19, 19, 0, 0);
 		dato2 = new Date(115, 2, 19, 21, 0, 0);
@@ -196,8 +195,8 @@ public class CalendarProgram {
 	//	Employee martin = new Employee("Martin", "Konsernsjef", "martiboy","passord", "12345678");
 		birthday = new Event("Bursdag", dato1, dato2, "halla paarae", biti);
 		birthdayAgain = new Event("Bursdag", dato3, dato4, "halla paasan", biti);
-		calendar.addEvent(birthday);
-		calendar.addEvent(birthdayAgain);
+		cp.addEvent(birthday);
+		cp.addEvent(birthdayAgain);
 	}
 	
 	

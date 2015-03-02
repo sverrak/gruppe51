@@ -25,8 +25,7 @@ public class Employee {
 	private Object myCalendar;	// vet ikke helt typen på dette objektet ennå, men alle ansatte skal ha en egen kalender knyttet til seg
 								// en mulighet er en liste over WeeklySchedul-objekter
 	
-	public Employee(String name, String position, String username,
-			String password, String telnum) {
+	public Employee(String name, String position, String username, String password, String telnum) {
 		super();
 		this.name = name;
 		this.position = position;
@@ -85,52 +84,10 @@ public class Employee {
 		
 	//Returnerer true hvis ansatt ble lagt til i gruppen
 	public void joinGroup(Group group){
-	//	try{
 			groups.add(group);
 			group.addEmployee(this);
-	//	} catch {
-	//		throw new IllegalStateException("Noe gikk galt i joinGroup()");
-	//	}
-	//	return true;
 	}
-	
-	//Det er her man lager en ny Event
-	//Returnerer true hvis event ble lagt til i timeplanen til den ansatte
-/*	public void addEvent(Event event){
-		String title = "";
-		String description = "";
-		Date startTime;
-		Date endTime;
 		
-		try{
-			Scanner user_input = new Scanner(System.in);
-			title = user_input.nextLine();
-			description = user_input.nextLine();
-			
-			//formatering av datogreier
-			String startTimeString = user_input.nextLine();			// formatet pï¿½ disse mï¿½ vi ha orden pï¿½
-			String endTimeString = user_input.nextLine();
-	
-			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy H:m:s");
-			try { 
-				startTime = formatter.parse(startTimeString);
-				endTime = formatter.parse(endTimeString);
-				System.out.println(startTimeString);
-				
-		 
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-			
-		} finally{
-			
-			Event newEvent = new Event(title, startTime, endTime, description, this);
-			
-			Room room = event.findLocation();
-		}
-	}
-	*/
-	
 	public void addEvent(Event event){
 		System.out.println(event);
 		event.getPeopleGoing().add(this);
@@ -278,13 +235,14 @@ public class Employee {
 		
 	// UFERDIG! itererer over matrisa og fyller inn event-navn der employee er opptatt. Alle andre felter forblir 0
 	private WeeklySchedule generateWeeklySchedule(){
-		Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-		int weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);	
-	//	Date today = new Date();
-	//	today.
-		WeeklySchedule weeklySchedule = new WeeklySchedule();
+		WeeklySchedule weeklySchedule = new WeeklySchedule();	// tom matrise for timeplan opprettes hvor nummer på uke i året er kjent
+		
+		
+	//	Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+	//	calendar.set(200, 2, 19, 18, 30);		
+		
 		for (Event event : eventsAttending) {
-			// hvis event.startTidspunkt er denne uka
+			// hvis event.startTidspunkt er denne uka.		Kunne vært event.getStartTime().get(Calendar.WEEK_OF_YEAR) == weeklySchedule.getWeekOfYear()	dersom startTidspunkt er CALENDAR-type
 				// col = event.getDaytOfWeek -1 							(index til kolonne i matrix)
 				// firstRow = (event.getStartTime().getHour() - 8)*0.5 		(index til rad i matrix)
 				// lastRow = (event.getEndTime().getHour() - 8)*0.5 		(index til rad i matrix

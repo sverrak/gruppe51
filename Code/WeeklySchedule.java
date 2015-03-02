@@ -10,10 +10,11 @@ import java.util.TimeZone;
 public class WeeklySchedule {
 	
 	private ArrayList<ArrayList<Object>> schedule;
+	private int weekOfYear;
+	private int year;
 	
 	// oppretter "tom" matrise for ukeplan. Alle felter er 0
 	public WeeklySchedule(){
-		
 		schedule= new ArrayList<ArrayList<Object>>();
 		for (int row = 0; row < 20; row++) {
 			schedule.add(new ArrayList<Object>());
@@ -21,10 +22,16 @@ public class WeeklySchedule {
 				schedule.get(row).add(0);
 			}
 		}
+		Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+		weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);
+		weekOfYear = calendar.get(Calendar.YEAR);
 	}
 	
 	public ArrayList<ArrayList<Object>> getSchedule() {
 		return schedule;
+	}
+	public int getWeekOfYear() {
+		return weekOfYear;
 	}
 	
 	
