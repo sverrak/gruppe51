@@ -91,60 +91,21 @@ public class Employee {
 	//	}
 	//	return true;
 	}
-	
-	//Det er her man lager en ny Event
-	//Returnerer true hvis event ble lagt til i timeplanen til den ansatte
-/*	public void addEvent(Event event){
-		String title = "";
-		String description = "";
-		Date startTime;
-		Date endTime;
-		
-		try{
-			Scanner user_input = new Scanner(System.in);
-			title = user_input.nextLine();
-			description = user_input.nextLine();
-			
-			//formatering av datogreier
-			String startTimeString = user_input.nextLine();			// formatet pï¿½ disse mï¿½ vi ha orden pï¿½
-			String endTimeString = user_input.nextLine();
-	
-			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy H:m:s");
-			try { 
-				startTime = formatter.parse(startTimeString);
-				endTime = formatter.parse(endTimeString);
-				System.out.println(startTimeString);
-				
-		 
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-			
-		} finally{
-			
-			Event newEvent = new Event(title, startTime, endTime, description, this);
-			
-			Room room = event.findLocation();
-		}
-	}
-	*/
-	
+
 	public void addEvent(Event event){
-		System.out.println(event);
 		event.getPeopleGoing().add(this);
 		if(eventsAttending != null){
+			if(event.getCreator() != this){
+				
+			}
 			if (eventsAttending.size() == 0){
 				eventsAttending.add(event);
 			}else{
-				for (int i = 0; i < eventsAttending.size(); i++) {		// holder upcomingEvents sortert pï¿½ startTime	// ser ut til ï¿½ feile her
-					if (eventsAttending.get(i).getStartTime().compareTo(event.getStartTime()) > 0){	// fortegn her virker galt. Motsatt tegn fï¿½r hele dritten til ï¿½ henge, men det skyldes kanskje feil i compareTo
-						eventsAttending.add(i, event);
-					}
+				if(isAvailable(event.getStartTime(), event.getEndTime()))		// holder upcomingEvents sortert pï¿½ startTime	// ser ut til ï¿½ feile her
+					eventsAttending.add(event);	
 				}
 			}
-			
 		}
-	}
 	
 	// returnerer true hvis ja-svar ble sendt, false ellers
 	public boolean acceptInvitation(Event event){
@@ -175,12 +136,12 @@ public class Employee {
 		if(this.eventsAttending.size() == 0){		// kommer ikke inn her :(
 			return true;
 		}
-		for (int i = 0; i < upcomingEvents.size()-1; i++) {
-			if(upcomingEvents.get(i).getEndTime().compareTo(startTime) < 0 && endTime.compareTo(upcomingEvents.get(i+1).getStartTime()) < 0){
+		for (int i = 0; i < eventsAttending.size()-1; i++) {
+			if(eventsAttending.get(i).getEndTime().compareTo(startTime) < 0 && endTime.compareTo(upcomingEvents.get(i+1).getStartTime()) < 0){ // fortegn her virker galt. Motsatt tegn fï¿½r hele dritten til ï¿½ henge, men det skyldes kanskje feil i compareTo
 				return true;
 			}
 		}
-		if (upcomingEvents.get(upcomingEvents.size()-1).getEndTime().compareTo(startTime) < 0){
+		if (eventsAttending.get(eventsAttending.size()-1).getEndTime().compareTo(startTime) < 0){
 			return true;
 		}
 		return false;	
@@ -217,6 +178,17 @@ public class Employee {
 		user_input.close();
 	}
 	
+	public void printInbox(){
+		for (int i = 0; i < inbox.size(); i++) {
+			if(inbox.get(i).getIsRead()){
+				System.out.println("[X]" + inbox.get(i).getSender() + ": " + inbox.get(i).getSubject());
+			} else{
+				System.out.println("[ ]" + inbox.get(i).getSender() + ": " + inbox.get(i).getSubject());
+			}
+		}
+	}
+	
+	
 	public List<Message> getInbox() {
 		return inbox;
 	}
@@ -236,10 +208,13 @@ public class Employee {
 			return false;
 		}else if(! employee.isAvailable(event.getStartTime(), event.getEndTime())){
 			return false;
+		} else if(event.getPeopleDeclined().contains(employee) || event.getPeopleGoing().contains(employee) || event.getPeopleInvited().contains(employee)){
+			return false;
 		}
 		
-		Message msg = new Message(this, employee, false, "Jeg har invitert deg til eventen " + event, "Invitasjon til " + event.toString());
+		Message msg = new Message(this, employee, false, "Jeg har invitert deg til eventen " + event, "Invitasjon til " + event.getTitle());
 		msg.sendMessage();
+		employee.printInbox();
 		
 		// hvis eventen er upcoming
 		event.addEmployee(employee);
@@ -310,7 +285,7 @@ public class Employee {
 					// if matrix[rad i ][col] != 0													(if slot not filled)
 						// matrix[rad i ][col] = event.getName() + "U"		// U'en er for upcoming/unanswered
 		}
-		return matrix;		// må kanskje returnere hvilken uke i året det er også
+		return matrix;		// mï¿½ kanskje returnere hvilken uke i ï¿½ret det er ogsï¿½
 	}
 	
 	//UFERDIG! skal hente evente't som spenner seg over et tidspunkt.

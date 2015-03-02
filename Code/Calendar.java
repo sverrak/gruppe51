@@ -104,7 +104,7 @@ public class Calendar {
 		int counter = 1;
 		while((! input.equals("")) && counter  < capacity){
 			newEvent.addEmployee(availableEmployees.get(Integer.parseInt(input)));
-			availableEmployees.get(Integer.parseInt(input)).addEvent(newEvent);
+			//availableEmployees.get(Integer.parseInt(input)).addEvent(newEvent);
 			System.out.println("Noen flere[tom streng for å avslutte]?");
 			input = user_input.nextLine();
 			counter += 1;
