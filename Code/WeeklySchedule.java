@@ -1,0 +1,52 @@
+package Code;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
+
+public class WeeklySchedule {
+	
+	private ArrayList<ArrayList<Object>> schedule;
+	
+	// oppretter "tom" matrise for ukeplan. Alle felter er 0
+	public WeeklySchedule(){
+		
+		schedule= new ArrayList<ArrayList<Object>>();
+		for (int row = 0; row < 20; row++) {
+			schedule.add(new ArrayList<Object>());
+			for (int col = 0; col < 7; col++) {
+				schedule.get(row).add(0);
+			}
+		}
+	}
+	
+	public ArrayList<ArrayList<Object>> getSchedule() {
+		return schedule;
+	}
+	
+	
+/*	@Override
+	public String toString() {
+		Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+		int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);		// ukedagen i dag
+		
+		System.out.println("\tMandag  Tirsdag  Onsdag  Torsdag   Fredag  L�rdag  S�ndag");
+		
+		
+		for (int i = 0; i < 10; i++) {
+			
+			String str = (8+i) + ":00";
+			str += "\n";
+			str += ((8+i) + ":30");
+		}
+		
+		
+
+		return str;
+	}
+	*/
+}
+

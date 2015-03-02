@@ -27,7 +27,7 @@ public class CalendarProgram {
 	private Date dato4;
 	private Event birthday;
 	private Event birthdayAgain;
-	private Calendar calendar;
+	private CalendarProgram calendar;
 	
 	
 	//login-felter
@@ -157,7 +157,7 @@ public class CalendarProgram {
 	
 	public static void main(String[] args) {
 		CalendarProgram cp = new CalendarProgram();
-		cp.calendar = new Calendar();
+		cp.calendar = new CalendarProgram();
 		cp.init();
 		cp.run();
 	}
@@ -280,7 +280,7 @@ public class CalendarProgram {
 			while(option < 1 || option > 5){
 				option = Integer.parseInt(user_input.nextLine());
 				if(option == 1){
-					current_user.printWeeklySchedule();
+					System.out.println(current_user.getWeeklySchedule());
 				} else if(option == 2){
 					Event event = calendar.getEventInput(current_user);
 					current_user.addEvent(event);

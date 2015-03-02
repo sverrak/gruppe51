@@ -22,6 +22,8 @@ public class Employee {
 	private List<Event> eventsAttending;		// sortert paa startTime. Maa gaa over alt og kanskje endre fra upcomingEvents til eventsAttending
 	private String telnum;
 	private List<Message> inbox;
+	private Object myCalendar;	// vet ikke helt typen på dette objektet ennå, men alle ansatte skal ha en egen kalender knyttet til seg
+								// en mulighet er en liste over WeeklySchedul-objekter
 	
 	public Employee(String name, String position, String username,
 			String password, String telnum) {
@@ -273,26 +275,14 @@ public class Employee {
 		employee.removeEvent(event);
 		return true;
 	}
-	
-	// oppretter "tom" matrise for ukeplan. Alle felter er 0
-	private ArrayList<ArrayList<Object>> generateEmptySchedule(){
-		ArrayList<ArrayList<Object>> matrix= new ArrayList<ArrayList<Object>>();
-		for (int row = 0; row < 20; row++) {
-			matrix.add(new ArrayList<Object>());
-			for (int col = 0; col < 7; col++) {
-				matrix.get(row).add(0);
-			}
-		}
-		return matrix;
-	}
-	
+		
 	// UFERDIG! itererer over matrisa og fyller inn event-navn der employee er opptatt. Alle andre felter forblir 0
-	private ArrayList<ArrayList<Object>> generateWeeklySchedule(){
+	private WeeklySchedule generateWeeklySchedule(){
 		Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 		int weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);	
 	//	Date today = new Date();
 	//	today.
-		ArrayList<ArrayList<Object>> matrix = generateEmptySchedule();
+		WeeklySchedule weeklySchedule = new WeeklySchedule();
 		for (Event event : eventsAttending) {
 			// hvis event.startTidspunkt er denne uka
 				// col = event.getDaytOfWeek -1 							(index til kolonne i matrix)
@@ -310,7 +300,7 @@ public class Employee {
 					// if matrix[rad i ][col] != 0													(if slot not filled)
 						// matrix[rad i ][col] = event.getName() + "U"		// U'en er for upcoming/unanswered
 		}
-		return matrix;		// må kanskje returnere hvilken uke i året det er også
+		return weeklySchedule;		// må kanskje returnere hvilken uke i året det er også
 	}
 	
 	//UFERDIG! skal hente evente't som spenner seg over et tidspunkt.
@@ -319,21 +309,9 @@ public class Employee {
 		return event;
 	}
 	
-	//skal gi en visning i konsollen av innevaerende ukes plan man-sï¿½n. UFERDIG!
-		public void printWeeklySchedule(){
-			Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-			int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);		// ukedagen i dag
-			
-			System.out.println("\tMandag  Tirsdag  Onsdag  Torsdag   Fredag  Lï¿½rdag  Sï¿½ndag");
-			
-			
-			for (int i = 0; i < 10; i++) {
-				
-				String str = (8+i) + ":00";
-				str += "\n";
-				str += ((8+i) + ":30");
-			}
-			
+	// UFERDIG! skal hente denne ukas timeplan
+		public WeeklySchedule getWeeklySchedule(){
+			// return thisWeeksSchedule;
 		}
 	
 	@Override
