@@ -287,7 +287,8 @@ public class Employee {
 	private ArrayList<ArrayList<Object>> generateWeeklySchedule(){
 		Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 		int weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);	
-		
+	//	Date today = new Date();
+	//	today.
 		ArrayList<ArrayList<Object>> matrix = generateEmptySchedule();
 		for (Event event : eventsAttending) {
 			// hvis event.startTidspunkt er denne uka
@@ -306,7 +307,7 @@ public class Employee {
 					// if matrix[rad i ][col] != 0													(if slot not filled)
 						// matrix[rad i ][col] = event.getName() + "U"		// U'en er for upcoming/unanswered
 		}
-		return matrix;		// 
+		return matrix;		// må kanskje returnere hvilken uke i året det er også
 	}
 	
 	//UFERDIG! skal hente evente't som spenner seg over et tidspunkt.
