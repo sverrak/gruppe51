@@ -201,7 +201,7 @@ public class Employee {
 	private void removeEvent(Event event){
 		if (upcomingEvents.contains(event)){
 			upcomingEvents.remove(event);
-		} else if (eventsAttending.contains(event)){	// dersom feil oppst�r, kan vi gj�re denne til ren 'if'
+		} if (eventsAttending.contains(event)){	// dersom feil oppst�r, kan vi gj�re denne til ren 'if'
 			eventsAttending.remove(event);
 		}
 		event.removeEmployee(this);
@@ -266,12 +266,13 @@ public class Employee {
 	}
 	
 	// UFERDIG! itererer over matrisa og fyller inn event-navn der employee er opptatt. Alle andre felter forblir 0
-	private ArrayList<ArrayList<Object>> generateWeeklySchedule(){
-		Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-		int weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);	
-	//	Date today = new Date();
-	//	today.
-		ArrayList<ArrayList<Object>> matrix = generateEmptySchedule();
+	public WeeklySchedule generateWeeklySchedule(){
+		WeeklySchedule weeklySchedule = new WeeklySchedule();	// tom matrise for timeplan opprettes hvor nummer p� uke i �ret er kjent
+		
+		
+	//	Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+	//	calendar.set(200, 2, 19, 18, 30);		
+		
 		for (Event event : eventsAttending) {
 			// hvis event.startTidspunkt er denne uka
 				// col = event.getDaytOfWeek -1 							(index til kolonne i matrix)
@@ -289,7 +290,7 @@ public class Employee {
 					// if matrix[rad i ][col] != 0													(if slot not filled)
 						// matrix[rad i ][col] = event.getName() + "U"		// U'en er for upcoming/unanswered
 		}
-		return matrix;		// m� kanskje returnere hvilken uke i �ret det er ogs�
+		return weeklySchedule;		// maa kanskje returnere hvilken uke i �ret det er ogs�
 	}
 	
 	//UFERDIG! skal hente evente't som spenner seg over et tidspunkt.

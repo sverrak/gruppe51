@@ -198,8 +198,8 @@ public class CalendarProgram {
 
 		birthday = new Event("Bursdag", dato1, dato2, "halla paarae", biti);
 		birthdayAgain = new Event("Bursdag", dato3, dato4, "halla paasan", biti);
-		addEvent(birthday);
-		addEvent(birthdayAgain);
+		biti.addEvent(birthday);
+		biti.addEvent(birthdayAgain);
 	}
 	
 	
@@ -281,7 +281,7 @@ public class CalendarProgram {
 			while(option < 1 || option > 5){
 				option = Integer.parseInt(user_input.nextLine());
 				if(option == 1){
-					current_user.printWeeklySchedule();
+					System.out.println(current_user.generateWeeklySchedule());
 				} else if(option == 2){
 					Event event = getEventInput(current_user);
 					current_user.addEvent(event);
