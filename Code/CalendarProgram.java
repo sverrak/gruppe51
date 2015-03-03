@@ -158,9 +158,6 @@ public class CalendarProgram {
 	
 	public static void main(String[] args) {
 		CalendarProgram cp = new CalendarProgram();
-		cp.events = new ArrayList<Event>();
-		cp.employees = new ArrayList<Employee>();
-		cp.rooms = new ArrayList<Room>();
 		cp.init();
 		cp.run();
 	}
@@ -196,6 +193,8 @@ public class CalendarProgram {
 		dato2 = new Date(115, 2, 19, 21, 0, 0);
 		dato3 = new Date(116, 2, 19, 18, 30, 0);
 		dato4 = new Date(116, 2, 19, 20, 30, 0);
+		
+		events = new ArrayList<Event>();
 
 		birthday = new Event("Bursdag", dato1, dato2, "halla paarae", biti);
 		birthdayAgain = new Event("Bursdag", dato3, dato4, "halla paasan", biti);

@@ -8,12 +8,12 @@ public class Message {
 	private String content;
 	private String subject;
 	
-	public Message(Employee sender, Employee receiver, Boolean isRead,
+	public Message(Employee sender, Employee receiver,
 			String content, String subject) {
 		super();
 		this.sender = sender;
 		this.receiver = receiver;
-		this.isRead = isRead;
+		this.isRead = false;
 		this.content = content;
 		this.subject = subject;
 	}

@@ -9,6 +9,8 @@ public class Group {
 	private String description;
 	private Employee responsible;
 	private Collection<Employee> participants;
+	private Collection<Group> subgroups;
+	private Collection<Group> supergroups;
 	
 	
 	public Group(String groupName, String description, Employee responsible) {
@@ -17,6 +19,7 @@ public class Group {
 		this.description = description;
 		this.responsible = responsible;
 		participants = new ArrayList<Employee>();
+		subgroups = new ArrayList<Group>();
 	}
 	
 	
@@ -56,8 +59,7 @@ public class Group {
 	public void setResponsible(Employee responsible) {
 		this.responsible = responsible;
 	}
-
-
+	
 // "Grupper administreres utenfor systemet..." - kravlista fra DB.
 	public Boolean addEmployee(Employee employee){
 		return true;
@@ -68,6 +70,16 @@ public class Group {
 	
 	public ArrayList<Employee> printParticipants(){
 		return (ArrayList<Employee>) this.participants;
+	}
+	
+	public void addSubgroupToGroup(Group group){
+		this.subgroups.add(group);
+		group.addSupergroupToGroup(this);
+	}
+	
+	// Skal bare kalles fra funksjonen over
+	private void addSupergroupToGroup(Group group){
+		this.supergroups.add(group);
 	}
 	@Override
 	public String toString() {

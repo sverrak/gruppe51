@@ -22,10 +22,9 @@ public class Employee {
 	private List<Event> eventsAttending;		// sortert paa startTime. Maa gaa over alt og kanskje endre fra upcomingEvents til eventsAttending
 	private String telnum;
 	private List<Message> inbox;
-	private Object myCalendar;	// vet ikke helt typen på dette objektet ennå, men alle ansatte skal ha en egen kalender knyttet til seg
-								// en mulighet er en liste over WeeklySchedul-objekter
 	
-	public Employee(String name, String position, String username, String password, String telnum) {
+	public Employee(String name, String position, String username,
+			String password, String telnum) {
 		super();
 		this.name = name;
 		this.position = position;
@@ -84,14 +83,15 @@ public class Employee {
 		
 	//Returnerer true hvis ansatt ble lagt til i gruppen
 	public void joinGroup(Group group){
+	//	try{
 			groups.add(group);
 			group.addEmployee(this);
+	//	} catch {
+	//		throw new IllegalStateException("Noe gikk galt i joinGroup()");
+	//	}
+	//	return true;
 	}
-<<<<<<< HEAD
 
-=======
-		
->>>>>>> e525083c8463a3d6fe63672b90aad9b1e16214e1
 	public void addEvent(Event event){
 		event.getPeopleGoing().add(this);
 		if(eventsAttending != null){
@@ -133,17 +133,21 @@ public class Employee {
 	}
 // returnerer true hvis employee-objektet er tilgjengelig i tidsrommet
 	public boolean isAvailable(Date startTime, Date endTime){
+		System.out.println(eventsAttending);
 		if(this.eventsAttending.size() == 0){		// kommer ikke inn her :(
 			return true;
+		} else if(eventsAttending.get(0).getStartTime().compareTo(endTime) > 0){
+			return true;
+		} else if (eventsAttending.get(eventsAttending.size()-1).getEndTime().compareTo(startTime) < 0){
+			return true;
 		}
+		
 		for (int i = 0; i < eventsAttending.size()-1; i++) {
 			if(eventsAttending.get(i).getEndTime().compareTo(startTime) < 0 && endTime.compareTo(upcomingEvents.get(i+1).getStartTime()) < 0){ // fortegn her virker galt. Motsatt tegn fï¿½r hele dritten til ï¿½ henge, men det skyldes kanskje feil i compareTo
 				return true;
 			}
 		}
-		if (eventsAttending.get(eventsAttending.size()-1).getEndTime().compareTo(startTime) < 0){
-			return true;
-		}
+		
 		return false;	
 	}
 	// Ikkke ferdig
@@ -212,11 +216,11 @@ public class Employee {
 			return false;
 		}
 		
-		Message msg = new Message(this, employee, false, "Jeg har invitert deg til eventen " + event, "Invitasjon til " + event.getTitle());
+		Message msg = new Message(this, employee, "Jeg har invitert deg til eventen " + event, "Invitasjon til " + event.getTitle());
 		msg.sendMessage();
 		employee.printInbox();
 		
-		// hvis eventen er upcoming
+		// "hvis eventen er upcoming"-funksjonalitet mangler her
 		event.addEmployee(employee);
 		employee.upcomingEvents.add(event);	
 		return true;
@@ -248,17 +252,28 @@ public class Employee {
 		employee.removeEvent(event);
 		return true;
 	}
-		
+	
+	// oppretter "tom" matrise for ukeplan. Alle felter er 0
+	private ArrayList<ArrayList<Object>> generateEmptySchedule(){
+		ArrayList<ArrayList<Object>> matrix= new ArrayList<ArrayList<Object>>();
+		for (int row = 0; row < 20; row++) {
+			matrix.add(new ArrayList<Object>());
+			for (int col = 0; col < 7; col++) {
+				matrix.get(row).add(0);
+			}
+		}
+		return matrix;
+	}
+	
 	// UFERDIG! itererer over matrisa og fyller inn event-navn der employee er opptatt. Alle andre felter forblir 0
-	private WeeklySchedule generateWeeklySchedule(){
-		WeeklySchedule weeklySchedule = new WeeklySchedule();	// tom matrise for timeplan opprettes hvor nummer på uke i året er kjent
-		
-		
-	//	Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-	//	calendar.set(200, 2, 19, 18, 30);		
-		
+	private ArrayList<ArrayList<Object>> generateWeeklySchedule(){
+		Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+		int weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);	
+	//	Date today = new Date();
+	//	today.
+		ArrayList<ArrayList<Object>> matrix = generateEmptySchedule();
 		for (Event event : eventsAttending) {
-			// hvis event.startTidspunkt er denne uka.		Kunne vært event.getStartTime().get(Calendar.WEEK_OF_YEAR) == weeklySchedule.getWeekOfYear()	dersom startTidspunkt er CALENDAR-type
+			// hvis event.startTidspunkt er denne uka
 				// col = event.getDaytOfWeek -1 							(index til kolonne i matrix)
 				// firstRow = (event.getStartTime().getHour() - 8)*0.5 		(index til rad i matrix)
 				// lastRow = (event.getEndTime().getHour() - 8)*0.5 		(index til rad i matrix
@@ -274,11 +289,7 @@ public class Employee {
 					// if matrix[rad i ][col] != 0													(if slot not filled)
 						// matrix[rad i ][col] = event.getName() + "U"		// U'en er for upcoming/unanswered
 		}
-<<<<<<< HEAD
 		return matrix;		// mï¿½ kanskje returnere hvilken uke i ï¿½ret det er ogsï¿½
-=======
-		return weeklySchedule;		// må kanskje returnere hvilken uke i året det er også
->>>>>>> e525083c8463a3d6fe63672b90aad9b1e16214e1
 	}
 	
 	//UFERDIG! skal hente evente't som spenner seg over et tidspunkt.
@@ -287,9 +298,21 @@ public class Employee {
 		return event;
 	}
 	
-	// UFERDIG! skal hente denne ukas timeplan
-		public WeeklySchedule getWeeklySchedule(){
-			// return thisWeeksSchedule;
+	//skal gi en visning i konsollen av innevaerende ukes plan man-sï¿½n. UFERDIG!
+		public void printWeeklySchedule(){
+			Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+			int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);		// ukedagen i dag
+			
+			System.out.println("\tMandag  Tirsdag  Onsdag  Torsdag   Fredag  Lï¿½rdag  Sï¿½ndag");
+			
+			
+			for (int i = 0; i < 10; i++) {
+				
+				String str = (8+i) + ":00";
+				str += "\n";
+				str += ((8+i) + ":30");
+			}
+			
 		}
 	
 	@Override
