@@ -184,7 +184,7 @@ public class Employee {
 	private void removeEvent(Event event){
 		if (upcomingEvents.contains(event)){
 			upcomingEvents.remove(event);
-		} else if (eventsAttending.contains(event)){	// dersom feil oppst�r, kan vi gj�re denne til ren 'if'
+		} if (eventsAttending.contains(event)){	// dersom feil oppst�r, kan vi gj�re denne til ren 'if'
 			eventsAttending.remove(event);
 		}
 		event.removeEmployee(this);
