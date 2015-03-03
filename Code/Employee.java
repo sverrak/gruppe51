@@ -319,7 +319,10 @@ public class Employee {
 			// hvis event.startTidspunkt er denne uka
 			if (event.getStartTime().getTime() > timeStartWeek || event.getStartTime().getTime() < timeEndWeek){
 				int col = event.getDayOfWeek -1; 						//	(index til kolonne i matrix)
-				int firstRow = (((double) event.getHour()) - 8) //*0.5; 	//	(index til rad i matrix)
+				int firstRow = (event.getStartTime().getHours() - 8) * 2; 	//	(index til rad i matrix)
+				if (event.getStartTime().getMinutes() == 30){
+					firstRow += 1;
+				}
 				// lastRow = (event.getEndTime().getHour() - 8)*0.5 	//	(index til rad i matrix
 				// for alle slots fra firstRow til lastRow
 					// matrix[rad i ][col] = event.getName() + "A"		// A'en er for attending
