@@ -366,6 +366,8 @@ public class CalendarProgram {
 		System.out.println(birthdayAgain.getPeopleGoing() + "" + birthdayAgain.getPeopleInvited());
 		biti.cancelEvent(birthday, "Ingen ville komme :(");
 		System.out.println(biti.getUpcomingEvents());
+		
+	//	biti.generateWeeklySchedule();
 	}
 
 }

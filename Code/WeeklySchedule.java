@@ -33,6 +33,9 @@ public class WeeklySchedule {
 	public int getWeekOfYear() {
 		return weekOfYear;
 	}
+	public int getYear() {
+		return year;
+	}
 	
 	
 /*	@Override
