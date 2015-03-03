@@ -115,6 +115,7 @@ public class Employee {
 			eventsAttending.add(event);
 			return event;
 		}
+		System.out.println("Du er opptatt på tidspunktet. " + title + " ble ikke opprettet.");
 		return null;
 	}
 	
@@ -144,7 +145,6 @@ public class Employee {
 	}
 // returnerer true hvis employee-objektet er tilgjengelig i tidsrommet
 	public boolean isAvailable(Date startTime, Date endTime){
-		System.out.println(eventsAttending);
 		if(this.eventsAttending.size() == 0){		// kommer ikke inn her :(
 			return true;
 		} else if(eventsAttending.get(0).getStartTime().compareTo(endTime) > 0){
