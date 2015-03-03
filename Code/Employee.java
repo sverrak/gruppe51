@@ -87,23 +87,25 @@ public class Employee {
 			groups.add(group);
 			group.addEmployee(this);
 	}
+<<<<<<< HEAD
+
+=======
 		
+>>>>>>> e525083c8463a3d6fe63672b90aad9b1e16214e1
 	public void addEvent(Event event){
-		System.out.println(event);
 		event.getPeopleGoing().add(this);
 		if(eventsAttending != null){
+			if(event.getCreator() != this){
+				
+			}
 			if (eventsAttending.size() == 0){
 				eventsAttending.add(event);
 			}else{
-				for (int i = 0; i < eventsAttending.size(); i++) {		// holder upcomingEvents sortert pï¿½ startTime	// ser ut til ï¿½ feile her
-					if (eventsAttending.get(i).getStartTime().compareTo(event.getStartTime()) > 0){	// fortegn her virker galt. Motsatt tegn fï¿½r hele dritten til ï¿½ henge, men det skyldes kanskje feil i compareTo
-						eventsAttending.add(i, event);
-					}
+				if(isAvailable(event.getStartTime(), event.getEndTime()))		// holder upcomingEvents sortert pï¿½ startTime	// ser ut til ï¿½ feile her
+					eventsAttending.add(event);	
 				}
 			}
-			
 		}
-	}
 	
 	// returnerer true hvis ja-svar ble sendt, false ellers
 	public boolean acceptInvitation(Event event){
@@ -134,12 +136,12 @@ public class Employee {
 		if(this.eventsAttending.size() == 0){		// kommer ikke inn her :(
 			return true;
 		}
-		for (int i = 0; i < upcomingEvents.size()-1; i++) {
-			if(upcomingEvents.get(i).getEndTime().compareTo(startTime) < 0 && endTime.compareTo(upcomingEvents.get(i+1).getStartTime()) < 0){
+		for (int i = 0; i < eventsAttending.size()-1; i++) {
+			if(eventsAttending.get(i).getEndTime().compareTo(startTime) < 0 && endTime.compareTo(upcomingEvents.get(i+1).getStartTime()) < 0){ // fortegn her virker galt. Motsatt tegn fï¿½r hele dritten til ï¿½ henge, men det skyldes kanskje feil i compareTo
 				return true;
 			}
 		}
-		if (upcomingEvents.get(upcomingEvents.size()-1).getEndTime().compareTo(startTime) < 0){
+		if (eventsAttending.get(eventsAttending.size()-1).getEndTime().compareTo(startTime) < 0){
 			return true;
 		}
 		return false;	
@@ -176,6 +178,17 @@ public class Employee {
 		user_input.close();
 	}
 	
+	public void printInbox(){
+		for (int i = 0; i < inbox.size(); i++) {
+			if(inbox.get(i).getIsRead()){
+				System.out.println("[X]" + inbox.get(i).getSender() + ": " + inbox.get(i).getSubject());
+			} else{
+				System.out.println("[ ]" + inbox.get(i).getSender() + ": " + inbox.get(i).getSubject());
+			}
+		}
+	}
+	
+	
 	public List<Message> getInbox() {
 		return inbox;
 	}
@@ -195,10 +208,13 @@ public class Employee {
 			return false;
 		}else if(! employee.isAvailable(event.getStartTime(), event.getEndTime())){
 			return false;
+		} else if(event.getPeopleDeclined().contains(employee) || event.getPeopleGoing().contains(employee) || event.getPeopleInvited().contains(employee)){
+			return false;
 		}
 		
-		Message msg = new Message(this, employee, false, "Jeg har invitert deg til eventen " + event, "Invitasjon til " + event.toString());
+		Message msg = new Message(this, employee, false, "Jeg har invitert deg til eventen " + event, "Invitasjon til " + event.getTitle());
 		msg.sendMessage();
+		employee.printInbox();
 		
 		// hvis eventen er upcoming
 		event.addEmployee(employee);
@@ -234,7 +250,7 @@ public class Employee {
 	}
 		
 	// UFERDIG! itererer over matrisa og fyller inn event-navn der employee er opptatt. Alle andre felter forblir 0
-	private WeeklySchedule generateWeeklySchedule(){
+	public WeeklySchedule generateWeeklySchedule(){
 		WeeklySchedule weeklySchedule = new WeeklySchedule();	// tom matrise for timeplan opprettes hvor nummer på uke i året er kjent
 		
 		
@@ -258,7 +274,7 @@ public class Employee {
 					// if matrix[rad i ][col] != 0													(if slot not filled)
 						// matrix[rad i ][col] = event.getName() + "U"		// U'en er for upcoming/unanswered
 		}
-		return weeklySchedule;		// må kanskje returnere hvilken uke i året det er også
+		return weeklySchedule;		// maa kanskje returnere hvilken uke i året det er også
 	}
 	
 	//UFERDIG! skal hente evente't som spenner seg over et tidspunkt.

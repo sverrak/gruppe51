@@ -28,7 +28,6 @@ public class CalendarProgram {
 	private Event birthday;
 	private Event birthdayAgain;
 	
-	
 	//login-felter
 	private String login_option;
 	private String username;
@@ -52,7 +51,7 @@ public class CalendarProgram {
 		List<Room> availableRooms = new ArrayList<Room>();
 		for (Room room : rooms) {
 			room.getDescription();
-			if(room.isAvailable(startTime, endTime) && room.getCapacity() > capacity){
+			if(room.isAvailable(startTime, endTime) && room.getCapacity() >= capacity){
 				availableRooms.add(room);
 			}
 		}
@@ -61,6 +60,7 @@ public class CalendarProgram {
 
 	public Event getEventInput(Employee employee){
 		//initalisering
+		System.out.println("");
 		String title = "";
 		String description = "";
 		Date startTime = new Date();
@@ -91,8 +91,6 @@ public class CalendarProgram {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(startTimeString);
-		
 		
 		//oppretter event
 		Event newEvent = new Event(title, startTime, endTime, description, employee);
@@ -127,11 +125,15 @@ public class CalendarProgram {
 		
 		int counter = 1;
 		while((! input.equals("")) && counter  < capacity){
-			newEvent.addEmployee(availableEmployees.get(Integer.parseInt(input)));
-			availableEmployees.get(Integer.parseInt(input)).addEvent(newEvent);
+			if(current_user.inviteEmployeeToEvent(availableEmployees.get(Integer.parseInt(input)), newEvent)){
+				counter += 1;
+			} else{
+				System.out.println("Personen er allerede invitert til dette arrangementet.");
+			}
+			/*newEvent.addEmployee(availableEmployees.get(Integer.parseInt(input)));
+			availableEmployees.get(Integer.parseInt(input)).addEvent(newEvent);*/
 			System.out.println("Noen flere[tom streng for å avslutte]?");
 			input = user_input.nextLine();
-			counter += 1;
 		}
 		
 		current_user.addEvent(newEvent);
@@ -156,8 +158,11 @@ public class CalendarProgram {
 	
 	public static void main(String[] args) {
 		CalendarProgram cp = new CalendarProgram();
+		cp.events = new ArrayList<Event>();
+		cp.employees = new ArrayList<Employee>();
+		cp.rooms = new ArrayList<Room>();
 		cp.init();
-		cp.run2();
+		cp.run();
 	}
 	
 	private void init() {
@@ -191,7 +196,7 @@ public class CalendarProgram {
 		dato2 = new Date(115, 2, 19, 21, 0, 0);
 		dato3 = new Date(116, 2, 19, 18, 30, 0);
 		dato4 = new Date(116, 2, 19, 20, 30, 0);
-	//	Employee martin = new Employee("Martin", "Konsernsjef", "martiboy","passord", "12345678");
+
 		birthday = new Event("Bursdag", dato1, dato2, "halla paarae", biti);
 		birthdayAgain = new Event("Bursdag", dato3, dato4, "halla paasan", biti);
 		biti.addEvent(birthday);
@@ -215,11 +220,10 @@ public class CalendarProgram {
 				username = user_input.nextLine();
 				System.out.println("Passord: ");
 				password = user_input.nextLine();
-				System.out.println(username + password);
+				
 				for (Employee employee : employees) {
 					if(employee.getUsername().equals(username) && employee.getPassword().equals(password)){
 						current_user = employee;
-						System.out.println(current_user);
 						break;
 					}
 				}
@@ -265,35 +269,39 @@ public class CalendarProgram {
 	
 	private void run() {
 		current_user = login();
-		System.out.println("Du er nå logget inn. Skriv quit for å logge ut");
+		System.out.println("\nDu er nå logget inn. Skriv quit for å logge ut");
 		System.out.println("Hei, " + current_user.getName() + "!");
 		
 		System.out.println("Du har " + current_user.countUnreadMessages() + " uleste meldinger i innboksen din\n");
 		while(current_user != null){
 			System.out.println("Hva vil du gjøre?");
-			System.out.println("1: se alle upcoming events[goingTo] | 2: legg til ny event | 3: åpne innboks | 4: se dine invitasjoner | 5: quit");
+			System.out.println("1: se alle upcoming events[goingTo] | 2: legg til ny event | 3: åpne innboks | 4: se dine events | 5: quit");
 			
 			int option = 0;
 			
 			while(option < 1 || option > 5){
 				option = Integer.parseInt(user_input.nextLine());
 				if(option == 1){
-					System.out.println(current_user.getWeeklySchedule());
+					System.out.println(current_user.generateWeeklySchedule());
 				} else if(option == 2){
-					Event event = getEventInput(current_user);		// endret fra calendar.get...
+					Event event = getEventInput(current_user);
 					current_user.addEvent(event);
 					
 				
 				} else if(option == 3){
+					if(current_user.getInbox().size() > 0){
+						current_user.printInbox();
+						while(option != -1){
+							System.out.println("Hvilken melding vil du åpne?");
+							option = Integer.parseInt(user_input.nextLine());
+							System.out.println(current_user.getInbox().get(option).toString());
+							System.out.println("\nVil du åpne flere meldinger?");
+							current_user.printInbox();						
+						}
 					
-					System.out.println("Innboks");
-					System.out.println(current_user.getInbox());
-					for (int i = 0; i < current_user.getInbox().size(); i++) {
-						System.out.println("" + i + ": " + current_user.getInbox().get(i));
-						current_user.getInbox().get(i).read();
+					} else{
+						System.out.println("Ingen meldinger å vise\n");
 					}
-					
-					
 				} else if(option == 4){
 					
 				} else{

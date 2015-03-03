@@ -40,11 +40,12 @@ public class Message {
 	
 	public void sendMessage(){
 		this.receiver.addMessageToInbox(this);
-		System.out.println(this.receiver.getInbox());
+		System.out.println("Melding sendt til " + this.receiver + ":" + this.subject);
 	}
 	
 	@Override
 	public String toString() {
+		this.isRead = true;
 		String str = "FROM: " +  this.sender + "\n";
 		str += "TO: " + this.receiver + "\n";
 		str += "SUBJECT: " + this.subject + "\n";

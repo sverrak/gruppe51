@@ -34,6 +34,7 @@ public class Event implements Comparable<Event>{
 		this.room = null;
 		this.peopleInvited = new ArrayList<Employee>();
 		this.peopleGoing = new ArrayList<Employee>();
+		peopleGoing.add(creator);
 		this.peopleDeclined = new ArrayList<Employee>();
 		
 	}
@@ -121,10 +122,6 @@ public class Event implements Comparable<Event>{
 	
 	public void addEmployee(Employee employee) {
 		this.peopleInvited.add(employee);
-		Message msg = new Message(this.creator, employee, false, "Du er invitert til arrangementet mitt!", "Invitasjon til " + this.title);
-		msg.sendMessage();
-		System.out.println(msg + " er sendt");
-		
 	}
 	
 	// Dette er en hjelpemetode for employee.removeEvent() og Employee.cancelEvent() og boer ikke kalles andre steder enn der (da faar vi inkonsistens)
