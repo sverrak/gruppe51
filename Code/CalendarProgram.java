@@ -21,12 +21,6 @@ public class CalendarProgram {
 	private Employee sverre;
 	private Employee yolo;
 	private Employee current_user;
-	private Date dato1;
-	private Date dato2;
-	private Date dato3;
-	private Date dato4;
-	private Event birthday;
-	private Event birthdayAgain;
 	
 	//login-felter
 	private String login_option;
@@ -161,8 +155,8 @@ public class CalendarProgram {
 		cp.events = new ArrayList<Event>();
 		cp.employees = new ArrayList<Employee>();
 		cp.rooms = new ArrayList<Room>();
-		cp.init();
-		cp.run();
+		cp.init2();
+		cp.run2();
 	}
 	
 	private void init() {
@@ -192,13 +186,13 @@ public class CalendarProgram {
 		addEmployee(sverre);
 		addEmployee(yolo);
 		
-		dato1 = new Date(115, 2, 19, 19, 0, 0);
-		dato2 = new Date(115, 2, 19, 21, 0, 0);
-		dato3 = new Date(116, 2, 19, 18, 30, 0);
-		dato4 = new Date(116, 2, 19, 20, 30, 0);
+		Date dato1 = new Date(115, 2, 19, 19, 0, 0);
+		Date dato2 = new Date(115, 2, 19, 21, 0, 0);
+		Date dato3 = new Date(116, 2, 19, 18, 30, 0);
+		Date dato4 = new Date(116, 2, 19, 20, 30, 0);
 
-		birthday = new Event("Bursdag", dato1, dato2, "halla paarae", biti);
-		birthdayAgain = new Event("Bursdag", dato3, dato4, "halla paasan", biti);
+		Event birthday = new Event("Bursdag", dato1, dato2, "halla paarae", biti);
+		Event birthdayAgain = new Event("Bursdag", dato3, dato4, "halla paasan", biti);
 		biti.addEvent(birthday);
 		biti.addEvent(birthdayAgain);
 	}
@@ -265,8 +259,7 @@ public class CalendarProgram {
 			return employee;
 		}
 	}
-	
-	
+		
 	private void run() {
 		current_user = login();
 		System.out.println("\nDu er nå logget inn. Skriv quit for å logge ut");
@@ -317,15 +310,51 @@ public class CalendarProgram {
 			}
 		}
 	
-	public void run2(){
+	private void init2() {
+		r1 = new Room("R1", 500, "Fint rom1");
+		r2 = new Room("R2", 400, "Fint rom2");
+		r3 = new Room("R3", 300, "Fint rom3");
+		r4 = new Room("R4", 200, "Fint rom4");
+		r5 = new Room("R5", 100, "Fint rom5");
+		r6 = new Room("R6", 50, "Fint rom6");
+		r7 = new Room("R7", 60, "Fint rom7");
+		rooms = new ArrayList<Room>();
+		addRoom(r1);
+		addRoom(r2);
+		addRoom(r3);
+		addRoom(r4);
+		addRoom(r5);
+		addRoom(r6);
+		addRoom(r7);
 		
-		biti.addEvent(birthday);		
-
+		biti = new Employee("Bendik", "Junior", "biti", "bata", "123");
+		sverre = new Employee("Sverre", "Senior", "sverrak", "heiia", "45884408");
+		yolo = new Employee("Jola", "Junior+", "bata", "biti", "123");
+		current_user = null;
+		
+		employees = new ArrayList<Employee>();
+		addEmployee(biti);
+		addEmployee(sverre);
+		addEmployee(yolo);
+		
+	}
+	
+	public void run2(){
+		Date dato1 = new Date(115, 2, 19, 19, 0, 0);
+		Date dato2 = new Date(115, 2, 19, 21, 0, 0);
+		Date dato3 = new Date(116, 2, 19, 18, 30, 0);
+		Date dato4 = new Date(116, 2, 19, 20, 30, 0);
 		Date dato5 = new Date(116, 3, 18, 20, 30, 0);
-		Date dato6 = new Date(116, 3, 19, 20, 30, 0);
-		Event party = new Event("party", dato5, dato6, "kom paa party!", biti);
-		biti.addEvent(party);
-//		System.out.println(birthdayAgain);
+		Date dato6 = new Date(116, 3, 19, 21, 30, 0);
+		Date dato7 = new Date(116, 3, 19, 19, 30, 0);
+		Date dato8 = new Date(116, 3, 19, 21, 00, 0);
+		
+		Event birthday = biti.createEvent("Bursdag", dato1, dato2, "halla paarae");
+		Event birthdayAgain = biti.createEvent("Bursdag igjen", dato3, dato4, "halla paasan");
+				
+		Event party = biti.createEvent("party", dato5, dato6, "kom paa party!");
+		Event party2 = biti.createEvent("partyOnSameDay", dato7, dato8, "kom paa party!");	//disse to skal kollidere. Ber ikke om feilmelding
+		
 		
 		System.out.println("Bendiks events: " + "\n- Events invited to: " + biti.getUpcomingEvents() + "\n- Events attending: " + biti.getEventsAttending());
 		System.out.println(birthday.getPeopleInvited());

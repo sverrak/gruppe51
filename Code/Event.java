@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
 
 public class Event implements Comparable<Event>{
@@ -14,10 +15,9 @@ public class Event implements Comparable<Event>{
 	private String description;
 	private Room room;
 	private Employee creator;
-	private Collection<Employee> peopleInvited;
-	private Collection<Employee> peopleGoing;
-	private Collection<Employee> peopleDeclined;
-	public Object getPeopleDeclined;
+	private List<Employee> peopleInvited;
+	private List<Employee> peopleGoing;
+	private List<Employee> peopleDeclined;
 	
 	private static ArrayList<String> months = new ArrayList(Arrays.asList("jan","feb","mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"));
 	
@@ -34,7 +34,6 @@ public class Event implements Comparable<Event>{
 		this.room = null;
 		this.peopleInvited = new ArrayList<Employee>();
 		this.peopleGoing = new ArrayList<Employee>();
-		peopleGoing.add(creator);
 		this.peopleDeclined = new ArrayList<Employee>();
 		
 	}
@@ -91,15 +90,15 @@ public class Event implements Comparable<Event>{
 		return room;
 	}
 	
-	public Collection<Employee> getPeopleInvited() {
+	public List<Employee> getPeopleInvited() {
 		return peopleInvited;
 	}
 	
-	public Collection<Employee> getPeopleDeclined() {
+	public List<Employee> getPeopleDeclined() {
 		return peopleDeclined;
 	}
 	
-	public Collection<Employee> getPeopleGoing() {
+	public List<Employee> getPeopleGoing() {
 		return peopleGoing;
 	}
 	

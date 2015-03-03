@@ -18,7 +18,7 @@ public class Employee {
 	private String password;
 	private Collection<Group> groups;
 	private List<Event> upcomingEvents;		//sortert paa startTime
-	private Collection<Event> declinedEvents;	//boer ogs� sorteres paa startTime
+	private List<Event> declinedEvents;	//boer ogs� sorteres paa startTime
 	private List<Event> eventsAttending;		// sortert paa startTime. Maa gaa over alt og kanskje endre fra upcomingEvents til eventsAttending
 	private String telnum;
 	private List<Message> inbox;
@@ -45,7 +45,7 @@ public class Employee {
 	public void setTelnum(String telnum) {
 		this.telnum = telnum;
 	}
-	public Collection<Event> getDeclinedEvents() {
+	public List<Event> getDeclinedEvents() {
 		return declinedEvents;
 	}
 	public Collection<Group> getGroups() {
@@ -87,15 +87,11 @@ public class Employee {
 			groups.add(group);
 			group.addEmployee(this);
 	}
-<<<<<<< HEAD
-
-=======
-		
->>>>>>> e525083c8463a3d6fe63672b90aad9b1e16214e1
+// skal opprette nytt event med personen som inviterer som attending
 	public void addEvent(Event event){
 		event.getPeopleGoing().add(this);
-		if(eventsAttending != null){
-			if(event.getCreator() != this){
+		if(eventsAttending != null){		// hva er dette godt for?
+			if(event.getCreator() != this){		// inni her skjer det jo ingenting
 				
 			}
 			if (eventsAttending.size() == 0){
@@ -106,6 +102,15 @@ public class Employee {
 				}
 			}
 		}
+	
+	public Event createEvent(String title, Date startTime, Date endTime, String description){
+		if (eventsAttending.size() == 0 || isAvailable(startTime, endTime)){
+			Event event = new Event(title, startTime, endTime, description, this);
+			eventsAttending.add(event);
+			return event;
+		}
+		return null;
+	}
 	
 	// returnerer true hvis ja-svar ble sendt, false ellers
 	public boolean acceptInvitation(Event event){
@@ -137,14 +142,14 @@ public class Employee {
 			return true;
 		}
 		for (int i = 0; i < eventsAttending.size()-1; i++) {
-			if(eventsAttending.get(i).getEndTime().compareTo(startTime) < 0 && endTime.compareTo(upcomingEvents.get(i+1).getStartTime()) < 0){ // fortegn her virker galt. Motsatt tegn f�r hele dritten til � henge, men det skyldes kanskje feil i compareTo
+			if(eventsAttending.get(i).getEndTime().compareTo(startTime) < 0 && endTime.compareTo(eventsAttending.get(i+1).getStartTime()) < 0){ // fortegn her virker galt. Motsatt tegn f�r hele dritten til � henge, men det skyldes kanskje feil i compareTo
 				return true;
 			}
 		}
 		if (eventsAttending.get(eventsAttending.size()-1).getEndTime().compareTo(startTime) < 0){
 			return true;
 		}
-		return false;	
+		return false;
 	}
 	// Ikkke ferdig
 	public boolean cancelEvent(Event event, String reason){
@@ -152,12 +157,24 @@ public class Employee {
 		if (event.getCreator() != this){
 			return false;
 		}		
-		for (Employee employee : event.getPeopleInvited()) {
-			employee.removeEvent(event);
-		}	
-		for (Employee employee : event.getPeopleDeclined()) {
+/*		for (Employee employee : event.getPeopleInvited()) {
 			employee.removeEvent(event);
 		}
+		*/	
+		
+		for (int i = event.getPeopleInvited().size(); i < -1; i--) {
+			Employee employee = event.getPeopleInvited().get(i);
+			employee.removeEvent(event);
+		}
+/*		for (Employee employee : event.getPeopleDeclined()) {
+			employee.removeEvent(event);
+		}
+	*/
+		for (int i = event.getPeopleInvited().size(); i < -1; i--) {
+			Employee employee = event.getPeopleInvited().get(i);
+			employee.removeEvent(event);
+		}
+		
 		if (event.getRoom()!= null){
 			event.getRoom().getRoomSchedule().remove(event);
 		}
