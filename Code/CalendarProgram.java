@@ -27,7 +27,6 @@ public class CalendarProgram {
 	private Date dato4;
 	private Event birthday;
 	private Event birthdayAgain;
-
 	
 	//login-felter
 	private String login_option;
@@ -163,11 +162,10 @@ public class CalendarProgram {
 		cp.employees = new ArrayList<Employee>();
 		cp.rooms = new ArrayList<Room>();
 		cp.init();
-		cp.run2();
+		cp.run();
 	}
 	
 	private void init() {
-		
 		r1 = new Room("R1", 500, "Fint rom1");
 		r2 = new Room("R2", 400, "Fint rom2");
 		r3 = new Room("R3", 300, "Fint rom3");
@@ -176,7 +174,6 @@ public class CalendarProgram {
 		r6 = new Room("R6", 50, "Fint rom6");
 		r7 = new Room("R7", 60, "Fint rom7");
 		rooms = new ArrayList<Room>();
-
 		addRoom(r1);
 		addRoom(r2);
 		addRoom(r3);
@@ -285,7 +282,7 @@ public class CalendarProgram {
 			while(option < 1 || option > 5){
 				option = Integer.parseInt(user_input.nextLine());
 				if(option == 1){
-					System.out.println(current_user.getWeeklySchedule());
+					current_user.printWeeklySchedule();
 				} else if(option == 2){
 					Event event = getEventInput(current_user);
 					current_user.addEvent(event);
