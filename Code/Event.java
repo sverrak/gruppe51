@@ -126,7 +126,7 @@ public class Event implements Comparable<Event>{
 	// Dette er en hjelpemetode for employee.removeEvent() og Employee.cancelEvent() og boer ikke kalles andre steder enn der (da faar vi inkonsistens)
 	public boolean removeEmployee(Employee employee){
 		if (peopleInvited.contains(employee)){
-			Message msg = new Message(employee, this.creator, false, "Endringen av eventen har gjort at jeg dessverre ikke kan delta", "Varsel om at jeg ikke kan delta");
+			Message msg = new Message(employee, this.creator, "Endringen av eventen har gjort at jeg dessverre ikke kan delta", "Varsel om at jeg ikke kan delta");
 			msg.sendMessage();
 			return peopleInvited.remove(employee);
 		}
@@ -156,7 +156,6 @@ public class Event implements Comparable<Event>{
 		return getStartTime().toLocaleString().substring(15, 17);
 	}
 	
-	/*
 	@Override
 	public int compareTo(Event event) {			// mistenker at det blir feil her. Kan v�re problem med � sammenlikne m�neder (de er jo ikke tall med denne implementasjonen)  
 		if(this.getYear().equals(event.getYear())){
@@ -192,11 +191,6 @@ public class Event implements Comparable<Event>{
 		} else{
 			return 1;
 		}
-	}
-	*/	
-	@Override
-	public int compareTo(Event event) {			// mistenker at det blir feil her. Kan v�re problem med � sammenlikne m�neder (de er jo ikke tall med denne implementasjonen)  
-		return (this.startTime.getTime() < event.getStartTime().getTime() ? 1: 0);
 	}
 	
 }

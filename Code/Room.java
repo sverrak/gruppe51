@@ -52,7 +52,7 @@ public class Room {
 		return false;	
 	}
 	
-	private boolean removeEvent(Event event){
+	public boolean removeEvent(Event event){
 		if (roomSchedule.contains(event)){
 			roomSchedule.remove(event);
 			return true;
