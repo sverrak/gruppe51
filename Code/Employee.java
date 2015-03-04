@@ -115,6 +115,7 @@ public class Employee {
 			eventsAttending.add(event);
 			return event;
 		}
+		System.out.println("Du er opptatt på tidspunktet. " + title + " ble ikke opprettet.");
 		return null;
 	}
 	
@@ -144,7 +145,6 @@ public class Employee {
 	}
 // returnerer true hvis employee-objektet er tilgjengelig i tidsrommet
 	public boolean isAvailable(Date startTime, Date endTime){
-		System.out.println(eventsAttending);
 		if(this.eventsAttending.size() == 0){		// kommer ikke inn her :(
 			return true;
 		} else if(eventsAttending.get(0).getStartTime().compareTo(endTime) > 0){
@@ -295,16 +295,38 @@ public class Employee {
 		WeeklySchedule weeklySchedule = new WeeklySchedule();	// tom matrise for timeplan opprettes hvor nummer pï¿½ uke i ï¿½ret er kjent
 		
 		
-	//	Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.HOUR_OF_DAY, 0); // ! clear would not reset the hour of day !
+		cal.clear(Calendar.MINUTE);
+		cal.clear(Calendar.SECOND);
+		cal.clear(Calendar.MILLISECOND);
+
+		// get start of this week in milliseconds
+		cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
+//		System.out.println("Start of this week:       " + cal.getTime());
+//		System.out.println("... in milliseconds:      " + cal.getTimeInMillis());
+		long timeStartWeek = cal.getTimeInMillis();
+		// start of the next week
+		cal.add(Calendar.WEEK_OF_YEAR, 1);
+//		System.out.println("Start of the next week:   " + cal.getTime());
+//		System.out.println("... in milliseconds:      " + cal.getTimeInMillis());
+		long timeEndWeek = cal.getTimeInMillis();
+		
+	//	Calendar calendar = Calendar.getInstance(TimeZone.getDefault());		// tror disse to linjene er ubrukelige
 	//	calendar.set(200, 2, 19, 18, 30);		
 		
 		for (Event event : eventsAttending) {
 			// hvis event.startTidspunkt er denne uka
-				// col = event.getDaytOfWeek -1 							(index til kolonne i matrix)
-				// firstRow = (event.getStartTime().getHour() - 8)*0.5 		(index til rad i matrix)
-				// lastRow = (event.getEndTime().getHour() - 8)*0.5 		(index til rad i matrix
+			if (event.getStartTime().getTime() > timeStartWeek || event.getStartTime().getTime() < timeEndWeek){
+				int col = event.getDayOfWeek -1; 						//	(index til kolonne i matrix)
+				int firstRow = (event.getStartTime().getHours() - 8) * 2; 	//	(index til rad i matrix)
+				if (event.getStartTime().getMinutes() == 30){
+					firstRow += 1;
+				}
+				// lastRow = (event.getEndTime().getHour() - 8)*0.5 	//	(index til rad i matrix
 				// for alle slots fra firstRow til lastRow
 					// matrix[rad i ][col] = event.getName() + "A"		// A'en er for attending
+			}
 		}
 		for (Event event : upcomingEvents) {
 			// hvis event.startTidspunkt er denne uka

@@ -158,8 +158,8 @@ public class CalendarProgram {
 	
 	public static void main(String[] args) {
 		CalendarProgram cp = new CalendarProgram();
-		cp.init();
-		cp.run();
+		cp.init2();
+		cp.run2();
 	}
 	
 	private void init() {
@@ -324,6 +324,21 @@ public class CalendarProgram {
 		}
 	
 	public void run2(){
+
+		Date dato1 = new Date(115, 2, 19, 19, 0, 0);
+		Date dato2 = new Date(115, 2, 19, 21, 0, 0);
+		Date dato3 = new Date(116, 2, 19, 18, 30, 0);
+		Date dato4 = new Date(116, 2, 19, 20, 30, 0);
+		Date dato5 = new Date(116, 3, 18, 20, 30, 0);
+		Date dato6 = new Date(116, 3, 19, 21, 30, 0);
+		Date dato7 = new Date(116, 3, 19, 19, 30, 0);
+		Date dato8 = new Date(116, 3, 19, 21, 00, 0);
+		
+		Event birthday = biti.createEvent("Bursdag", dato1, dato2, "halla paarae");
+		Event birthdayAgain = biti.createEvent("Bursdag igjen", dato3, dato4, "halla paasan");
+		
+		Event party = biti.createEvent("party", dato5, dato6, "kom paa party!");
+		Event party2 = biti.createEvent("partyOnSameDay", dato7, dato8, "kom paa party!");	//disse to skal kollidere. Ber ikke om feilmelding
 		
 		//biti.addEvent(birthday);		
 
@@ -334,19 +349,20 @@ public class CalendarProgram {
 //		System.out.println(birthdayAgain);
 		
 		System.out.println("Bendiks events: " + "\n- Events invited to: " + biti.getUpcomingEvents() + "\n- Events attending: " + biti.getEventsAttending());
-		System.out.println(birthday.getPeopleInvited());
 		
-		//biti.addEvent(birthdayAgain);
-		System.out.println(biti.getUpcomingEvents());
+		System.out.println(birthday.getPeopleInvited()); // printer ekstra '[]'?
 
 		biti.inviteEmployeeToEvent(sverre, birthday);
 		System.out.println(birthday.getPeopleInvited());
+		
 		biti.inviteEmployeeToEvent(sverre, birthdayAgain);
 		
 		
 		System.out.println(birthdayAgain.getPeopleGoing() + "" + birthdayAgain.getPeopleInvited());
 		//biti.cancelEvent(birthday, "Ingen ville komme :(");
 		System.out.println(biti.getUpcomingEvents());
+		
+	//	biti.generateWeeklySchedule();
 	}
 
 }
