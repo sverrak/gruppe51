@@ -21,13 +21,13 @@ public class Employee {
 	private List<Event> upcomingEvents;		//sortert paa startTime
 	private List<Event> declinedEvents;	//boer ogs� sorteres paa startTime
 	private List<Event> eventsAttending;		// sortert paa startTime. Maa gaa over alt og kanskje endre fra upcomingEvents til eventsAttending
-	private String telnum;
+	private int telnum;
 	private List<Message> inbox;
 	
-	public Employee(int employeeID, String name, String position, String username,
-			String password, String telnum) {
+	public Employee(String name, String position, String username,
+			String password, int telnum) {
 		super();
-		this.employeeID = employeeID;
+	//	this.employeeID = employeeID;
 		this.name = name;
 		this.position = position;
 		this.username = username;
@@ -43,9 +43,6 @@ public class Employee {
 	public List<Event> getEventsAttending() {
 		return eventsAttending;
 	}
-	public void setTelnum(String telnum) {
-		this.telnum = telnum;
-	}
 	public List<Event> getDeclinedEvents() {
 		return declinedEvents;
 	}
@@ -60,6 +57,9 @@ public class Employee {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public int getEmployeeID(){
+		return employeeID;
 	}
 	public String getPosition() {
 		return position;
@@ -79,7 +79,10 @@ public class Employee {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public String getTelnum(){
+	public void setTelnum(int telnum) {
+		this.telnum = telnum;
+	}
+	public int getTelnum(){
 		return telnum;
 	}
 		

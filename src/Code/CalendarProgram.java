@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Scanner;
 
 public class CalendarProgram {
+	private Connection con = null;
+	ConnectionToDatabase ctd;
 	private List<Room> rooms;
 	private Room r1;
 	private Room r2;
@@ -155,9 +157,10 @@ public class CalendarProgram {
 	}
 	
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SQLException {
 		CalendarProgram cp = new CalendarProgram();
 		cp.initialize();
+		cp.run();
 	//	cp.init2();
 	//	cp.run2();
 	}
@@ -172,8 +175,8 @@ public class CalendarProgram {
 	}
 	
 	private void initialize(){
+		ctd = new ConnectionToDatabase();
 		connection();
-		Connection con = null;
 		String host = "jdbc:mysql://mysql.stud.ntnu.no:3306/fredrwit_kalender";
 		String username = "fredrwit_admin";
 		String password ="12345";
@@ -201,7 +204,7 @@ public class CalendarProgram {
 		      }catch(SQLException se){
 		      }// do nothing */
 		      try{
-		         if(con != null)
+		         if(con == null)
 		            con.close();
 		      }catch(SQLException se){
 		         se.printStackTrace();
@@ -249,7 +252,11 @@ public class CalendarProgram {
 	}
 	
 	
-	public Employee login(){
+	public Employee login() throws SQLException{
+		
+		String sporring = "SELECT * FROM Employee";
+		employees = ctd.Sporring(con, sporring);
+		
 		user_input = new Scanner(System.in);
 		username = "";
 		System.out.println("Hei");
@@ -267,7 +274,7 @@ public class CalendarProgram {
 				password = user_input.nextLine();
 				
 				for (Employee employee : employees) {
-					if(employee.getUsername().equals(username) && employee.getPassword().equals(password)){
+					if(employee.getUsername().equalsIgnoreCase(username) && employee.getPassword().equals(password)){
 						current_user = employee;
 						break;
 					}
@@ -303,15 +310,19 @@ public class CalendarProgram {
 			String position = user_input.nextLine();
 			System.out.println("Telefonnummer:");
 			String telnum = user_input.nextLine();
+			int tlf = Integer.parseInt(telnum);
 			
-			Employee employee = new Employee(name, position, username, password, telnum);
+			Employee employee = new Employee(name, position, username, password, tlf);
 			employees.add(employee);
+			
+			ctd.NewEmployee(con, employee);
+			
 			System.out.println("Du er nå lagt til i databasen");
 			return employee;
 		}
 	}
 		
-	private void run() {
+	private void run() throws SQLException {
 		current_user = login();
 		System.out.println("\nDu er nå logget inn. Skriv quit for å logge ut");
 		System.out.println("Hei, " + current_user.getName() + "!");
@@ -363,18 +374,13 @@ public class CalendarProgram {
 	
 	private void init2() {
 	
-		
-		
-		
-		
-		
-		/*	r1 = new Room("R1", 500, "Fint rom1");
-		r2 = new Room("R2", 400, "Fint rom2");
-		r3 = new Room("R3", 300, "Fint rom3");
-		r4 = new Room("R4", 200, "Fint rom4");
-		r5 = new Room("R5", 100, "Fint rom5");
-		r6 = new Room("R6", 50, "Fint rom6");
-		r7 = new Room("R7", 60, "Fint rom7");
+		r1 = new Room(1, "R1", 500, "Fint rom1");
+		r2 = new Room(2, "R2", 400, "Fint rom2");
+		r3 = new Room(3, "R3", 300, "Fint rom3");
+		r4 = new Room(4, "R4", 200, "Fint rom4");
+		r5 = new Room(5, "R5", 100, "Fint rom5");
+		r6 = new Room(6, "R6", 50, "Fint rom6");
+		r7 = new Room(7, "R7", 60, "Fint rom7");
 		rooms = new ArrayList<Room>();
 		addRoom(r1);
 		addRoom(r2);
@@ -384,15 +390,15 @@ public class CalendarProgram {
 		addRoom(r6);
 		addRoom(r7);
 		
-		biti = new Employee("Bendik", "Junior", "biti", "bata", "123");
-		sverre = new Employee("Sverre", "Senior", "sverrak", "heiia", "45884408");
-		yolo = new Employee("Jola", "Junior+", "bata", "biti", "123");
+		biti = new Employee(1, "Bendik", "Junior", "biti", "bata", "123");
+		sverre = new Employee(2, "Sverre", "Senior", "sverrak", "heiia", "45884408");
+		yolo = new Employee(3, "Jola", "Junior+", "bata", "biti", "123");
 		current_user = null;
 		
 		employees = new ArrayList<Employee>();
 		addEmployee(biti);
 		addEmployee(sverre);
-		addEmployee(yolo); */
+		addEmployee(yolo); 
 		
 	}
 	
