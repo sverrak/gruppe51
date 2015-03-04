@@ -21,6 +21,12 @@ public class CalendarProgram {
 	private Employee sverre;
 	private Employee yolo;
 	private Employee current_user;
+	private Date dato1;
+	private Date dato2;
+	private Date dato3;
+	private Date dato4;
+	private Event birthday;
+	private Event birthdayAgain;
 	
 	//login-felter
 	private String login_option;
@@ -111,7 +117,7 @@ public class CalendarProgram {
 		//legge til deltakere
 		List<Employee> availableEmployees = getAvailableEmployees(startTime, endTime);
 		for (int i = 0; i < getAvailableEmployees(startTime, endTime).size(); i++) {
-			System.out.println("" + i + ": " + availableEmployees.get(i));
+			System.out.println("" + i + ": " + availableEmployees.get(i).toString());
 		}
 		
 		System.out.println("Hvem vil du invitere til dette arrangementet[tom streng for å avslutte]?");
@@ -130,7 +136,7 @@ public class CalendarProgram {
 			input = user_input.nextLine();
 		}
 		
-		current_user.addEvent(newEvent);
+		current_user.addEventToUpcomingEvents(newEvent);
 		newEvent.addEmployee(current_user);
 		
 		
@@ -182,17 +188,18 @@ public class CalendarProgram {
 		addEmployee(biti);
 		addEmployee(sverre);
 		addEmployee(yolo);
-
-		Date dato1 = new Date(115, 2, 19, 19, 0, 0);
-		Date dato2 = new Date(115, 2, 19, 21, 0, 0);
-		Date dato3 = new Date(116, 2, 19, 18, 30, 0);
-		Date dato4 = new Date(116, 2, 19, 20, 30, 0);
-
+		
+		dato1 = new Date(115, 2, 19, 19, 0, 0);
+		dato2 = new Date(115, 2, 19, 21, 0, 0);
+		dato3 = new Date(116, 2, 19, 18, 30, 0);
+		dato4 = new Date(116, 2, 19, 20, 30, 0);
+		
 		events = new ArrayList<Event>();
-		Event birthday = new Event("Bursdag", dato1, dato2, "halla paarae", biti);
-		Event birthdayAgain = new Event("Bursdag", dato3, dato4, "halla paasan", biti);
-		biti.addEvent(birthday);
-		biti.addEvent(birthdayAgain);
+
+		birthday = new Event("Bursdag", dato1, dato2, "halla paarae", biti);
+		birthdayAgain = new Event("Bursdag", dato3, dato4, "halla paasan", biti);
+		//biti.addEvent(birthday);
+		//biti.addEvent(birthdayAgain);
 	}
 	
 	
@@ -254,10 +261,11 @@ public class CalendarProgram {
 			Employee employee = new Employee(name, position, username, password, telnum);
 			employees.add(employee);
 			System.out.println("Du er nå lagt til i databasen");
-			return employee;
+			return login();
 		}
 	}
-		
+	
+	
 	private void run() {
 		current_user = login();
 		System.out.println("\nDu er nå logget inn. Skriv quit for å logge ut");
@@ -266,17 +274,24 @@ public class CalendarProgram {
 		System.out.println("Du har " + current_user.countUnreadMessages() + " uleste meldinger i innboksen din\n");
 		while(current_user != null){
 			System.out.println("Hva vil du gjøre?");
-			System.out.println("1: se alle upcoming events[goingTo] | 2: legg til ny event | 3: åpne innboks | 4: se dine events | 5: quit");
+			if(current_user.countUnreadMessages() > 0){
+				System.out.println("1: se alle upcoming events[goingTo] | 2: legg til ny event | 3: åpne innboks (" + current_user.countUnreadMessages() + " uleste meldinger)| 4: se dine events | 5: quit");				
+			} else{
+				System.out.println("1: se alle upcoming events[goingTo] | 2: legg til ny event | 3: åpne innboks | 4: se dine events | 5: quit");
+			}
 			
 			int option = 0;
 			
 			while(option < 1 || option > 5){
 				option = Integer.parseInt(user_input.nextLine());
 				if(option == 1){
+					for (Employee employee : employees) {
+						System.out.println(employee.toString() + ": " + employee.getUpcomingEvents().toString());
+					}
 					System.out.println(current_user.generateWeeklySchedule());
 				} else if(option == 2){
 					Event event = getEventInput(current_user);
-					current_user.addEvent(event);
+					current_user.addEventToUpcomingEvents(event);
 					
 				
 				} else if(option == 3){
@@ -308,56 +323,20 @@ public class CalendarProgram {
 			}
 		}
 	
-	private void init2() {
-		r1 = new Room("R1", 500, "Fint rom1");
-		r2 = new Room("R2", 400, "Fint rom2");
-		r3 = new Room("R3", 300, "Fint rom3");
-		r4 = new Room("R4", 200, "Fint rom4");
-		r5 = new Room("R5", 100, "Fint rom5");
-		r6 = new Room("R6", 50, "Fint rom6");
-		r7 = new Room("R7", 60, "Fint rom7");
-		rooms = new ArrayList<Room>();
-		addRoom(r1);
-		addRoom(r2);
-		addRoom(r3);
-		addRoom(r4);
-		addRoom(r5);
-		addRoom(r6);
-		addRoom(r7);
-		
-		biti = new Employee("Bendik", "Junior", "biti", "bata", "123");
-		sverre = new Employee("Sverre", "Senior", "sverrak", "heiia", "45884408");
-		yolo = new Employee("Jola", "Junior+", "bata", "biti", "123");
-		current_user = null;
-		
-		employees = new ArrayList<Employee>();
-		addEmployee(biti);
-		addEmployee(sverre);
-		addEmployee(yolo);
-		
-	}
-	
 	public void run2(){
-		Date dato1 = new Date(115, 2, 19, 19, 0, 0);
-		Date dato2 = new Date(115, 2, 19, 21, 0, 0);
-		Date dato3 = new Date(116, 2, 19, 18, 30, 0);
-		Date dato4 = new Date(116, 2, 19, 20, 30, 0);
+		
+		//biti.addEvent(birthday);		
+
 		Date dato5 = new Date(116, 3, 18, 20, 30, 0);
-		Date dato6 = new Date(116, 3, 19, 21, 30, 0);
-		Date dato7 = new Date(116, 3, 19, 19, 30, 0);
-		Date dato8 = new Date(116, 3, 19, 21, 00, 0);
-		
-		Event birthday = biti.createEvent("Bursdag", dato1, dato2, "halla paarae");
-		Event birthdayAgain = biti.createEvent("Bursdag igjen", dato3, dato4, "halla paasan");
-				
-		Event party = biti.createEvent("party", dato5, dato6, "kom paa party!");
-		Event party2 = biti.createEvent("partyOnSameDay", dato7, dato8, "kom paa party!");	//disse to skal kollidere. Ber ikke om feilmelding
-		
+		Date dato6 = new Date(116, 3, 19, 20, 30, 0);
+		Event party = new Event("party", dato5, dato6, "kom paa party!", biti);
+		//biti.addEvent(party);
+//		System.out.println(birthdayAgain);
 		
 		System.out.println("Bendiks events: " + "\n- Events invited to: " + biti.getUpcomingEvents() + "\n- Events attending: " + biti.getEventsAttending());
 		System.out.println(birthday.getPeopleInvited());
 		
-		biti.addEvent(birthdayAgain);
+		//biti.addEvent(birthdayAgain);
 		System.out.println(biti.getUpcomingEvents());
 
 		biti.inviteEmployeeToEvent(sverre, birthday);
@@ -366,7 +345,7 @@ public class CalendarProgram {
 		
 		
 		System.out.println(birthdayAgain.getPeopleGoing() + "" + birthdayAgain.getPeopleInvited());
-		biti.cancelEvent(birthday, "Ingen ville komme :(");
+		//biti.cancelEvent(birthday, "Ingen ville komme :(");
 		System.out.println(biti.getUpcomingEvents());
 	}
 
