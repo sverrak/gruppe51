@@ -18,7 +18,7 @@ public class Employee {
 	private String password;
 	private Collection<Group> groups;
 	private List<Event> upcomingEvents;		//sortert paa startTime
-	private List<Event> declinedEvents;	//boer ogsï¿½ sorteres paa startTime
+	private List<Event> declinedEvents;	//boer ogsaa sorteres paa startTime
 	private List<Event> eventsAttending;		// sortert paa startTime. Maa gaa over alt og kanskje endre fra upcomingEvents til eventsAttending
 	private String telnum;
 	private List<Message> inbox;
@@ -293,9 +293,9 @@ public class Employee {
 	// UFERDIG! itererer over matrisa og fyller inn event-navn der employee er opptatt. Alle andre felter forblir 0
 	// foreløpg genererer den kun denne ukas schedule. Tar inn int for å angi hvilken uke man vil se og int for tilhoerende aar.
 	// for 2015, send inn 2015 (ikke 115)
-	public WeeklySchedule generateWeeklySchedule(int weekOfYear, int year){
-		WeeklySchedule weeklySchedule = new WeeklySchedule();	// tom matrise for timeplan opprettes hvor nummer paa uke i aaret er kjent
-		
+	public ArrayList<ArrayList<Object>> generateWeeklySchedule(int weekOfYear, int year){
+	//	WeeklySchedule weeklySchedule = new WeeklySchedule();	// tom matrise for timeplan opprettes hvor nummer paa uke i aaret er kjent
+		ArrayList<ArrayList<Object>> schedule = generateEmptySchedule();
 		// koden nedenfor fungerer for å generere denne ukas schedule
 /*		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.HOUR_OF_DAY, 0); // ! clear would not reset the hour of day !
@@ -336,7 +336,7 @@ public class Employee {
 					lastRow += 1;
 				}
 				for (int i = firstRow; i < lastRow; i++) {		 // for alle slots fra firstRow til lastRow
-					weeklySchedule.getSchedule().get(i).set(col, event.getTitle() + "A"); // matrix[rad i ][col] = event.getName() + "A"		// A'en er for attending
+					schedule.get(i).set(col, event.getTitle() + "A"); // matrix[rad i ][col] = event.getName() + "A"		// A'en er for attending
 				}
 			}
 		}
@@ -352,11 +352,11 @@ public class Employee {
 					lastRow += 1;
 				}
 				for (int i = firstRow; i < lastRow; i++) {		 // for alle slots fra firstRow til lastRow
-					weeklySchedule.getSchedule().get(i).set(col, event.getTitle() + "U"); // matrix[rad i ][col] = event.getName() + "U"	// U'en er for attending
+					schedule.get(i).set(col, event.getTitle() + "U"); // matrix[rad i ][col] = event.getName() + "U"	// U'en er for attending
 				}
 			}			
 		}
-		return weeklySchedule;		// maa kanskje returnere hvilken uke i aaret det er ogsaa
+		return schedule;		// maa kanskje returnere hvilken uke i aaret det er ogsaa
 	}
 		
 	//skal gi en visning i konsollen av innevaerende ukes plan man-sï¿½n. UFERDIG!
