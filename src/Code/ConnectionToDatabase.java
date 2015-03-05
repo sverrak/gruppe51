@@ -37,12 +37,12 @@ public class ConnectionToDatabase {
 		ResultSetMetaData employeesmd = employeeSet.getMetaData();
 		metaData.add(employeesmd);
 		resultData.add(employeeSet);
-		WriteEmployeeToJava(metaData, resultData);
+		InitFetchEmployees(metaData, resultData);
 		return employees;
 		
 	}
 	
-	public void WriteEmployeeToJava (ArrayList<ResultSetMetaData> metaData1, ArrayList<ResultSet> resultData) throws SQLException{
+	public void InitFetchEmployees (ArrayList<ResultSetMetaData> metaData1, ArrayList<ResultSet> resultData) throws SQLException{
 		
 		int counter = 0;
 		

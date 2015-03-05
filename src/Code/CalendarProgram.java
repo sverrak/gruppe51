@@ -17,6 +17,7 @@ import java.util.Scanner;
 public class CalendarProgram {
 	private Connection con = null;
 	ConnectionToDatabase ctd;
+	private Boolean admin = false;
 	private List<Room> rooms;
 	private Room r1;
 	private Room r2;
@@ -311,8 +312,10 @@ public class CalendarProgram {
 			System.out.println("Telefonnummer:");
 			String telnum = user_input.nextLine();
 			int tlf = Integer.parseInt(telnum);
+			System.out.println("Make admin? (yes/no)");
+			admin = Boolean.parseBoolean(user_input.nextLine());
 			
-			Employee employee = new Employee(name, position, username, password, tlf);
+			Employee employee = new Employee(name, position, username, password, tlf, admin);
 			employees.add(employee);
 			
 			ctd.NewEmployee(con, employee);
