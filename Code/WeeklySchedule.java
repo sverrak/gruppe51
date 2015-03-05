@@ -43,7 +43,7 @@ public class WeeklySchedule {
 		Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 		int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);		// ukedagen i dag
 		
-		System.out.println("\tMandag  Tirsdag  Onsdag  Torsdag   Fredag  L�rdag  S�ndag");
+		System.out.println("\tSoendag  Mandag  Tirsdag  Onsdag  Torsdag   Fredag  Loerdag");
 		
 		
 		for (int i = 0; i < 10; i++) {
