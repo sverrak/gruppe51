@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 public class Employee {
+	private Boolean admin; // la til adminobjekt
 	private int employeeID;
 	private String name;
 	private String position;
@@ -25,7 +26,7 @@ public class Employee {
 	private List<Message> inbox;
 	
 	public Employee(String name, String position, String username,
-			String password, int telnum) {
+			String password, int telnum, Boolean admin) { // endret konstruktoren til Œ ta in admin(true/false)
 		super();
 	//	this.employeeID = employeeID;
 		this.name = name;
@@ -33,6 +34,7 @@ public class Employee {
 		this.username = username;
 		this.password = password;
 		this.telnum = telnum;
+		this.admin = admin;
 		this.inbox = new ArrayList<Message>();
 		groups = new ArrayList<Group>();
 		upcomingEvents = new ArrayList<Event>();
@@ -85,6 +87,13 @@ public class Employee {
 	public int getTelnum(){
 		return telnum;
 	}
+	public Boolean isAdmin(){
+		return admin;
+	}
+	public void setAdmin(Boolean admin){
+		this.admin = admin;
+	}
+	
 		
 	//Returnerer true hvis ansatt ble lagt til i gruppen
 	public void joinGroup(Group group){

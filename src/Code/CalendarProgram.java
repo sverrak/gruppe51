@@ -188,7 +188,7 @@ public class CalendarProgram {
 		try {
 			con = DriverManager.getConnection(host, username, password);
 			
-			System.out.println("Connection to database successful");
+			System.out.println("Connection to database successful!\n");
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -259,7 +259,7 @@ public class CalendarProgram {
 		
 		user_input = new Scanner(System.in);
 		username = "";
-		System.out.println("Hei");
+		System.out.println("Hei\n");
 		System.out.println("Har du bruker?");
 		
 		login_option = user_input.nextLine();

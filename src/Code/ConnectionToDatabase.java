@@ -33,7 +33,6 @@ public class ConnectionToDatabase {
 		
 		Statement stmt = null;
 		stmt = con.createStatement();
-		System.out.println("Funker");
 		ResultSet employeeSet = stmt.executeQuery(sporring);
 		ResultSetMetaData employeesmd = employeeSet.getMetaData();
 		metaData.add(employeesmd);
@@ -57,6 +56,7 @@ public class ConnectionToDatabase {
 			 String position = "";
 			 String username = "";
 			 int telnum = 0;
+			 Boolean admin = false;
 			  
 			  while (resultData.get(counter).next()) {
 			        for (int i = 1; i <= numberOfColumns; i++) {
@@ -79,8 +79,12 @@ public class ConnectionToDatabase {
 			          if (i==6){
 			        	  telnum = Integer.parseInt(columnValue);
 			          }
+			          if (i==7 && columnValue.equalsIgnoreCase("ja")){
+			        	  
+			        	  admin = true;
+			          }
 			        }
-			        	Employee i = new Employee(name, position, username, password, telnum);
+			        	Employee i = new Employee(name, position, username, password, telnum, admin);
 			        	employees.add(i);//Maa sorge for at nyEmployee-stringen har samme format som inn-parameterene til new Employee
 			      } 
 			  counter++;
@@ -103,7 +107,6 @@ public class ConnectionToDatabase {
 		preparedStatement.setInt(5, e.getTelnum()); // Her mŒ Employee.getUsername() benyttes
 		
 		preparedStatement.executeUpdate(); //Her oppdateres databasen	
-		System.out.println("En ny ansatt ble lagt til i databasen");
 		
 	}
 	
