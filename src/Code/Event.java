@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Event implements Comparable<Event>{
+	private int eventID;
 	private String title;
 	private Date startTime;
 	private Date endTime;
@@ -22,11 +23,12 @@ public class Event implements Comparable<Event>{
 	private static ArrayList<String> months = new ArrayList(Arrays.asList("jan","feb","mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"));
 	
 	
-	public Event(String title, Date startTime, Date endTime,
+	public Event(int eventID, String title, Date startTime, Date endTime,
 			String description, Employee creator) {
 		super();
 		setTitle(title);
 		this.creator = creator;
+		this.eventID = eventID;
 		//setTime(startTime, endTime);
 		this.startTime = startTime;
 		this.endTime = endTime;
@@ -89,6 +91,9 @@ public class Event implements Comparable<Event>{
 	public Room getRoom() {
 		return room;
 	}
+	public int getEventID(){
+		return eventID;
+	}
 	
 	public List<Employee> getPeopleInvited() {
 		return peopleInvited;
@@ -123,17 +128,14 @@ public class Event implements Comparable<Event>{
 		this.peopleInvited.add(employee);
 	}
 	
-	
 	// Dette er en hjelpemetode for employee.removeEvent() og Employee.cancelEvent() og boer ikke kalles andre steder enn der (da faar vi inkonsistens)
-	public void removeEmployee(Employee employee){
+	public boolean removeEmployee(Employee employee){
 		if (peopleInvited.contains(employee)){
-			peopleInvited.remove(employee);
-			
-		}if(peopleGoing.contains(employee)){
-			peopleGoing.remove(employee);
+			Message msg = new Message(employee, this.creator, "Endringen av eventen har gjort at jeg dessverre ikke kan delta", "Varsel om at jeg ikke kan delta");
+			msg.sendMessage();
+			return peopleInvited.remove(employee);
 		}
-		
-		
+		return false;
 	}
 	
 	@Override
@@ -161,39 +163,7 @@ public class Event implements Comparable<Event>{
 	
 	@Override
 	public int compareTo(Event event) {			// mistenker at det blir feil her. Kan v�re problem med � sammenlikne m�neder (de er jo ikke tall med denne implementasjonen)  
-		if(this.getYear().equals(event.getYear())){
-			if(this.getMonth().equals(event.getMonth())){
-				if(this.getDay().equals(event.getDay())){
-					if(this.getHour().equals(event.getHour())){
-						if(this.getMinute().equals(event.getMinute())){			// bl�ser i sekundforskjeller. Tidspunkt for events angis uansett ikke med mer enn minuttspresisjon
-							return 0;
-						} else if(Integer.parseInt(this.getMinute()) < Integer.parseInt(event.getMinute())){
-							return -1;
-						} else{
-							return 1;
-						}
-					} else if(Integer.parseInt(this.getHour()) < Integer.parseInt(event.getHour())){
-						return -1;
-					} else{
-						return 1;
-					}
-				} else if(Integer.parseInt(this.getDay()) < Integer.parseInt(event.getDay())){
-					return -1;
-				} else{
-					return 1;
-				}
-			} 
-	//		else if(Integer.parseInt(this.getMonth()) < Integer.parseInt(event.getMonth())){
-			else if(months.indexOf(this.getMonth()) < months.indexOf(event.getMonth())){
-				return -1;
-			} else{
-				return 1;
-			}
-		} else if(Integer.parseInt(this.getYear()) < Integer.parseInt(event.getYear())){
-			return -1;
-		} else{
-			return 1;
+		return this.getStartTime().compareTo(event.getStartTime());
 		}
-	}
 	
 }

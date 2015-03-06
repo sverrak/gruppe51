@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 
 public class Room {
-	private int roomID;
 	private String name;
 	private int capacity;
 	private String description;
@@ -14,7 +13,6 @@ public class Room {
 	
 	public Room(String name, int capacity, String description) {
 		super();
-	//	this.roomID = roomID;
 		this.name = name;
 		this.capacity = capacity;
 		this.description = description;
