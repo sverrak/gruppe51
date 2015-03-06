@@ -97,13 +97,8 @@ public class Employee {
 		
 	//Returnerer true hvis ansatt ble lagt til i gruppen
 	public void joinGroup(Group group){
-	//	try{
 			groups.add(group);
 			group.addEmployee(this);
-	//	} catch {
-	//		throw new IllegalStateException("Noe gikk galt i joinGroup()");
-	//	}
-	//	return true;
 	}
 
 // skal opprette nytt event med personen som inviterer som attending
@@ -321,27 +316,7 @@ public class Employee {
 	}
 	
 	public ArrayList<ArrayList<Object>> generateWeeklySchedule(int weekOfYear, int year){
-		//	WeeklySchedule weeklySchedule = new WeeklySchedule();	// tom matrise for timeplan opprettes hvor nummer paa uke i aaret er kjent
 			ArrayList<ArrayList<Object>> schedule = generateEmptySchedule();
-			// koden nedenfor fungerer for � generere denne ukas schedule
-	/*		Calendar cal = Calendar.getInstance();
-			cal.set(Calendar.HOUR_OF_DAY, 0); // ! clear would not reset the hour of day !
-			cal.clear(Calendar.MINUTE);
-			cal.clear(Calendar.SECOND);
-			cal.clear(Calendar.MILLISECOND);
-
-			// get start of this week in milliseconds
-			cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
-//			System.out.println("Start of this week:       " + cal.getTime());
-//			System.out.println("... in milliseconds:      " + cal.getTimeInMillis());
-			long timeStartWeek = cal.getTimeInMillis();
-			// start of the next week
-			cal.add(Calendar.WEEK_OF_YEAR, 1);
-//			System.out.println("Start of the next week:   " + cal.getTime());
-//			System.out.println("... in milliseconds:      " + cal.getTimeInMillis());
-			long timeEndWeek = cal.getTimeInMillis();
-			
-			*/
 			// Get calendar, clear it and set week number and year.
 			Calendar calendar = Calendar.getInstance();
 			calendar.clear();					// holder dette? Se ovenfor dersom insufficient
@@ -351,6 +326,7 @@ public class Employee {
 			calendar.add(Calendar.WEEK_OF_YEAR, 1);
 			long timeEndWeek = calendar.getTimeInMillis();
 			
+			// legger til eventsAttending i ukeplanen
 			for (Event event : eventsAttending) {
 				if (event.getStartTime().getTime() > timeStartWeek && event.getStartTime().getTime() < timeEndWeek){
 					int col = event.getStartTime().getDay() -1;					//	(index til kolonne i matrix) ma sjekke hvilken verdi hver dag retiurnerer
@@ -367,6 +343,7 @@ public class Employee {
 					}
 				}
 			}
+			// legger til upcomingEvents i ukeplanen
 			for (Event event : upcomingEvents) {
 				if (event.getStartTime().getTime() > timeStartWeek && event.getStartTime().getTime() < timeEndWeek){
 					int col = event.getStartTime().getDay() -1;					//	(index til kolonne i matrix) ma sjekke hvilken verdi hver dag retiurnerer
@@ -387,7 +364,7 @@ public class Employee {
 		}
 
 	
-	//skal gi en visning i konsollen av innevaerende ukes plan man-s�n. UFERDIG!
+	//skal gi en visning i konsollen av innevaerende ukes plan soen-loer. UFERDIG!
 		public void printWeeklySchedule(){
 			Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 			int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);		// ukedagen i dag
