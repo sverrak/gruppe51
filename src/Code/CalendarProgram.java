@@ -18,13 +18,6 @@ public class CalendarProgram {
 	private Connection con = null;
 	public ConnectionToDatabase ctd;
 	private List<Room> rooms;
-	private Room r1;
-	private Room r2;
-	private Room r3;
-	private Room r4;
-	private Room r5;
-	private Room r6;
-	private Room r7;
 	private	List<Employee> employees;
 	private Employee biti;
 	private Employee sverre;
@@ -383,13 +376,13 @@ public class CalendarProgram {
 	
 	private void init2() {
 	
-		r1 = new Room(1, "R1", 500, "Fint rom1");
-		r2 = new Room(2, "R2", 400, "Fint rom2");
-		r3 = new Room(3, "R3", 300, "Fint rom3");
-		r4 = new Room(4, "R4", 200, "Fint rom4");
-		r5 = new Room(5, "R5", 100, "Fint rom5");
-		r6 = new Room(6, "R6", 50, "Fint rom6");
-		r7 = new Room(7, "R7", 60, "Fint rom7");
+		Room r1 = new Room(1, "R1", 500, "Fint rom1");
+		Room r2 = new Room(2, "R2", 400, "Fint rom2");
+		Room r3 = new Room(3, "R3", 300, "Fint rom3");
+		Room r4 = new Room(4, "R4", 200, "Fint rom4");
+		Room r5 = new Room(5, "R5", 100, "Fint rom5");
+		Room r6 = new Room(6, "R6", 50, "Fint rom6");
+		Room r7 = new Room(7, "R7", 60, "Fint rom7");
 		rooms = new ArrayList<Room>();
 		addRoom(r1);
 		addRoom(r2);
