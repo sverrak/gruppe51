@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
+import Code.Event;
+
 public class Event implements Comparable<Event>{
 	private int eventID;
 	private String title;
@@ -162,8 +164,8 @@ public class Event implements Comparable<Event>{
 	}
 	
 	@Override
-	public int compareTo(Event event) {			// mistenker at det blir feil her. Kan v�re problem med � sammenlikne m�neder (de er jo ikke tall med denne implementasjonen)  
-		return this.getStartTime().compareTo(event.getStartTime());
-		}
+	public int compareTo(Event event) {	
+		return (this.startTime.getTime() < event.getStartTime().getTime() ? -1: 1);
+	}
 	
 }
