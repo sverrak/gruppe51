@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Event implements Comparable<Event>{
-	private int eventID;
 	private String title;
 	private Date startTime;
 	private Date endTime;
@@ -23,12 +22,11 @@ public class Event implements Comparable<Event>{
 	private static ArrayList<String> months = new ArrayList(Arrays.asList("jan","feb","mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"));
 	
 	
-	public Event(int eventID, String title, Date startTime, Date endTime,
+	public Event(String title, Date startTime, Date endTime,
 			String description, Employee creator) {
 		super();
 		setTitle(title);
 		this.creator = creator;
-		this.eventID = eventID;
 		//setTime(startTime, endTime);
 		this.startTime = startTime;
 		this.endTime = endTime;
@@ -90,9 +88,6 @@ public class Event implements Comparable<Event>{
 
 	public Room getRoom() {
 		return room;
-	}
-	public int getEventID(){
-		return eventID;
 	}
 	
 	public List<Employee> getPeopleInvited() {
@@ -162,16 +157,40 @@ public class Event implements Comparable<Event>{
 	}
 	
 	@Override
-	public int compareTo(Event event) {
-		return (this.getStartTime().getTime() < event.getStartTime().getTime() ? -1 : 1);
-	}
-	
-	/*
-	@Override
 	public int compareTo(Event event) {			// mistenker at det blir feil her. Kan v�re problem med � sammenlikne m�neder (de er jo ikke tall med denne implementasjonen)  
-		return this.getStartTime().compareTo(event.getStartTime());
+		if(this.getYear().equals(event.getYear())){
+			if(this.getMonth().equals(event.getMonth())){
+				if(this.getDay().equals(event.getDay())){
+					if(this.getHour().equals(event.getHour())){
+						if(this.getMinute().equals(event.getMinute())){			// bl�ser i sekundforskjeller. Tidspunkt for events angis uansett ikke med mer enn minuttspresisjon
+							return 0;
+						} else if(Integer.parseInt(this.getMinute()) < Integer.parseInt(event.getMinute())){
+							return -1;
+						} else{
+							return 1;
+						}
+					} else if(Integer.parseInt(this.getHour()) < Integer.parseInt(event.getHour())){
+						return -1;
+					} else{
+						return 1;
+					}
+				} else if(Integer.parseInt(this.getDay()) < Integer.parseInt(event.getDay())){
+					return -1;
+				} else{
+					return 1;
+				}
+			} 
+	//		else if(Integer.parseInt(this.getMonth()) < Integer.parseInt(event.getMonth())){
+			else if(months.indexOf(this.getMonth()) < months.indexOf(event.getMonth())){
+				return -1;
+			} else{
+				return 1;
+			}
+		} else if(Integer.parseInt(this.getYear()) < Integer.parseInt(event.getYear())){
+			return -1;
+		} else{
+			return 1;
 		}
-	
-	*/
+	}
 	
 }

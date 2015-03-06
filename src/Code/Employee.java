@@ -25,7 +25,7 @@ public class Employee {
 	private int telnum;
 	private List<Message> inbox;
 	
-	public Employee(int employeeID, String name, String position, String username,
+	public Employee(String name, String position, String username,
 			String password, int telnum, Boolean admin) { // endret konstruktoren til Œ ta in admin(true/false)
 		super();
 	//	this.employeeID = employeeID;
@@ -35,7 +35,6 @@ public class Employee {
 		this.password = password;
 		this.telnum = telnum;
 		this.admin = admin;
-		this.employeeID = employeeID;
 		this.inbox = new ArrayList<Message>();
 		groups = new ArrayList<Group>();
 		upcomingEvents = new ArrayList<Event>();
@@ -88,18 +87,11 @@ public class Employee {
 	public int getTelnum(){
 		return telnum;
 	}
-	public Boolean isAdmin(){		
-		return this.admin;
+	public Boolean isAdmin(){
+		return admin;
 	}
-	public void setAdmin(Employee employee){
-		if (this.admin == true){
-			employee.admin = true;
-		}
-	}
-	public void removeAdmin(Employee employee){
-		if (this.admin == true){
-			employee.admin = false;
-		}
+	public void setAdmin(Boolean admin){
+		this.admin = admin;
 	}
 	
 		
@@ -131,9 +123,9 @@ public class Employee {
 			}
 		}
 	
-	public Event createEvent(int eventID, String title, Date startTime, Date endTime, String description){
+	public Event createEvent(String title, Date startTime, Date endTime, String description){
 		if (eventsAttending.size() == 0 || isAvailable(startTime, endTime)){
-			Event event = new Event(eventID, title, startTime, endTime, description, this);
+			Event event = new Event(title, startTime, endTime, description, this);
 			eventsAttending.add(event);
 			return event;
 		}
@@ -312,34 +304,73 @@ public class Employee {
 		return matrix;
 	}
 	
-	// UFERDIG! itererer over matrisa og fyller inn event-navn der employee er opptatt. Alle andre felter forblir 0
-	public WeeklySchedule generateWeeklySchedule(){
-		WeeklySchedule weeklySchedule = new WeeklySchedule();	// tom matrise for timeplan opprettes hvor nummer pï¿½ uke i ï¿½ret er kjent
-		
-		
-	//	Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-	//	calendar.set(200, 2, 19, 18, 30);		
-		
-		for (Event event : eventsAttending) {
-			// hvis event.startTidspunkt er denne uka
-				// col = event.getDaytOfWeek -1 							(index til kolonne i matrix)
-				// firstRow = (event.getStartTime().getHour() - 8)*0.5 		(index til rad i matrix)
-				// lastRow = (event.getEndTime().getHour() - 8)*0.5 		(index til rad i matrix
-				// for alle slots fra firstRow til lastRow
-					// matrix[rad i ][col] = event.getName() + "A"		// A'en er for attending
+	public ArrayList<ArrayList<Object>> generateWeeklySchedule(int weekOfYear, int year){
+		//	WeeklySchedule weeklySchedule = new WeeklySchedule();	// tom matrise for timeplan opprettes hvor nummer paa uke i aaret er kjent
+			ArrayList<ArrayList<Object>> schedule = generateEmptySchedule();
+			// koden nedenfor fungerer for å generere denne ukas schedule
+	/*		Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.HOUR_OF_DAY, 0); // ! clear would not reset the hour of day !
+			cal.clear(Calendar.MINUTE);
+			cal.clear(Calendar.SECOND);
+			cal.clear(Calendar.MILLISECOND);
+
+			// get start of this week in milliseconds
+			cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
+//			System.out.println("Start of this week:       " + cal.getTime());
+//			System.out.println("... in milliseconds:      " + cal.getTimeInMillis());
+			long timeStartWeek = cal.getTimeInMillis();
+			// start of the next week
+			cal.add(Calendar.WEEK_OF_YEAR, 1);
+//			System.out.println("Start of the next week:   " + cal.getTime());
+//			System.out.println("... in milliseconds:      " + cal.getTimeInMillis());
+			long timeEndWeek = cal.getTimeInMillis();
+			
+			*/
+			// Get calendar, clear it and set week number and year.
+			Calendar calendar = Calendar.getInstance();
+			calendar.clear();					// holder dette? Se ovenfor dersom insufficient
+			calendar.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+			calendar.set(Calendar.YEAR, year);
+			long timeStartWeek = calendar.getTimeInMillis();
+			calendar.add(Calendar.WEEK_OF_YEAR, 1);
+			long timeEndWeek = calendar.getTimeInMillis();
+			
+			for (Event event : eventsAttending) {
+				if (event.getStartTime().getTime() > timeStartWeek && event.getStartTime().getTime() < timeEndWeek){
+					int col = event.getStartTime().getDay() -1;					//	(index til kolonne i matrix) ma sjekke hvilken verdi hver dag retiurnerer
+					int firstRow = (event.getStartTime().getHours() - 8) * 2; 	//	(index til rad i matrix)
+					if (event.getStartTime().getMinutes() == 30){
+						firstRow += 1;
+					}
+					int lastRow = (event.getEndTime().getHours() - 8) * 2; 	//	(index til rad i matrix
+					if (event.getEndTime().getMinutes() == 30){
+						lastRow += 1;
+					}
+					for (int i = firstRow; i < lastRow; i++) {		 // for alle slots fra firstRow til lastRow
+						schedule.get(i).set(col, event.getTitle() + "A"); // matrix[rad i ][col] = event.getName() + "A"		// A'en er for attending
+					}
+				}
+			}
+			for (Event event : upcomingEvents) {
+				if (event.getStartTime().getTime() > timeStartWeek && event.getStartTime().getTime() < timeEndWeek){
+					int col = event.getStartTime().getDay() -1;					//	(index til kolonne i matrix) ma sjekke hvilken verdi hver dag retiurnerer
+					int firstRow = (event.getStartTime().getHours() - 8) * 2; 	//	(index til rad i matrix)
+					if (event.getStartTime().getMinutes() == 30){
+						firstRow += 1;
+					}
+					int lastRow = (event.getEndTime().getHours() - 8) * 2; 	//	(index til rad i matrix
+					if (event.getEndTime().getMinutes() == 30){
+						lastRow += 1;
+					}
+					for (int i = firstRow; i < lastRow; i++) {		 // for alle slots fra firstRow til lastRow
+						schedule.get(i).set(col, event.getTitle() + "U"); // matrix[rad i ][col] = event.getName() + "U"	// U'en er for attending
+					}
+				}			
+			}
+			return schedule;		// maa kanskje returnere hvilken uke i aaret det er ogsaa
 		}
-		for (Event event : upcomingEvents) {
-			// hvis event.startTidspunkt er denne uka
-				// col = event.getDaytOfWeek -1 							(index til kolonne i matrix)
-				// firstRow = (event.getStartTime().getHour() - 8)*0.5 		(index til rad i matrix)
-				// lastRow = (event.getEndTime().getHour() - 8)*0.5 		(index til rad i matrix
-				// for alle slots fra firstRow til lastRow
-					// if matrix[rad i ][col] != 0													(if slot not filled)
-						// matrix[rad i ][col] = event.getName() + "U"		// U'en er for upcoming/unanswered
-		}
-		return weeklySchedule;		// maa kanskje returnere hvilken uke i ï¿½ret det er ogsï¿½
-	}
-		
+			
+	
 	//skal gi en visning i konsollen av innevaerende ukes plan man-sï¿½n. UFERDIG!
 		public void printWeeklySchedule(){
 			Calendar calendar = Calendar.getInstance(TimeZone.getDefault());

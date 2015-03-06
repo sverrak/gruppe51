@@ -7,8 +7,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-// denne klassen utgår, men lar den ligge slik at vi kan se den.
-
 public class WeeklySchedule {
 	
 	private ArrayList<ArrayList<Object>> schedule;
@@ -35,6 +33,9 @@ public class WeeklySchedule {
 	public int getWeekOfYear() {
 		return weekOfYear;
 	}
+	public int getYear() {
+		return year;
+	}
 	
 	
 /*	@Override
@@ -42,7 +43,7 @@ public class WeeklySchedule {
 		Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 		int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);		// ukedagen i dag
 		
-		System.out.println("\tMandag  Tirsdag  Onsdag  Torsdag   Fredag  Lï¿½rdag  Sï¿½ndag");
+		System.out.println("\tSoendag  Mandag  Tirsdag  Onsdag  Torsdag   Fredag  Loerdag");
 		
 		
 		for (int i = 0; i < 10; i++) {
