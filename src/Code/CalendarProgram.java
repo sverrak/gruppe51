@@ -212,7 +212,7 @@ public class CalendarProgram {
 	public Employee login() throws SQLException{
 		
 		String sporring = "SELECT * FROM Employee";
-		employees = ctd.Sporring(con, sporring);
+		this.employees = ctd.Sporring(con, sporring);
 		
 		user_input = new Scanner(System.in);
 		username = "";
@@ -269,7 +269,7 @@ public class CalendarProgram {
 		System.out.println("Telefonnummer:");
 		String telnum = user_input.nextLine();
 		int tlf = Integer.parseInt(telnum);
-		System.out.println("Make admin? (yes/no)");
+		System.out.println("Make admin? (true/false)");
 		admin = Boolean.parseBoolean(user_input.nextLine());
 
 		
@@ -291,7 +291,7 @@ public class CalendarProgram {
 		System.out.println("Du har " + current_user.countUnreadMessages() + " uleste meldinger i innboksen din\n");
 		while(current_user != null){
 			System.out.println("Hva vil du gjøre?");
-			if(current_user.isAdmin()){
+			if(current_user.isAdmin() == true){
 				System.out.println("1: se alle upcoming events[goingTo] | 2: legg til ny event | 3: åpne innboks | 4: administrer dine events | 5: legg til flere brukere | 9: quit");				
 			} else{
 				System.out.println("1: se alle upcoming events[goingTo] | 2: legg til ny event | 3: åpne innboks | 4: administrer dine events | 9: quit");
