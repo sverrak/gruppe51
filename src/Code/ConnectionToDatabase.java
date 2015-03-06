@@ -108,10 +108,10 @@ public class ConnectionToDatabase {
 		PreparedStatement preparedStatement = null;
 		String sql = "INSERT INTO Event (eventID, title, startTime, endTime, description, roomID, creator)" + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 		preparedStatement = con.prepareStatement(sql);
-		preparedStatement.setInt(1, e.getEventID); //Her må Event.getEventID() benyttes for hvert enkelt event
-		preparedStatement.setString(2, "Mote"); //Her må Event.getTitle() benyttes
-		preparedStatement.setTime(3, 10:30); //Her må Event.getStartTime() benyttes
-		preparedStatement.setTime(4, 11:30); //Her må Event.getEndTime() benyttes
+		preparedStatement.setInt(1, e.getEventID()); //Her må Event.getEventID() benyttes for hvert enkelt event
+		preparedStatement.setString(2, e.getTitle()); //Her må Event.getTitle() benyttes
+		preparedStatement.setTimeStamp(3, e.getStartTime()); //Her må Event.getStartTime() benyttes
+		preparedStatement.set(4, e.getEndTime()); //Her må Event.getEndTime() benyttes
 		preparedStatement.setString(5, "Klientmote"); // Her må Event.getDescription() benyttes
 		preparedStatement.setString(6, "Event123"); // Her må Event.getRoomID() benyttes
 		
