@@ -84,13 +84,13 @@ public class CalendarProgram {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//finner strste eventID. Hvis eventlisten er tom, settes den til 1. 
+		/*finner strste eventID. Hvis eventlisten er tom, settes den til 1. 
 		int eventID = 1;
 		if(events.size() > 0 ){
 			eventID = events.get(events.size()-1).getEventID() + 1;			
-		}
+		}*/
 		//oppretter event
-		Event newEvent = new Event(eventID, title, startTime, endTime, description, employee);
+		Event newEvent = new Event(title, startTime, endTime, description, employee);
 		
 		//finner ledige rom
 		List<Room> availableRooms = findLocation(startTime, endTime, capacity);
@@ -276,7 +276,7 @@ public class CalendarProgram {
 		admin = Boolean.parseBoolean(user_input.nextLine());
 
 		
-		Employee employee = new Employee(employeeID, name, position, username, password, tlf, admin);
+		Employee employee = new Employee(name, position, username, password, tlf, admin);
 		employees.add(employee);
 		
 		ctd.NewEmployee(con, employee);
