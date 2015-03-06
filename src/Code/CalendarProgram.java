@@ -16,16 +16,15 @@ import java.util.Scanner;
 
 public class CalendarProgram {
 	private Connection con = null;
-	ConnectionToDatabase ctd;
-	private Boolean admin = false;
+	public ConnectionToDatabase ctd;
 	private List<Room> rooms;
 	private	List<Employee> employees;
 	private Employee current_user;
 	
-	//login-felter
-	private String login_option;
+	//login-felter. Legger det til her siden de brukes i både createNewUser() og i login()
 	private String username;
 	private String password;
+	private Boolean admin;
 	
 	private Scanner user_input;
 	
@@ -204,42 +203,9 @@ public class CalendarProgram {
 	}
 	
 	private void init() {
-		r1 = new Room("R1", 500, "Fint rom1");
-		r2 = new Room("R2", 400, "Fint rom2");
-		r3 = new Room("R3", 300, "Fint rom3");
-		r4 = new Room("R4", 200, "Fint rom4");
-		r5 = new Room("R5", 100, "Fint rom5");
-		r6 = new Room("R6", 50, "Fint rom6");
-		r7 = new Room("R7", 60, "Fint rom7");
-		rooms = new ArrayList<Room>();
-		addRoom(r1);
-		addRoom(r2);
-		addRoom(r3);
-		addRoom(r4);
-		addRoom(r5);
-		addRoom(r6);
-		addRoom(r7);
-		
-		biti = new Employee("Bendik", "Junior", "biti", "bata", 123, false);
-		sverre = new Employee("Sverre", "Senior", "sverrak", "heiia", 45884408, true);
-		yolo = new Employee("Jola", "Junior+", "bata", "biti", 123, false);
 		current_user = null;
-		
 		employees = new ArrayList<Employee>();
-		addEmployee(biti);
-		addEmployee(sverre);
-		addEmployee(yolo);
-
-		Date dato1 = new Date(115, 2, 19, 19, 0, 0);
-		Date dato2 = new Date(115, 2, 19, 21, 0, 0);
-		Date dato3 = new Date(116, 2, 19, 18, 30, 0);
-		Date dato4 = new Date(116, 2, 19, 20, 30, 0);
-
 		events = new ArrayList<Event>();
-		Event birthday = new Event("Bursdag", dato1, dato2, "halla paarae", biti);
-		Event birthdayAgain = new Event("Bursdag", dato3, dato4, "halla paasan", biti);
-		biti.addEvent(birthday);
-		biti.addEvent(birthdayAgain);
 	}
 	
 	
