@@ -25,7 +25,7 @@ public class Employee {
 	private int telnum;
 	private List<Message> inbox;
 	
-	public Employee(String name, String position, String username,
+	public Employee(int employeeID, String name, String position, String username,
 			String password, int telnum, Boolean admin) { // endret konstruktoren til Œ ta in admin(true/false)
 		super();
 	//	this.employeeID = employeeID;
@@ -35,6 +35,7 @@ public class Employee {
 		this.password = password;
 		this.telnum = telnum;
 		this.admin = admin;
+		this.employeeID = employeeID;
 		this.inbox = new ArrayList<Message>();
 		groups = new ArrayList<Group>();
 		upcomingEvents = new ArrayList<Event>();
@@ -87,11 +88,18 @@ public class Employee {
 	public int getTelnum(){
 		return telnum;
 	}
-	public Boolean isAdmin(){
-		return admin;
+	public Boolean isAdmin(){		
+		return this.admin;
 	}
-	public void setAdmin(Boolean admin){
-		this.admin = admin;
+	public void setAdmin(Employee employee){
+		if (this.admin == true){
+			employee.admin = true;
+		}
+	}
+	public void removeAdmin(Employee employee){
+		if (this.admin == true){
+			employee.admin = false;
+		}
 	}
 	
 		
