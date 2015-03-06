@@ -18,11 +18,11 @@ public class Employee {
 	private String position;
 	private String username;
 	private String password;
+	private int telnum;
 	private Collection<Group> groups;
 	private List<Event> upcomingEvents;		//sortert paa startTime
 	private List<Event> declinedEvents;	//boer ogs� sorteres paa startTime
 	private List<Event> eventsAttending;		// sortert paa startTime. Maa gaa over alt og kanskje endre fra upcomingEvents til eventsAttending
-	private int telnum;
 	private List<Message> inbox;
 	
 	public Employee(String name, String position, String username,
@@ -369,7 +369,7 @@ public class Employee {
 			}
 			return schedule;		// maa kanskje returnere hvilken uke i aaret det er ogsaa
 		}
-			
+
 	
 	//skal gi en visning i konsollen av innevaerende ukes plan man-s�n. UFERDIG!
 		public void printWeeklySchedule(){

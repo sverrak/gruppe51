@@ -98,7 +98,8 @@ public class ConnectionToDatabase {
 		//Hvis vedkommende allerede eksisterer,  ignorer oppdatering
 		
 		PreparedStatement preparedStatement = null;
-		String sql = "INSERT INTO Employee (name, password, position, username, telnum)" + " VALUES (?, ?, ?, ?, ?)";
+
+		String sql = "INSERT INTO Employee (name, password, position, username, telnum, admin)" + " VALUES (?, ?, ?, ?, ?, ?)";
 		preparedStatement = con.prepareStatement(sql);
 		preparedStatement.setString(1, e.getName()); //Her må Employee.getEmployeeID() benyttes for hver enkelt employee
 		preparedStatement.setString(2, e.getPassword()); //Her må Employee.getName() benyttes
