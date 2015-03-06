@@ -12,7 +12,7 @@ public class Room {
 	private String description;
 	private List<Event> roomSchedule;
 	
-	public Room(int roomID, String name, int capacity, String description) {
+	public Room(String name, int capacity, String description) {
 		super();
 	//	this.roomID = roomID;
 		this.name = name;
@@ -25,9 +25,6 @@ public class Room {
 	}
 	public void setName(String name) {
 		this.name = name;
-	}
-	public int getRoomID(){
-		return roomID;
 	}
 	public int getCapacity() {
 		return capacity;

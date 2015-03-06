@@ -86,7 +86,7 @@ public class ConnectionToDatabase {
 	public void NewEmployee(Connection con, Employee e) throws SQLException{
 			
 		PreparedStatement preparedStatement = null;
-		String sql = "INSERT INTO Employee (name, password, position, username, telnum, admin)" + " VALUES (?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO Employee (name, password, position, username, telnum, admin)" + " VALUES (?, ?, ?, ?, ?, ?, ?)";
 		preparedStatement = con.prepareStatement(sql);
 		// preparedStatement.setInt(1, e.getEmployeeID()); //Her må Employee.getEmployeeID() benyttes for hver enkelt employee
 		preparedStatement.setString(1, e.getName()); //Her må Employee.getEmployeeID() benyttes for hver enkelt employee

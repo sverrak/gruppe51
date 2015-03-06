@@ -18,15 +18,15 @@ public class Employee {
 	private String position;
 	private String username;
 	private String password;
-	private int telnum;
 	private Collection<Group> groups;
 	private List<Event> upcomingEvents;		//sortert paa startTime
 	private List<Event> declinedEvents;	//boer ogs� sorteres paa startTime
 	private List<Event> eventsAttending;		// sortert paa startTime. Maa gaa over alt og kanskje endre fra upcomingEvents til eventsAttending
+	private int telnum;
 	private List<Message> inbox;
 	
-	public Employee(int employeeID, String name, String position, String username,
-			String password, int telnum, Boolean admin) { // endret konstruktoren til � ta in admin(true/false)
+	public Employee(String name, String position, String username,
+			String password, int telnum, Boolean admin) { // endret konstruktoren til � ta in admin(true/false)
 		super();
 	//	this.employeeID = employeeID;
 		this.name = name;
@@ -35,7 +35,6 @@ public class Employee {
 		this.password = password;
 		this.telnum = telnum;
 		this.admin = admin;
-		this.employeeID = employeeID;
 		this.inbox = new ArrayList<Message>();
 		groups = new ArrayList<Group>();
 		upcomingEvents = new ArrayList<Event>();
@@ -88,18 +87,11 @@ public class Employee {
 	public int getTelnum(){
 		return telnum;
 	}
-	public Boolean isAdmin(){		
-		return this.admin;
+	public Boolean isAdmin(){
+		return admin;
 	}
-	public void setAdmin(Employee employee){
-		if (this.admin == true){
-			employee.admin = true;
-		}
-	}
-	public void removeAdmin(Employee employee){
-		if (this.admin == true){
-			employee.admin = false;
-		}
+	public void setAdmin(Boolean admin){
+		this.admin = admin;
 	}
 	
 		
@@ -137,7 +129,7 @@ public class Employee {
 			eventsAttending.add(event);
 			return event;
 		}
-		System.out.println("Du er opptatt p� tidspunktet. " + title + " ble ikke opprettet.");
+		System.out.println("Du er opptatt p� tidspunktet. " + title + " ble ikke opprettet.");
 		return null;
 	}
 	
@@ -185,28 +177,21 @@ public class Employee {
 		}
 		return false;
 	}
-	// Ikkke ferdig
+	// Ikke ferdig
 	public boolean cancelEvent(Event event, String reason){
-		
 		if (event.getCreator() != this){
 			return false;
-		}		
-/*		for (Employee employee : event.getPeopleInvited()) {
-			employee.removeEvent(event);
 		}
-		*/	
+		informAboutCancellation(event, reason);
 		
-		for (int i = event.getPeopleInvited().size(); i < -1; i--) {
+		for (int i = event.getPeopleInvited().size(); i < -1; i--) {			
 			Employee employee = event.getPeopleInvited().get(i);
-			employee.removeEvent(event);
+			employee.removeEvent(event, false);
 		}
-/*		for (Employee employee : event.getPeopleDeclined()) {
-			employee.removeEvent(event);
-		}
-	*/
-		for (int i = event.getPeopleInvited().size(); i < -1; i--) {
-			Employee employee = event.getPeopleInvited().get(i);
-			employee.removeEvent(event);
+		
+		for (int i = event.getPeopleGoing().size(); i < -1; i--) {			
+			Employee employee = event.getPeopleGoing().get(i);
+			employee.removeEvent(event, false);
 		}
 		
 		if (event.getRoom()!= null){
@@ -214,7 +199,7 @@ public class Employee {
 		}
 		return true;
 	}
-	
+
 	//vet ikke om dette er lurt, men proever
 	public void reactOnUpdate(Event event, String attribute){
 		System.out.println("Det har skjedd en endring av ");
@@ -222,11 +207,29 @@ public class Employee {
 		System.out.println("\n + oensker du aa fjerne eventen paa bakgrunn av dette? (true/false)");
 		Scanner user_input = new Scanner(System.in);
 		
-		Boolean answer = user_input.nextBoolean();
-		if(answer){
-			removeEvent(event);			
+		String answer = user_input.nextLine();
+		if(answer.equals("true")){
+			removeEvent(event, true);
+			informAboutCantParticipate(event, attribute);
 		}
 		user_input.close();
+	}
+	
+	//informerer creator om at vedkommende ikke kan delta paa eventen
+	private void informAboutCantParticipate(Event event, String reason){
+		Message msg = new Message(this, event.getCreator(), "Jeg kan dessverre ikke delta pga " + reason, "Avmelding på " + event.getTitle());
+		msg.sendMessage();
+	}
+	
+	private void informAboutCancellation(Event event, String reason){
+		for (Employee participant : event.getPeopleGoing()) {
+			Message msg = new Message(this, participant, "Jeg har sett meg nodt til å avlyse eventen pga " + reason, event.getTitle() + " er avlyst.");
+			msg.sendMessage();
+		}
+		for (Employee participant : event.getPeopleInvited()) {
+			Message msg = new Message(this, participant, "Jeg har sett meg nodt til å avlyse eventen pga " + reason, event.getTitle() + " er avlyst.");
+			msg.sendMessage();
+		}
 	}
 	
 	public void printInbox(){
@@ -244,14 +247,17 @@ public class Employee {
 		return inbox;
 	}
 	
-	// Dette fjerner employeens deltakelse paa eventen
-	private void removeEvent(Event event){
+	// Dette fjerner employeens deltakelse paa eventen. 
+	private void removeEvent(Event event, Boolean isOnDemandFromParticipant){
 		if (upcomingEvents.contains(event)){
 			upcomingEvents.remove(event);
-		} if (eventsAttending.contains(event)){	// dersom feil oppst�r, kan vi gj�re denne til ren 'if'
+		} 
+		if (eventsAttending.contains(event)){	// dersom feil oppst�r, kan vi gj�re denne til ren 'if'
 			eventsAttending.remove(event);
 		}
-		event.removeEmployee(this);
+		if(isOnDemandFromParticipant){			
+			event.removeEmployee(this);
+		}
 	}
 		
 	public boolean inviteEmployeeToEvent(Employee employee, Event event){
@@ -289,6 +295,8 @@ public class Employee {
 		this.inbox.add(message);	
 	}
 	
+	
+	// Ikke implementert ferdig. Her må vi finne en annen løsning på hvordan vi gjør removeEvent(). Per nå skrives en melding til 
 	public boolean withdrawInvitation(Employee employee, Event event){
 		if (event.getCreator() != this){
 			return false;
@@ -296,7 +304,7 @@ public class Employee {
 		if(! (employee.getUpcomingEvents().contains(event) || employee.getEventsAttending().contains(event))){
 			return false;
 		}
-		employee.removeEvent(event);
+		employee.removeEvent(event, false);
 		return true;
 	}
 	
