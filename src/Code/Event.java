@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Event implements Comparable<Event>{
+	private int eventID;
 	private String title;
 	private Date startTime;
 	private Date endTime;
@@ -22,11 +23,12 @@ public class Event implements Comparable<Event>{
 	private static ArrayList<String> months = new ArrayList(Arrays.asList("jan","feb","mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"));
 	
 	
-	public Event(String title, Date startTime, Date endTime,
+	public Event(int eventID, String title, Date startTime, Date endTime,
 			String description, Employee creator) {
 		super();
 		setTitle(title);
 		this.creator = creator;
+		this.eventID = eventID;
 		//setTime(startTime, endTime);
 		this.startTime = startTime;
 		this.endTime = endTime;
@@ -88,6 +90,9 @@ public class Event implements Comparable<Event>{
 
 	public Room getRoom() {
 		return room;
+	}
+	public int getEventID(){
+		return eventID;
 	}
 	
 	public List<Employee> getPeopleInvited() {

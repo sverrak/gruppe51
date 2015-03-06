@@ -14,15 +14,7 @@ import java.util.Scanner;
 import java.util.Collection;
 
 public class ConnectionToDatabase {
-	 /* CalendarProgram cp1 = null;
-	  private Connection con = null;
-	  private Statement stmt1 = null;
-	  private Statement stmt2 = null;
-	  private Statement stmt3 = null;
-	  private Statement stmt4 = null;
-	  private Statement stmt5 = null;
-	  private PreparedStatement preparedStatement = null; */
-	  private ResultSet resultSet = null; 
+ 
 	  private ArrayList<ResultSetMetaData> metaData = new ArrayList<ResultSetMetaData>();
 	  private ArrayList<ResultSet> resultData = new ArrayList<ResultSet>();	
 	  private List<Employee> employees = new ArrayList<Employee>();
@@ -79,12 +71,11 @@ public class ConnectionToDatabase {
 			          if (i==6){
 			        	  telnum = Integer.parseInt(columnValue);
 			          }
-			          if (i==7 && columnValue.equalsIgnoreCase("ja")){
-			        	  
+			          if (i==7 && columnValue.equalsIgnoreCase("true")){	        	  
 			        	  admin = true;
 			          }
 			        }
-			        	Employee i = new Employee(name, position, username, password, telnum, admin);
+			        	Employee i = new Employee(employeeID, name, position, username, password, telnum, admin);
 			        	employees.add(i);//Maa sorge for at nyEmployee-stringen har samme format som inn-parameterene til new Employee
 			      } 
 			  counter++;
@@ -93,31 +84,31 @@ public class ConnectionToDatabase {
 	
 	
 	public void NewEmployee(Connection con, Employee e) throws SQLException{
-		
-		//Trenger en for-løkke som itererer gjennom alle eksisterende employees i selskapet og skriver de til databasen
-		//Hvis vedkommende allerede eksisterer,  ignorer oppdatering
-		
+			
 		PreparedStatement preparedStatement = null;
-		String sql = "INSERT INTO Employee (name, password, position, username, telnum)" + " VALUES (?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO Employee (employeeID, name, password, position, username, telnum, admin)" + " VALUES (?, ?, ?, ?, ?, ?, ?)";
 		preparedStatement = con.prepareStatement(sql);
-		preparedStatement.setString(1, e.getName()); //Her må Employee.getEmployeeID() benyttes for hver enkelt employee
-		preparedStatement.setString(2, e.getPassword()); //Her må Employee.getName() benyttes
-		preparedStatement.setString(3, e.getPosition()); //Her må Employee.getPassword() benyttes
-		preparedStatement.setString(4, e.getUsername()); //Her må Employee.getPosition() benyttes
-		preparedStatement.setInt(5, e.getTelnum()); // Her må Employee.getUsername() benyttes
+		preparedStatement.setInt(1, e.getEmployeeID()); //Her må Employee.getEmployeeID() benyttes for hver enkelt employee
+		preparedStatement.setString(2, e.getName()); //Her må Employee.getEmployeeID() benyttes for hver enkelt employee
+		preparedStatement.setString(3, e.getPassword()); //Her må Employee.getName() benyttes
+		preparedStatement.setString(4, e.getPosition()); //Her må Employee.getPassword() benyttes
+		preparedStatement.setString(5, e.getUsername()); //Her må Employee.getPosition() benyttes
+		preparedStatement.setInt(6, e.getTelnum()); // Her må Employee.getUsername() benyttes
+		preparedStatement.setString(7, e.isAdmin().toString()); // Her må Employee.getUsername() benyttes
 		
 		preparedStatement.executeUpdate(); //Her oppdateres databasen	
 		
 	}
 	
-/*	public void WriteEventToDatabase() throws SQLException{
+	public void WriteEventToDatabase(Connection con, Event e) throws SQLException{
 		
 		//Trenger en for-løkke som itererer gjennom alle eksisterende events i selskapet og skriver de til databasen
 		//Hvis eventet allerede eksisterer,  ignorer oppdatering
 		
-		String sql = "INSERT INTO Event (eventID, tittel, startTime, endTime, description, roomID)" + "VALUES (?, ?, ?, ?, ?, ?)";
+		PreparedStatement preparedStatement = null;
+		String sql = "INSERT INTO Event (eventID, title, startTime, endTime, description, roomID, creator)" + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 		preparedStatement = con.prepareStatement(sql);
-		preparedStatement.setInt(1, 1); //Her må Event.getEventID() benyttes for hvert enkelt event
+		preparedStatement.setInt(1, e.getEventID); //Her må Event.getEventID() benyttes for hvert enkelt event
 		preparedStatement.setString(2, "Mote"); //Her må Event.getTitle() benyttes
 		preparedStatement.setTime(3, 10:30); //Her må Event.getStartTime() benyttes
 		preparedStatement.setTime(4, 11:30); //Her må Event.getEndTime() benyttes
