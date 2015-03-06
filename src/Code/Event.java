@@ -163,39 +163,7 @@ public class Event implements Comparable<Event>{
 	
 	@Override
 	public int compareTo(Event event) {			// mistenker at det blir feil her. Kan v�re problem med � sammenlikne m�neder (de er jo ikke tall med denne implementasjonen)  
-		if(this.getYear().equals(event.getYear())){
-			if(this.getMonth().equals(event.getMonth())){
-				if(this.getDay().equals(event.getDay())){
-					if(this.getHour().equals(event.getHour())){
-						if(this.getMinute().equals(event.getMinute())){			// bl�ser i sekundforskjeller. Tidspunkt for events angis uansett ikke med mer enn minuttspresisjon
-							return 0;
-						} else if(Integer.parseInt(this.getMinute()) < Integer.parseInt(event.getMinute())){
-							return -1;
-						} else{
-							return 1;
-						}
-					} else if(Integer.parseInt(this.getHour()) < Integer.parseInt(event.getHour())){
-						return -1;
-					} else{
-						return 1;
-					}
-				} else if(Integer.parseInt(this.getDay()) < Integer.parseInt(event.getDay())){
-					return -1;
-				} else{
-					return 1;
-				}
-			} 
-	//		else if(Integer.parseInt(this.getMonth()) < Integer.parseInt(event.getMonth())){
-			else if(months.indexOf(this.getMonth()) < months.indexOf(event.getMonth())){
-				return -1;
-			} else{
-				return 1;
-			}
-		} else if(Integer.parseInt(this.getYear()) < Integer.parseInt(event.getYear())){
-			return -1;
-		} else{
-			return 1;
+		return this.getStartTime().compareTo(event.getStartTime());
 		}
-	}
 	
 }
