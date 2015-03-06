@@ -230,9 +230,9 @@ public class CalendarProgram {
 		addRoom(r6);
 		addRoom(r7);
 		
-		biti = new Employee("Bendik", "Junior", "biti", "bata", "123");
-		sverre = new Employee("Sverre", "Senior", "sverrak", "heiia", "45884408");
-		yolo = new Employee("Jola", "Junior+", "bata", "biti", "123");
+		biti = new Employee("Bendik", "Junior", "biti", "bata", 123, false);
+		sverre = new Employee("Sverre", "Senior", "sverrak", "heiia", 45884408, true);
+		yolo = new Employee("Jola", "Junior+", "bata", "biti", 123, false);
 		current_user = null;
 		
 		employees = new ArrayList<Employee>();
@@ -260,70 +260,70 @@ public class CalendarProgram {
 		
 		user_input = new Scanner(System.in);
 		username = "";
-		System.out.println("Hei\n");
-		System.out.println("Har du bruker?");
+		password = null;
 		
-		login_option = user_input.nextLine();
-		if(login_option.equals("ja")){
-			username = "";
-			password = null;
-			
-			while(current_user == null){
-				System.out.println("Brukernavn: ");
-				username = user_input.nextLine();
-				System.out.println("Passord: ");
-				password = user_input.nextLine();
-				
-				for (Employee employee : employees) {
-					if(employee.getUsername().equalsIgnoreCase(username) && employee.getPassword().equals(password)){
-						current_user = employee;
-						break;
-					}
-				}
-				
-				if(current_user == null){
-					System.out.println("Feil brukernavn/passord. Prøv igjen");
-				} 
-			}
-			return current_user;
-		} else{
-			username = "";
-			while(username == null || username.equals("")){
-				System.out.println("Ønsket brukernavn: ");
-				username = user_input.nextLine();
-				if(employees.size() > 0){
-					for (Employee emp : employees) {
-						if(emp.getUsername().equals(username)){
-							username = null;
-							System.out.println("Brukernavn er opptatt.");
-							break;
-						}
-					}					
-				}
-			}
-			
-			System.out.println("Ønsket passord:");
+		while(current_user == null){
+			System.out.println("Brukernavn: ");
+			username = user_input.nextLine();
+			System.out.println("Passord: ");
 			password = user_input.nextLine();
 			
-			System.out.println("Ditt navn:");
-			String name = user_input.nextLine();
-			System.out.println("Stilling:");
-			String position = user_input.nextLine();
-			System.out.println("Telefonnummer:");
-			String telnum = user_input.nextLine();
-			int tlf = Integer.parseInt(telnum);
-			System.out.println("Make admin? (yes/no)");
-			admin = Boolean.parseBoolean(user_input.nextLine());
+			for (Employee employee : employees) {
+				if(employee.getUsername().equalsIgnoreCase(username) && employee.getPassword().equals(password)){
+					current_user = employee;
+					break;
+				}
+			}
 			
-			Employee employee = new Employee(name, position, username, password, tlf, admin);
-			employees.add(employee);
-			
-			ctd.NewEmployee(con, employee);
-			
-			System.out.println("Du er nå lagt til i databasen");
-			return employee;
+			if(current_user == null){
+				System.out.println("Feil brukernavn/passord. Prøv igjen");
+			} 
 		}
+		return current_user;
+		
+			
 	}
+	private Employee createNewUser() throws SQLException{
+		System.out.println("Fyll inn feltene til den nye brukeren");
+		String sporring = "SELECT * FROM Employee";
+		employees = ctd.Sporring(con, sporring);
+		username = "";
+		while(username == null || username.equals("")){
+			System.out.println("Ønsket brukernavn: ");
+			username = user_input.nextLine();
+			if(employees.size() > 0){
+				for (Employee emp : employees) {
+					if(emp.getUsername().equals(username)){
+						username = null;
+						System.out.println("Brukernavn er opptatt.");
+						break;
+					}
+				}					
+			}
+		}
+		
+		System.out.println("Ønsket passord:");
+		password = user_input.nextLine();
+		
+		System.out.println("Ditt navn:");
+		String name = user_input.nextLine();
+		System.out.println("Stilling:");
+		String position = user_input.nextLine();
+		System.out.println("Telefonnummer:");
+		String telnum = user_input.nextLine();
+		int tlf = Integer.parseInt(telnum);
+		System.out.println("Make admin? (yes/no)");
+		admin = Boolean.parseBoolean(user_input.nextLine());
+		
+		Employee employee = new Employee(name, position, username, password, tlf, admin);
+		employees.add(employee);
+		
+		ctd.NewEmployee(con, employee);
+		
+		System.out.println("Du er nå lagt til i databasen");
+		return employee;
+	}
+	
 		
 	private void run() throws SQLException {
 		current_user = login();
@@ -333,11 +333,15 @@ public class CalendarProgram {
 		System.out.println("Du har " + current_user.countUnreadMessages() + " uleste meldinger i innboksen din\n");
 		while(current_user != null){
 			System.out.println("Hva vil du gjøre?");
-			System.out.println("1: se alle upcoming events[goingTo] | 2: legg til ny event | 3: åpne innboks | 4: se dine events | 5: quit");
+			if(current_user.isAdmin()){
+				System.out.println("1: se alle upcoming events[goingTo] | 2: legg til ny event | 3: åpne innboks | 4: administrer dine events | 5: legg til flere brukere | 9: quit");				
+			} else{
+				System.out.println("1: se alle upcoming events[goingTo] | 2: legg til ny event | 3: åpne innboks | 4: administrer dine events | 9: quit");
+			}
 			
 			int option = 0;
 			
-			while(option < 1 || option > 5){
+			while(option < 1 || option > 9){
 				option = Integer.parseInt(user_input.nextLine());
 				if(option == 1){
 					System.out.println(current_user.generateWeeklySchedule());
@@ -362,7 +366,9 @@ public class CalendarProgram {
 					}
 				} else if(option == 4){
 					
-				} else{
+				} else if(option == 5 && current_user.isAdmin()){
+					createNewUser();
+				} else if(option == 9){
 					current_user = null;
 					System.out.println("Du er nå logget ut.\n\n");
 					
