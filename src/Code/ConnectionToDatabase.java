@@ -86,15 +86,15 @@ public class ConnectionToDatabase {
 	public void NewEmployee(Connection con, Employee e) throws SQLException{
 			
 		PreparedStatement preparedStatement = null;
-		String sql = "INSERT INTO Employee (employeeID, name, password, position, username, telnum, admin)" + " VALUES (?, ?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO Employee (name, password, position, username, telnum, admin)" + " VALUES (?, ?, ?, ?, ?, ?, ?)";
 		preparedStatement = con.prepareStatement(sql);
-		preparedStatement.setInt(1, e.getEmployeeID()); //Her må Employee.getEmployeeID() benyttes for hver enkelt employee
-		preparedStatement.setString(2, e.getName()); //Her må Employee.getEmployeeID() benyttes for hver enkelt employee
-		preparedStatement.setString(3, e.getPassword()); //Her må Employee.getName() benyttes
-		preparedStatement.setString(4, e.getPosition()); //Her må Employee.getPassword() benyttes
-		preparedStatement.setString(5, e.getUsername()); //Her må Employee.getPosition() benyttes
-		preparedStatement.setInt(6, e.getTelnum()); // Her må Employee.getUsername() benyttes
-		preparedStatement.setString(7, e.isAdmin().toString()); // Her må Employee.getUsername() benyttes
+		// preparedStatement.setInt(1, e.getEmployeeID()); //Her må Employee.getEmployeeID() benyttes for hver enkelt employee
+		preparedStatement.setString(1, e.getName()); //Her må Employee.getEmployeeID() benyttes for hver enkelt employee
+		preparedStatement.setString(2, e.getPassword()); //Her må Employee.getName() benyttes
+		preparedStatement.setString(3, e.getPosition()); //Her må Employee.getPassword() benyttes
+		preparedStatement.setString(4, e.getUsername()); //Her må Employee.getPosition() benyttes
+		preparedStatement.setInt(5, e.getTelnum()); // Her må Employee.getUsername() benyttes
+		preparedStatement.setString(6, e.isAdmin().toString()); // Her må Employee.getUsername() benyttes
 		
 		preparedStatement.executeUpdate(); //Her oppdateres databasen	
 		
@@ -111,7 +111,7 @@ public class ConnectionToDatabase {
 		preparedStatement.setInt(1, e.getEventID()); //Her må Event.getEventID() benyttes for hvert enkelt event
 		preparedStatement.setString(2, e.getTitle()); //Her må Event.getTitle() benyttes
 		preparedStatement.setTimeStamp(3, e.getStartTime()); //Her må Event.getStartTime() benyttes
-		preparedStatement.set(4, e.getEndTime()); //Her må Event.getEndTime() benyttes
+		preparedStatement.setTimeStamp(4, e.getEndTime()); //Her må Event.getEndTime() benyttes
 		preparedStatement.setString(5, "Klientmote"); // Her må Event.getDescription() benyttes
 		preparedStatement.setString(6, "Event123"); // Her må Event.getRoomID() benyttes
 		
