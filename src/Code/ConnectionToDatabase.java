@@ -119,14 +119,15 @@ public class ConnectionToDatabase {
 		
 	}	
 	
-	public void WriteRoomToDatabase() throws SQLException{
+	public void WriteRoomToDatabase(Connection con, Room room) throws SQLException{
 		
 		//Trenger en for-løkke som itererer gjennom alle eksisterende rom i selskapet og skriver de til databasen
 		//Hvis rommet allerede eksisterer,  ignorer oppdatering
 		
+		PreparedStatement preparedStatement = null;
 		String sql = "INSERT INTO Room (roomID, name, capacity, eventID)" + "VALUES (?, ?, ?, ?)";
 		preparedStatement = con.prepareStatement(sql);
-		preparedStatement.setInt(1, roomID); //Her må Room.getRoomID() benyttes for hvert enkelt rom
+		preparedStatement.setInt(1, room.getRoomID()); //Her må Room.getRoomID() benyttes for hvert enkelt rom
 		preparedStatement.setString(2, "name"); //Her må Room.getName() benyttes
 		preparedStatement.setInt(3, capacity); //Her må Room.getCapacity() benyttes
 		preparedStatement.setInt(4, eventID); //Her må Room.getEventID() benyttes
@@ -135,11 +136,12 @@ public class ConnectionToDatabase {
 		
 	}	
 	
-	public void WriteMessageToDatabase() throws SQLException{
+	public void WriteMessageToDatabase(Connection con, Message msg) throws SQLException{
 		
 		//Trenger en for-løkke som itererer gjennom alle eksisterende events i selskapet og skriver de til databasen
 		//Hvis eventet allerede eksisterer,  ignorer oppdatering
 		
+		PreparedStatement preparedStatement = null;
 		String sql = "INSERT INTO Message (messageID, type, message)" + "VALUES (?, ?, ?)";
 		preparedStatement = con.prepareStatement(sql);
 		preparedStatement.setInt(1, messageID); //Her må Message.getMessageID() benyttes for hver enkel message
@@ -150,11 +152,12 @@ public class ConnectionToDatabase {
 		
 	}	
 	
-	public void WriteGruppeToDatabase() throws SQLException{
+	public void WriteGruppeToDatabase(Connection con, Group group) throws SQLException{
 		
 		//Trenger en for-løkke som itererer gjennom alle eksisterende grupper selskapet og skriver de til databasen
 		//Hvis gruppen allerede eksisterer,  ignorer oppdatering
 		
+		PreparedStatement preparedStatement = null;
 		String sql = "INSERT INTO Gruppe (gruppeID, navn, ansvarlig, beskrivelse)" + "VALUES (?, ?, ?, ?)";
 		preparedStatement = con.prepareStatement(sql);
 		preparedStatement.setInt(1, 0003); //Her må Gruppe.getgruppeID() benyttes for hver enkelt gruppe
