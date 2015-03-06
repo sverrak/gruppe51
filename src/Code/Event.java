@@ -1,5 +1,7 @@
 package Code;
 
+import Event;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -157,6 +159,11 @@ public class Event implements Comparable<Event>{
 	}
 	
 	@Override
+	public int compareTo(Event event) {	
+		return (this.startTime.getTime() < event.getStartTime().getTime() ? -1: 1);
+	}
+	/*
+	@Override
 	public int compareTo(Event event) {			// mistenker at det blir feil her. Kan v�re problem med � sammenlikne m�neder (de er jo ikke tall med denne implementasjonen)  
 		if(this.getYear().equals(event.getYear())){
 			if(this.getMonth().equals(event.getMonth())){
@@ -192,5 +199,5 @@ public class Event implements Comparable<Event>{
 			return 1;
 		}
 	}
-	
+	*/
 }
