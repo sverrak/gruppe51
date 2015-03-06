@@ -1,4 +1,4 @@
-package src.Code;
+package Code;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -19,17 +19,7 @@ public class CalendarProgram {
 	ConnectionToDatabase ctd;
 	private Boolean admin = false;
 	private List<Room> rooms;
-	private Room r1;
-	private Room r2;
-	private Room r3;
-	private Room r4;
-	private Room r5;
-	private Room r6;
-	private Room r7;
 	private	List<Employee> employees;
-	private Employee biti;
-	private Employee sverre;
-	private Employee yolo;
 	private Employee current_user;
 	
 	//login-felter
