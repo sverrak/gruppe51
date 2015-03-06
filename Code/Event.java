@@ -123,20 +123,17 @@ public class Event implements Comparable<Event>{
 		this.peopleInvited.add(employee);
 	}
 	
+	
 	// Dette er en hjelpemetode for employee.removeEvent() og Employee.cancelEvent() og boer ikke kalles andre steder enn der (da faar vi inkonsistens)
-	public boolean removeEmployee(Employee employee){
+	public void removeEmployee(Employee employee){
 		if (peopleInvited.contains(employee)){
-			Message msg = new Message(employee, this.creator, "Endringen av eventen har gjort at jeg dessverre ikke kan delta", "Varsel om at jeg ikke kan delta");
-			msg.sendMessage();
-			if(peopleInvited.contains(employee)){
-				peopleInvited.remove(employee);
-			}
-			if(peopleGoing.contains(employee)){
-				peopleGoing.remove(employee);
-			}
-			return true;
+			peopleInvited.remove(employee);
+			
+		}if(peopleGoing.contains(employee)){
+			peopleGoing.remove(employee);
 		}
-		return false;
+		
+		
 	}
 	
 	@Override

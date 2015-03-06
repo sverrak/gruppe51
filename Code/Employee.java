@@ -177,15 +177,21 @@ public class Employee {
 		}
 		return false;
 	}
-	// Ikkke ferdig
+	// Ikke ferdig
 	public boolean cancelEvent(Event event, String reason){
 		if (event.getCreator() != this){
 			return false;
 		}
+		informAboutCancellation(event, reason);
 		
 		for (int i = event.getPeopleInvited().size(); i < -1; i--) {			
 			Employee employee = event.getPeopleInvited().get(i);
-			employee.removeEvent(event, true);
+			employee.removeEvent(event, false);
+		}
+		
+		for (int i = event.getPeopleGoing().size(); i < -1; i--) {			
+			Employee employee = event.getPeopleGoing().get(i);
+			employee.removeEvent(event, false);
 		}
 		
 		if (event.getRoom()!= null){
@@ -193,9 +199,7 @@ public class Employee {
 		}
 		return true;
 	}
-	
-	
-	
+
 	//vet ikke om dette er lurt, men proever
 	public void reactOnUpdate(Event event, String attribute){
 		System.out.println("Det har skjedd en endring av ");
@@ -205,9 +209,27 @@ public class Employee {
 		
 		String answer = user_input.nextLine();
 		if(answer.equals("true")){
-			removeEvent(event, false);			
+			removeEvent(event, true);
+			informAboutCantParticipate(event, attribute);
 		}
 		user_input.close();
+	}
+	
+	//informerer creator om at vedkommende ikke kan delta paa eventen
+	private void informAboutCantParticipate(Event event, String reason){
+		Message msg = new Message(this, event.getCreator(), "Jeg kan dessverre ikke delta pga " + reason, "Avmelding på " + event.getTitle());
+		msg.sendMessage();
+	}
+	
+	private void informAboutCancellation(Event event, String reason){
+		for (Employee participant : event.getPeopleGoing()) {
+			Message msg = new Message(this, participant, "Jeg har sett meg nodt til å avlyse eventen pga " + reason, event.getTitle() + " er avlyst.");
+			msg.sendMessage();
+		}
+		for (Employee participant : event.getPeopleInvited()) {
+			Message msg = new Message(this, participant, "Jeg har sett meg nodt til å avlyse eventen pga " + reason, event.getTitle() + " er avlyst.");
+			msg.sendMessage();
+		}
 	}
 	
 	public void printInbox(){
@@ -225,15 +247,15 @@ public class Employee {
 		return inbox;
 	}
 	
-	// Dette fjerner employeens deltakelse paa eventen
-	private void removeEvent(Event event, Boolean afterCancellation){
+	// Dette fjerner employeens deltakelse paa eventen. 
+	private void removeEvent(Event event, Boolean isOnDemandFromParticipant){
 		if (upcomingEvents.contains(event)){
 			upcomingEvents.remove(event);
 		} 
 		if (eventsAttending.contains(event)){	// dersom feil oppst�r, kan vi gj�re denne til ren 'if'
 			eventsAttending.remove(event);
 		}
-		if(! afterCancellation){			
+		if(isOnDemandFromParticipant){			
 			event.removeEmployee(this);
 		}
 	}
