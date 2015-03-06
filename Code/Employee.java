@@ -12,6 +12,8 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 public class Employee {
+	private Boolean admin; // la til adminobjekt
+	private int employeeID;
 	private String name;
 	private String position;
 	private String username;
@@ -20,17 +22,19 @@ public class Employee {
 	private List<Event> upcomingEvents;		//sortert paa startTime
 	private List<Event> declinedEvents;	//boer ogs� sorteres paa startTime
 	private List<Event> eventsAttending;		// sortert paa startTime. Maa gaa over alt og kanskje endre fra upcomingEvents til eventsAttending
-	private String telnum;
+	private int telnum;
 	private List<Message> inbox;
 	
 	public Employee(String name, String position, String username,
-			String password, String telnum) {
+			String password, int telnum, Boolean admin) { // endret konstruktoren til � ta in admin(true/false)
 		super();
+	//	this.employeeID = employeeID;
 		this.name = name;
 		this.position = position;
 		this.username = username;
 		this.password = password;
 		this.telnum = telnum;
+		this.admin = admin;
 		this.inbox = new ArrayList<Message>();
 		groups = new ArrayList<Group>();
 		upcomingEvents = new ArrayList<Event>();
@@ -40,9 +44,6 @@ public class Employee {
 
 	public List<Event> getEventsAttending() {
 		return eventsAttending;
-	}
-	public void setTelnum(String telnum) {
-		this.telnum = telnum;
 	}
 	public List<Event> getDeclinedEvents() {
 		return declinedEvents;
@@ -58,6 +59,9 @@ public class Employee {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public int getEmployeeID(){
+		return employeeID;
 	}
 	public String getPosition() {
 		return position;
@@ -77,9 +81,19 @@ public class Employee {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public String getTelnum(){
+	public void setTelnum(int telnum) {
+		this.telnum = telnum;
+	}
+	public int getTelnum(){
 		return telnum;
 	}
+	public Boolean isAdmin(){
+		return admin;
+	}
+	public void setAdmin(Boolean admin){
+		this.admin = admin;
+	}
+	
 		
 	//Returnerer true hvis ansatt ble lagt til i gruppen
 	public void joinGroup(Group group){
@@ -115,7 +129,7 @@ public class Employee {
 			eventsAttending.add(event);
 			return event;
 		}
-		System.out.println("Du er opptatt p� tidspunktet. " + title + " ble ikke opprettet.");
+		System.out.println("Du er opptatt p� tidspunktet. " + title + " ble ikke opprettet.");
 		return null;
 	}
 	
@@ -165,26 +179,13 @@ public class Employee {
 	}
 	// Ikkke ferdig
 	public boolean cancelEvent(Event event, String reason){
-		
 		if (event.getCreator() != this){
 			return false;
-		}		
-/*		for (Employee employee : event.getPeopleInvited()) {
-			employee.removeEvent(event);
 		}
-		*/	
 		
-		for (int i = event.getPeopleInvited().size(); i < -1; i--) {
+		for (int i = event.getPeopleInvited().size(); i < -1; i--) {			
 			Employee employee = event.getPeopleInvited().get(i);
-			employee.removeEvent(event);
-		}
-/*		for (Employee employee : event.getPeopleDeclined()) {
-			employee.removeEvent(event);
-		}
-	*/
-		for (int i = event.getPeopleInvited().size(); i < -1; i--) {
-			Employee employee = event.getPeopleInvited().get(i);
-			employee.removeEvent(event);
+			employee.removeEvent(event, true);
 		}
 		
 		if (event.getRoom()!= null){
@@ -193,6 +194,8 @@ public class Employee {
 		return true;
 	}
 	
+	
+	
 	//vet ikke om dette er lurt, men proever
 	public void reactOnUpdate(Event event, String attribute){
 		System.out.println("Det har skjedd en endring av ");
@@ -200,9 +203,9 @@ public class Employee {
 		System.out.println("\n + oensker du aa fjerne eventen paa bakgrunn av dette? (true/false)");
 		Scanner user_input = new Scanner(System.in);
 		
-		Boolean answer = user_input.nextBoolean();
-		if(answer){
-			removeEvent(event);			
+		String answer = user_input.nextLine();
+		if(answer.equals("true")){
+			removeEvent(event, false);			
 		}
 		user_input.close();
 	}
@@ -223,13 +226,16 @@ public class Employee {
 	}
 	
 	// Dette fjerner employeens deltakelse paa eventen
-	private void removeEvent(Event event){
+	private void removeEvent(Event event, Boolean afterCancellation){
 		if (upcomingEvents.contains(event)){
 			upcomingEvents.remove(event);
-		} if (eventsAttending.contains(event)){	// dersom feil oppst�r, kan vi gj�re denne til ren 'if'
+		} 
+		if (eventsAttending.contains(event)){	// dersom feil oppst�r, kan vi gj�re denne til ren 'if'
 			eventsAttending.remove(event);
 		}
-		event.removeEmployee(this);
+		if(! afterCancellation){			
+			event.removeEmployee(this);
+		}
 	}
 		
 	public boolean inviteEmployeeToEvent(Employee employee, Event event){
@@ -267,6 +273,8 @@ public class Employee {
 		this.inbox.add(message);	
 	}
 	
+	
+	// Ikke implementert ferdig. Her må vi finne en annen løsning på hvordan vi gjør removeEvent(). Per nå skrives en melding til 
 	public boolean withdrawInvitation(Employee employee, Event event){
 		if (event.getCreator() != this){
 			return false;
@@ -274,7 +282,7 @@ public class Employee {
 		if(! (employee.getUpcomingEvents().contains(event) || employee.getEventsAttending().contains(event))){
 			return false;
 		}
-		employee.removeEvent(event);
+		employee.removeEvent(event, false);
 		return true;
 	}
 	
@@ -295,38 +303,16 @@ public class Employee {
 		WeeklySchedule weeklySchedule = new WeeklySchedule();	// tom matrise for timeplan opprettes hvor nummer p� uke i �ret er kjent
 		
 		
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.HOUR_OF_DAY, 0); // ! clear would not reset the hour of day !
-		cal.clear(Calendar.MINUTE);
-		cal.clear(Calendar.SECOND);
-		cal.clear(Calendar.MILLISECOND);
-
-		// get start of this week in milliseconds
-		cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
-//		System.out.println("Start of this week:       " + cal.getTime());
-//		System.out.println("... in milliseconds:      " + cal.getTimeInMillis());
-		long timeStartWeek = cal.getTimeInMillis();
-		// start of the next week
-		cal.add(Calendar.WEEK_OF_YEAR, 1);
-//		System.out.println("Start of the next week:   " + cal.getTime());
-//		System.out.println("... in milliseconds:      " + cal.getTimeInMillis());
-		long timeEndWeek = cal.getTimeInMillis();
-		
-	//	Calendar calendar = Calendar.getInstance(TimeZone.getDefault());		// tror disse to linjene er ubrukelige
+	//	Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 	//	calendar.set(200, 2, 19, 18, 30);		
 		
 		for (Event event : eventsAttending) {
 			// hvis event.startTidspunkt er denne uka
-			if (event.getStartTime().getTime() > timeStartWeek || event.getStartTime().getTime() < timeEndWeek){
-				int col = event.getDayOfWeek -1; 						//	(index til kolonne i matrix)
-				int firstRow = (event.getStartTime().getHours() - 8) * 2; 	//	(index til rad i matrix)
-				if (event.getStartTime().getMinutes() == 30){
-					firstRow += 1;
-				}
-				// lastRow = (event.getEndTime().getHour() - 8)*0.5 	//	(index til rad i matrix
+				// col = event.getDaytOfWeek -1 							(index til kolonne i matrix)
+				// firstRow = (event.getStartTime().getHour() - 8)*0.5 		(index til rad i matrix)
+				// lastRow = (event.getEndTime().getHour() - 8)*0.5 		(index til rad i matrix
 				// for alle slots fra firstRow til lastRow
 					// matrix[rad i ][col] = event.getName() + "A"		// A'en er for attending
-			}
 		}
 		for (Event event : upcomingEvents) {
 			// hvis event.startTidspunkt er denne uka

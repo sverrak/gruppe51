@@ -128,14 +128,20 @@ public class Event implements Comparable<Event>{
 		if (peopleInvited.contains(employee)){
 			Message msg = new Message(employee, this.creator, "Endringen av eventen har gjort at jeg dessverre ikke kan delta", "Varsel om at jeg ikke kan delta");
 			msg.sendMessage();
-			return peopleInvited.remove(employee);
+			if(peopleInvited.contains(employee)){
+				peopleInvited.remove(employee);
+			}
+			if(peopleGoing.contains(employee)){
+				peopleGoing.remove(employee);
+			}
+			return true;
 		}
 		return false;
 	}
 	
 	@Override
 	public String toString() {
-		String str = this.title + " har foelgende deltakere " + peopleGoing.toString() + "og avholdes kl: " + this.getStartTime().getHours() + ":";
+		String str = this.title + " har foelgende deltakere " + peopleGoing.toString() + "og avholdes kl: " + this.getHour() + ":";
 		return  str + this.getMinute() + ", den " + this.getDay() + ". " + this.getMonth();		// maaneden blir ikke omgjort til streng som oenskelig :(
 	}
 	
@@ -155,9 +161,8 @@ public class Event implements Comparable<Event>{
 	public String getMinute(){
 		return getStartTime().toLocaleString().substring(15, 17);
 	}
-
 	
-/*	@Override
+	@Override
 	public int compareTo(Event event) {			// mistenker at det blir feil her. Kan v�re problem med � sammenlikne m�neder (de er jo ikke tall med denne implementasjonen)  
 		if(this.getYear().equals(event.getYear())){
 			if(this.getMonth().equals(event.getMonth())){
@@ -192,11 +197,6 @@ public class Event implements Comparable<Event>{
 		} else{
 			return 1;
 		}
-	}
-	*/
-	@Override
-	public int compareTo(Event event) {	
-		return (this.startTime.getTime() < event.getStartTime().getTime() ? -1: 1);
 	}
 	
 }

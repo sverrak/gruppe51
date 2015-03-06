@@ -9,140 +9,108 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Collection;
 
-public class testConnection {
-	
+public class ConnectionToDatabase {
+	 /* CalendarProgram cp1 = null;
 	  private Connection con = null;
 	  private Statement stmt1 = null;
 	  private Statement stmt2 = null;
 	  private Statement stmt3 = null;
 	  private Statement stmt4 = null;
 	  private Statement stmt5 = null;
-	  private PreparedStatement preparedStatement = null;
+	  private PreparedStatement preparedStatement = null; */
 	  private ResultSet resultSet = null; 
 	  private ArrayList<ResultSetMetaData> metaData = new ArrayList<ResultSetMetaData>();
 	  private ArrayList<ResultSet> resultData = new ArrayList<ResultSet>();	
+	  private List<Employee> employees = new ArrayList<Employee>();
 	
-	public static void connection(){
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-		} catch (ClassNotFoundException e) {
-			// TODO: handle exception
-			e.printStackTrace();
+
+	
+	public List<Employee> Sporring(Connection con, String sporring) throws SQLException{
+		
+		Statement stmt = null;
+		stmt = con.createStatement();
+		ResultSet employeeSet = stmt.executeQuery(sporring);
+		ResultSetMetaData employeesmd = employeeSet.getMetaData();
+		metaData.add(employeesmd);
+		resultData.add(employeeSet);
+		InitFetchEmployees(metaData, resultData);
+		return employees;
+		
+	}
+	
+	public void InitFetchEmployees (ArrayList<ResultSetMetaData> metaData1, ArrayList<ResultSet> resultData) throws SQLException{
+		
+		int counter = 0;
+		
+		while (counter < metaData.size()) {
+			
+			int numberOfColumns = metaData.get(counter).getColumnCount();
+			
+			 int employeeID = 0;
+			 String name = "";
+			 String password = "";
+			 String position = "";
+			 String username = "";
+			 int telnum = 0;
+			 Boolean admin = false;
+			  
+			  while (resultData.get(counter).next()) {
+			        for (int i = 1; i <= numberOfColumns; i++) {
+			          String columnValue = resultData.get(counter).getString(i);
+			          if (i==1){
+			        	  employeeID = Integer.parseInt(columnValue);
+			          }
+			          if (i==2){
+			        	  name = columnValue;
+			          }
+			          if (i==3){
+			        	  password = columnValue;
+			          }
+			          if (i==4){
+			        	  position = columnValue;
+			          }
+			          if (i==5){
+			        	  username = columnValue;
+			          }
+			          if (i==6){
+			        	  telnum = Integer.parseInt(columnValue);
+			          }
+			          if (i==7 && columnValue.equalsIgnoreCase("ja")){
+			        	  
+			        	  admin = true;
+			          }
+			        }
+			        	Employee i = new Employee(name, position, username, password, telnum, admin);
+			        	employees.add(i);//Maa sorge for at nyEmployee-stringen har samme format som inn-parameterene til new Employee
+			      } 
+			  counter++;
 		}
 	}
 	
-	public void ConnectionToMySql(){
-		connection();
-		String host = "jdbc:mysql://mysql.stud.ntnu.no:3306/fredrwit_kalender";
-		String username = "fredrwit_admin";
-		String password ="12345";
-		System.out.println("Connecting to database...");
-		System.out.println("");
-		System.out.println("Fetching database tables...");
-		System.out.println("");
-		System.out.println("");
-		try {
-			con = DriverManager.getConnection(host, username, password);
-			
-			stmt1 = con.createStatement();
-	/*		System.out.println("Connection Works");
-			stmt2 = con.createStatement();
-			stmt3 = con.createStatement();
-			stmt4 = con.createStatement();
-			stmt5 = con.createStatement(); */
-			
-			
-			//String input = Scan();
-			String employee = "SELECT * FROM Employee";
-			ResultSet employeeSet = stmt1.executeQuery(employee);
-			ResultSetMetaData employeesmd = employeeSet.getMetaData();
-			metaData.add(employeesmd);
-			resultData.add(employeeSet);
-			WriteEventToDatabase();
-			WriteDatabaseToJava(metaData, resultData);
-			
-	/*		String room = "SELECT * FROM Room";
-			ResultSet roomSet = stmt2.executeQuery(room);
-			ResultSetMetaData roomsmd = roomSet.getMetaData();
-			metaData.add(roomsmd);
-			resultData.add(roomSet);	
-			
-			String event = "SELECT * FROM Event";
-			ResultSet eventSet = stmt3.executeQuery(event);
-			ResultSetMetaData eventsmd = eventSet.getMetaData();
-			metaData.add(eventsmd);
-			resultData.add(eventSet);
-			
-			String message = "SELECT * FROM Message";
-			ResultSet messageSet = stmt4.executeQuery(message);
-			ResultSetMetaData messagesmd = messageSet.getMetaData();
-			metaData.add(messagesmd);
-			resultData.add(messageSet);
-			
-			
-			String group = "SELECT * FROM Gruppe";
-			ResultSet groupSet = stmt5.executeQuery(group); 
-			ResultSetMetaData groupsmd = groupSet.getMetaData();
-			metaData.add(groupsmd);
-			resultData.add(groupSet);
-			PrintTables(metaData, resultData); 
-			
-			
-			String spm = "Do you wish to write to database?\n Yes/no";
-			String input = Scan(spm);
-			
-			if(input.equalsIgnoreCase("yes")){
-				
-				WriteEmployeeToDatabase();
-				System.out.println("Database was successfully updated");
-			} */
-			
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch(Exception e){
-		      //Handle errors for Class.forName
-		      e.printStackTrace();
-		} finally{
-		      //finally block used to close resources
-		      try{
-		         if(stmt1 != null)
-		            con.close();
-		      }catch(SQLException se){
-		      }// do nothing
-		      try{
-		         if(con != null)
-		            con.close();
-		      }catch(SQLException se){
-		         se.printStackTrace();
-		      }//end finally try
-		   }//end try
-	}
 	
-	public void WriteEmployeeToDatabase() throws SQLException{
+	public void NewEmployee(Connection con, Employee e) throws SQLException{
 		
 		//Trenger en for-l¿kke som itererer gjennom alle eksisterende employees i selskapet og skriver de til databasen
 		//Hvis vedkommende allerede eksisterer,  ignorer oppdatering
 		
-		String sql = "INSERT INTO Employee (employeeID, name, password, position, username, telnum)" + "VALUES (?, ?, ?, ?, ?, ?)";
+		PreparedStatement preparedStatement = null;
+		String sql = "INSERT INTO Employee (name, password, position, username, telnum)" + " VALUES (?, ?, ?, ?, ?)";
 		preparedStatement = con.prepareStatement(sql);
-		preparedStatement.setInt(1, 6); //Her mŒ Employee.getEmployeeID() benyttes for hver enkelt employee
-		preparedStatement.setString(2, "Sandra"); //Her mŒ Employee.getName() benyttes
-		preparedStatement.setString(3, "mops"); //Her mŒ Employee.getPassword() benyttes
-		preparedStatement.setString(4, "okonomisjef"); //Her mŒ Employee.getPosition() benyttes
-		preparedStatement.setString(5, "sandras"); // Her mŒ Employee.getUsername() benyttes
-		preparedStatement.setInt(6, 22225555); // Her mŒ Employee.getTelNum() benyttes
+		preparedStatement.setString(1, e.getName()); //Her mŒ Employee.getEmployeeID() benyttes for hver enkelt employee
+		preparedStatement.setString(2, e.getPassword()); //Her mŒ Employee.getName() benyttes
+		preparedStatement.setString(3, e.getPosition()); //Her mŒ Employee.getPassword() benyttes
+		preparedStatement.setString(4, e.getUsername()); //Her mŒ Employee.getPosition() benyttes
+		preparedStatement.setInt(5, e.getTelnum()); // Her mŒ Employee.getUsername() benyttes
 		
 		preparedStatement.executeUpdate(); //Her oppdateres databasen	
-		System.out.println("En ny ansatt ble lagt til i databasen");
 		
 	}
 	
-	public void WriteEventToDatabase() throws SQLException{
+/*	public void WriteEventToDatabase() throws SQLException{
 		
 		//Trenger en for-l¿kke som itererer gjennom alle eksisterende events i selskapet og skriver de til databasen
 		//Hvis eventet allerede eksisterer,  ignorer oppdatering
@@ -251,18 +219,18 @@ public class testConnection {
 		      
 		  if (decider == 1){
 			  
-			  String employeeID = "";
+			  int employeeID = 0;
 			  String name = "";
 			  String password = "";
 			  String position = "";
 			  String username = "";
-			  String telnum ="";
+			  int telnum = 0;
 			  
 			  while (resultData.get(counter).next()) {
 			        for (int i = 1; i <= numberOfColumns; i++) {
 			          String columnValue = resultData.get(counter).getString(i);
 			          if (i==1){
-			        	  employeeID = columnValue;
+			        	  employeeID = Integer.parseInt(columnValue);
 			          }
 			          if (i==2){
 			        	  name = columnValue;
@@ -274,31 +242,31 @@ public class testConnection {
 			        	  position = columnValue;
 			          }
 			          if (i==5){
-			        	  password = columnValue;
+			        	  username = columnValue;
 			          }
 			          if (i==6){
-			        	  telnum = columnValue;
+			        	  telnum = Integer.parseInt(columnValue);
 			          }
 			        }
-			        	Employee i = new Employee(employeeID, name, password, position, username, telnum);//Maa sorge for at nyEmployee-stringen har samme format som inn-parameterene til new Employee
-			        	String navn = i.getName();
-			        	System.out.println(navn);
+			        	Employee i = new Employee(name, password, position, username, telnum);//Maa sorge for at nyEmployee-stringen har samme format som inn-parameterene til new Employee
+			            employees.add(i);
 			      } 
+			  return employees;
 			  
 		  }
-		/*  else if (decider == 2){
+	/*	  else if (decider == 2){
 			  
-			  String roomID = "";
+			  int roomID = 0;
 			  String name = "";
 			  int capacity = 0;
 			  String description = "";
 			  
 			  while (resultData.get(counter).next()) {
 				  	for (int i = 1; i <= numberOfColumns; i++) {
-					//  if (i > 1) System.out.print(",  ");
+				  	
 					  String columnValue = resultData.get(counter).getString(i);
 			          if (i==1){
-			        	  roomID = columnValue;
+			        	  roomID = Integer.parseInt(columnValue);
 			          }
 			          if (i==2){
 			        	  name = columnValue;
@@ -329,7 +297,7 @@ public class testConnection {
 			  
 			  while (resultData.get(counter).next()) {
 				  	for (int i = 1; i <= numberOfColumns; i++) {
-					  //  if (i > 1) System.out.print(",  ");
+
 					  String columnValue = resultData.get(counter).getString(i);
 					   	  if (i==1){
 				        	  eventID = Integer.parseInt(columnValue);
@@ -430,10 +398,10 @@ public class testConnection {
 			        Group addGroup = new Group(groupID, description, responsible);   //Maa sorge for at nyGruppe-stringen har samme format som inn-parameterene til new Gruppe        
 			  }  
 			  
-		  } */
+		  } 
 		      counter++;
 		}
-	}
+	}*/
 	
 	public void PrintTables(ArrayList<ResultSetMetaData> metaData, ArrayList<ResultSet> resultData) throws SQLException{
 		
@@ -464,7 +432,7 @@ public class testConnection {
 		}
 	}
 	
-	public static class PrintColumnTypes  {
+/*	public static class PrintColumnTypes  {
 
 		  public static void printColTypes(ResultSetMetaData rsmd) throws SQLException {
 		    int columns = rsmd.getColumnCount();
@@ -486,10 +454,11 @@ public class testConnection {
 	
 	public static void main(String[] args) {
 		
-		testConnection test = new testConnection();
-		test.ConnectionToMySql();
+		ConnectionToDatabase test = new ConnectionToDatabase();
+
+		
 			
-	}
+	} */
 
 }
 
