@@ -131,9 +131,9 @@ public class Employee {
 			}
 		}
 	
-	public Event createEvent(String title, Date startTime, Date endTime, String description){
+	public Event createEvent(int eventID, String title, Date startTime, Date endTime, String description){
 		if (eventsAttending.size() == 0 || isAvailable(startTime, endTime)){
-			Event event = new Event(title, startTime, endTime, description, this);
+			Event event = new Event(eventID, title, startTime, endTime, description, this);
 			eventsAttending.add(event);
 			return event;
 		}
