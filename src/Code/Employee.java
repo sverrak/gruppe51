@@ -331,13 +331,7 @@ public class Employee {
 		}
 		return weeklySchedule;		// maa kanskje returnere hvilken uke i �ret det er ogs�
 	}
-	
-	//UFERDIG! skal hente evente't som spenner seg over et tidspunkt.
-	private Event getEventAt(Date time){
 		
-		return event;
-	}
-	
 	//skal gi en visning i konsollen av innevaerende ukes plan man-s�n. UFERDIG!
 		public void printWeeklySchedule(){
 			Calendar calendar = Calendar.getInstance(TimeZone.getDefault());

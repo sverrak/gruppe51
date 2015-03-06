@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+// denne klassen utgår, men lar den ligge slik at vi kan se den.
+
 public class WeeklySchedule {
 	
 	private ArrayList<ArrayList<Object>> schedule;
