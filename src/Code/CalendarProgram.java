@@ -277,6 +277,7 @@ public class CalendarProgram {
 		System.out.println("Fyll inn feltene til den nye brukeren");
 		String sporring = "SELECT * FROM Employee";
 		employees = ctd.Sporring(con, sporring);
+		int employeeID = employees.get(employees.size()-1).getEmployeeID() + 1;
 		username = "";
 		while(username == null || username.equals("")){
 			System.out.println("Ønsket brukernavn: ");
@@ -304,8 +305,9 @@ public class CalendarProgram {
 		int tlf = Integer.parseInt(telnum);
 		System.out.println("Make admin? (yes/no)");
 		admin = Boolean.parseBoolean(user_input.nextLine());
+
 		
-		Employee employee = new Employee(name, position, username, password, tlf, admin);
+		Employee employee = new Employee(employeeID, name, position, username, password, tlf, admin);
 		employees.add(employee);
 		
 		ctd.NewEmployee(con, employee);
