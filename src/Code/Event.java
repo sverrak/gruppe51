@@ -25,12 +25,12 @@ public class Event implements Comparable<Event>{
 	private static ArrayList<String> months = new ArrayList(Arrays.asList("jan","feb","mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"));
 	
 	
-	public Event(int eventID, String title, Date startTime, Date endTime,
+	public Event(String title, Date startTime, Date endTime,
 			String description, Employee creator) {
 		super();
 		setTitle(title);
 		this.creator = creator;
-		this.eventID = eventID;
+		//this.eventID = eventID;
 		//setTime(startTime, endTime);
 		this.startTime = startTime;
 		this.endTime = endTime;
