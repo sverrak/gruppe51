@@ -131,9 +131,9 @@ public class Employee {
 			}
 		}
 	
-	public Event createEvent(String title, Date startTime, Date endTime, String description){
+	public Event createEvent(int eventID, String title, Date startTime, Date endTime, String description){
 		if (eventsAttending.size() == 0 || isAvailable(startTime, endTime)){
-			Event event = new Event(title, startTime, endTime, description, this);
+			Event event = new Event(eventID, title, startTime, endTime, description, this);
 			eventsAttending.add(event);
 			return event;
 		}
@@ -339,13 +339,7 @@ public class Employee {
 		}
 		return weeklySchedule;		// maa kanskje returnere hvilken uke i �ret det er ogs�
 	}
-	
-	//UFERDIG! skal hente evente't som spenner seg over et tidspunkt.
-	private Event getEventAt(Date time){
 		
-		return event;
-	}
-	
 	//skal gi en visning i konsollen av innevaerende ukes plan man-s�n. UFERDIG!
 		public void printWeeklySchedule(){
 			Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
