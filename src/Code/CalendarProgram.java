@@ -219,7 +219,7 @@ public class CalendarProgram {
 	public Employee login() throws SQLException{
 		
 		String sporring = "SELECT * FROM Employee";
-		this.employees = ctd.Sporring(con, sporring);
+		this.employees = ctd.SporringEmployees(con, sporring);
 		
 		user_input = new Scanner(System.in);
 		username = "";
@@ -249,7 +249,7 @@ public class CalendarProgram {
 	private Employee createNewUser() throws SQLException{
 		System.out.println("Fyll inn feltene til den nye brukeren");
 		String sporring = "SELECT * FROM Employee";
-		employees = ctd.Sporring(con, sporring);
+		employees = ctd.SporringEmployees(con, sporring);
 		int employeeID = employees.get(employees.size()-1).getEmployeeID() + 1;
 		username = "";
 		while(username == null || username.equals("")){
@@ -332,13 +332,35 @@ public class CalendarProgram {
 				} else if(option == 4){
 					
 				} else if(option == 5 && current_user.isAdmin()){
-					System.out.println("1. Endre bruker | 2. Legg til ny bruker | 3. Slett bruker\n");
+					System.out.println("1. Endre bruker | 2. Legg til ny bruker");
 					int choice = 0;
 					while (choice < 1 || choice > 3){
 						choice = Integer.parseInt(user_input.nextLine());
 						if(choice == 1){
 							System.out.println("Skriv inn brukernavn til brukeren du ønsker å endre:");
-							String brukernavn = user_input.nextLine();
+							String userName = (user_input.nextLine());
+							if(ctd.checkUserName(con, username) == true){
+								choice = 0;
+								System.out.println("1. Endre tlf | 2. Endre position | 3. Gjør til admin");
+								while(choice < 1 || choice > 3){
+									if (choice == 1){
+										System.out.println("Nytt tlfnr:");
+										int tlf = Integer.parseInt(user_input.nextLine());
+										String s = "UPDATE Employee SET telnum = ? WHERE username = ?";
+										ctd.updateEmployeeTelnum(con, s, tlf, userName);
+									}
+									else if (choice == 2){
+										System.out.println("Ny position:");
+										String pos = user_input.nextLine();
+										String s = "UPDATE Employee SET position = ? WHERE username = ?";
+										ctd.updateEmployeePos(con, s, pos, userName);
+									}
+									else if (choice == 3){
+										System.out.println("Sikker på at du vil slette bruker: " + userName + "?");
+										if (user_input.nextLine().equalsIgnoreCase("yes"))
+									}
+								}
+							}
 						}
 					}
 				} else if(option == 9){

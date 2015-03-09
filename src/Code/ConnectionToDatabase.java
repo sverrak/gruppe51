@@ -29,7 +29,7 @@ public class ConnectionToDatabase {
 	
 
 	
-	public List<Employee> Sporring(Connection con, String sporring) throws SQLException{
+	public List<Employee> SporringEmployees(Connection con, String sporring) throws SQLException{
 		
 		Statement stmt = null;
 		stmt = con.createStatement();
@@ -91,18 +91,42 @@ public class ConnectionToDatabase {
 		}
 	}
 	
-	public void updateEmployee(Connection con, Employee e) throws SQLException{
+	public void updateEmployeeTelnum(Connection con, String sql, int telnum, String username) throws SQLException{
 		
-		Statement stmt = null;
-		stmt = con.createStatement();
 		PreparedStatement preparedStatement = null;
 		preparedStatement = con.prepareStatement(sql);
 		
+		preparedStatement.setInt(1, telnum);
+		preparedStatement.setString(2,username);
 		
+		preparedStatement.executeUpdate();	
 		
-		//String sql = "INSERT INTO Employee (employeeID, name, password, position, username, telnum, admin)" + " Values (?, ?, ?, ? ,? ,?, ?)";
+	}
+	public void updateEmployeePos(Connection con, String sql, String pos, String username) throws SQLException{
 		
+		PreparedStatement preparedStatement = null;
+		preparedStatement = con.prepareStatement(sql);
 		
+		preparedStatement.setString(1, pos);
+		preparedStatement.setString(2,username);
+		
+		preparedStatement.executeUpdate();	
+		
+	}
+	
+	public Boolean checkUserName(Connection con, String s) throws SQLException{
+		
+		Statement stmt = null;
+		stmt = con.createStatement();
+		ResultSet rs = stmt.executeQuery("SElECT username FROM Employee");
+		
+		while (rs.next()){
+			if (rs.getString("username").equalsIgnoreCase(s)){
+				return true;
+			}
+		}
+		
+		return false;	
 	}
 	
 	public void NewEmployee(Connection con, Employee e) throws SQLException{
