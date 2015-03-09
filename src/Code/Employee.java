@@ -304,25 +304,25 @@ public class Employee {
 	}
 	
 	// oppretter "tom" matrise for ukeplan. Alle felter er 0
-	private ArrayList<ArrayList<Object>> generateEmptySchedule(){
-		ArrayList<ArrayList<Object>> matrix= new ArrayList<ArrayList<Object>>();
+	private ArrayList<ArrayList<String>> generateEmptySchedule(){
+		ArrayList<ArrayList<String>> matrix= new ArrayList<ArrayList<String>>();
 		for (int row = 0; row < 20; row++) {
-			matrix.add(new ArrayList<Object>());
+			matrix.add(new ArrayList<String>());
 			for (int col = 0; col < 7; col++) {
-				matrix.get(row).add(0);
+				matrix.get(row).add("");
 			}
 		}
 		return matrix;
 	}
 	
-	public ArrayList<ArrayList<Object>> generateWeeklySchedule(int weekOfYear, int year){
-			ArrayList<ArrayList<Object>> schedule = generateEmptySchedule();
+	public ArrayList<ArrayList<String>> generateWeeklySchedule(int weekOfYear, int year){
+			ArrayList<ArrayList<String>> schedule = generateEmptySchedule();
 			// Get calendar, clear it and set week number and year.
 			Calendar calendar = Calendar.getInstance();
 			calendar.clear();					// holder dette? Se ovenfor dersom insufficient
 			calendar.set(Calendar.WEEK_OF_YEAR, weekOfYear);
 			calendar.set(Calendar.YEAR, year);
-			long timeStartWeek = calendar.getTimeInMillis();
+			long timeStartWeek = calendar.getTimeInMillis();	//returnerer tidspunkt på starten av uka i millisec
 			calendar.add(Calendar.WEEK_OF_YEAR, 1);
 			long timeEndWeek = calendar.getTimeInMillis();
 			
@@ -331,15 +331,15 @@ public class Employee {
 				if (event.getStartTime().getTime() > timeStartWeek && event.getStartTime().getTime() < timeEndWeek){
 					int col = event.getStartTime().getDay() -1;					//	(index til kolonne i matrix) ma sjekke hvilken verdi hver dag retiurnerer
 					int firstRow = (event.getStartTime().getHours() - 8) * 2; 	//	(index til rad i matrix)
-					if (event.getStartTime().getMinutes() == 30){
+					if (event.getStartTime().getMinutes() >= 30){
 						firstRow += 1;
 					}
 					int lastRow = (event.getEndTime().getHours() - 8) * 2; 	//	(index til rad i matrix
-					if (event.getEndTime().getMinutes() == 30){
+					if (event.getEndTime().getMinutes() >= 30){
 						lastRow += 1;
 					}
 					for (int i = firstRow; i < lastRow; i++) {		 // for alle slots fra firstRow til lastRow
-						schedule.get(i).set(col, event.getTitle() + "A"); // matrix[rad i ][col] = event.getName() + "A"		// A'en er for attending
+						schedule.get(i).set(col, event.getTitle() + " A"); // matrix[rad i ][col] = event.getName() + "A"		// A'en er for attending
 					}
 				}
 			}
@@ -348,15 +348,20 @@ public class Employee {
 				if (event.getStartTime().getTime() > timeStartWeek && event.getStartTime().getTime() < timeEndWeek){
 					int col = event.getStartTime().getDay() -1;					//	(index til kolonne i matrix) ma sjekke hvilken verdi hver dag retiurnerer
 					int firstRow = (event.getStartTime().getHours() - 8) * 2; 	//	(index til rad i matrix)
-					if (event.getStartTime().getMinutes() == 30){
+					if (event.getStartTime().getMinutes() >= 30){
 						firstRow += 1;
 					}
 					int lastRow = (event.getEndTime().getHours() - 8) * 2; 	//	(index til rad i matrix
-					if (event.getEndTime().getMinutes() == 30){
+					if (event.getEndTime().getMinutes() >= 30){
 						lastRow += 1;
 					}
 					for (int i = firstRow; i < lastRow; i++) {		 // for alle slots fra firstRow til lastRow
-						schedule.get(i).set(col, event.getTitle() + "U"); // matrix[rad i ][col] = event.getName() + "U"	// U'en er for attending
+						if (schedule.get(i).equals("")){
+							schedule.get(i).set(col, event.getTitle() + " U");
+						}
+						else{
+						schedule.get(i).set(col, schedule.get(i) + "/n" + event.getTitle() + " U"); // matrix[rad i ][col] = event.getName() + "U"	// U'en er for attending
+						}
 					}
 				}			
 			}
