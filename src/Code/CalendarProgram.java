@@ -332,10 +332,14 @@ public class CalendarProgram {
 				} else if(option == 4){
 					
 				} else if(option == 5 && current_user.isAdmin()){
-					System.out.println("1. Endre bruker | 2. Legg til ny bruker | 3. Slett bruker");
+					System.out.println("1. Endre bruker | 2. Legg til ny bruker | 3. Slett bruker\n");
 					int choice = 0;
 					while (choice < 1 || choice > 3){
 						choice = Integer.parseInt(user_input.nextLine());
+						if(choice == 1){
+							System.out.println("Skriv inn brukernavn til brukeren du ¿nsker Œ endre:");
+							String brukernavn = user_input.nextLine();
+						}
 					}
 				} else if(option == 9){
 					current_user = null;
