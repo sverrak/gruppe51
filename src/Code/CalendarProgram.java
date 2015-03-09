@@ -157,10 +157,10 @@ public class CalendarProgram {
 	
 	public static void main(String[] args) throws SQLException {
 		CalendarProgram cp = new CalendarProgram();
-		cp.initialize();
-		cp.run();
-	//	cp.init2();
-	//	cp.run2();
+	//	cp.initialize();
+	//	cp.run();
+		cp.init2();
+		cp.run2();
 	}
 	
 	public static void connection(){
@@ -301,7 +301,7 @@ public class CalendarProgram {
 			if(current_user.isAdmin() == true){
 				System.out.println("1: Se alle upcoming events[goingTo] | 2: Legg til ny event | 3: Apne innboks | 4: Administrer dine events | 5: administrer brukere | 9: quit");				
 			} else{
-				System.out.println("1: Se alle upcoming events[goingTo] | 2: Legg til ny event | 3: Åpne innboks | 4: Administrer dine events | 9: quit");
+				System.out.println("1: Se alle upcoming events[goingTo] | 2: Legg til ny event | 3: Apne innboks | 4: Administrer dine events | 9: quit");
 			}
 			
 			int option = 0;
@@ -327,7 +327,7 @@ public class CalendarProgram {
 						}
 					
 					} else{
-						System.out.println("Ingen meldinger √• vise\n");
+						System.out.println("Ingen meldinger aa vise\n");
 					}
 				} else if(option == 4){
 					
@@ -337,6 +337,7 @@ public class CalendarProgram {
 					while (choice < 1 || choice > 3){
 						choice = Integer.parseInt(user_input.nextLine());
 						if(choice == 1){
+<<<<<<< HEAD
 							System.out.println("Skriv inn brukernavn til brukeren du ønsker å endre:");
 							String userName = (user_input.nextLine());
 							if(ctd.checkUserName(con, username) == true){
@@ -361,13 +362,17 @@ public class CalendarProgram {
 									}
 								}
 							}
+=======
+							System.out.println("Skriv inn brukernavn til brukeren du oensker aa endre:");
+							String brukernavn = user_input.nextLine();
+>>>>>>> 192e08b0d2b63c0a785be8c921a437ce4f6c1393
 						}
 					}
 				} else if(option == 9){
 					current_user = null;
-					System.out.println("Du er n√• logget ut.\n\n");
+					System.out.println("Du er naa logget ut.\n\n");
 					
-					//metode for √• skrive tilbake til server mangler her
+					//metode for aa skrive tilbake til server mangler her
 					main(null);
 				}
 					
@@ -394,15 +399,6 @@ public class CalendarProgram {
 		addRoom(r6);
 		addRoom(r7);
 		
-		Employee biti = new Employee("Bendik", "Junior", "biti", "bata", 123, false);
-		Employee sverre = new Employee("Sverre", "Senior", "sverrak", "heiia", 45884408, false);
-		Employee yolo = new Employee("Jola", "Junior+", "bata", "biti", 123, false);
-		current_user = null;
-		
-		employees = new ArrayList<Employee>();
-		addEmployee(biti);
-		addEmployee(sverre);
-		addEmployee(yolo); 
 		
 	}
 	
@@ -415,6 +411,16 @@ public class CalendarProgram {
 		Date dato6 = new Date(116, 3, 19, 21, 30, 0);
 		Date dato7 = new Date(116, 3, 19, 19, 30, 0);
 		Date dato8 = new Date(116, 3, 19, 21, 00, 0);
+		
+		Employee biti = new Employee("Bendik", "Junior", "biti", "bata", 123, false);
+		Employee sverre = new Employee("Sverre", "Senior", "sverrak", "heiia", 45884408, false);
+		Employee yolo = new Employee("Jola", "Junior+", "bata", "biti", 123, false);
+		current_user = null;
+		
+		employees = new ArrayList<Employee>();
+		addEmployee(biti);
+		addEmployee(sverre);
+		addEmployee(yolo); 
 		
 		Event birthday = biti.createEvent("Bursdag", dato1, dato2, "halla paarae");
 		Event birthdayAgain = biti.createEvent("Bursdag igjen", dato3, dato4, "halla paasan");
@@ -435,6 +441,10 @@ public class CalendarProgram {
 		System.out.println(birthdayAgain.getPeopleGoing() + "" + birthdayAgain.getPeopleInvited());
 		biti.cancelEvent(birthday, "Ingen ville komme :(");
 		System.out.println(biti.getUpcomingEvents());
+		
+		System.out.println();
+		System.out.println();
+		biti.printWeeklySchedule(12, 2015);
 	}
 
 }
