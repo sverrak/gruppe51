@@ -299,9 +299,9 @@ public class CalendarProgram {
 		while(current_user != null){
 			System.out.println("Hva vil du gj√∏re?");
 			if(current_user.isAdmin() == true){
-				System.out.println("1: se alle upcoming events[goingTo] | 2: legg til ny event | 3: √•pne innboks | 4: administrer dine events | 5: legg til flere brukere | 9: quit");				
+				System.out.println("1: Se alle upcoming events[goingTo] | 2: Legg til ny event | 3: Apne innboks | 4: Administrer dine events | 5: administrer brukere | 9: quit");				
 			} else{
-				System.out.println("1: se alle upcoming events[goingTo] | 2: legg til ny event | 3: √•pne innboks | 4: administrer dine events | 9: quit");
+				System.out.println("1: Se alle upcoming events[goingTo] | 2: Legg til ny event | 3: Åpne innboks | 4: Administrer dine events | 9: quit");
 			}
 			
 			int option = 0;
@@ -332,7 +332,15 @@ public class CalendarProgram {
 				} else if(option == 4){
 					
 				} else if(option == 5 && current_user.isAdmin()){
-					createNewUser();
+					System.out.println("1. Endre bruker | 2. Legg til ny bruker | 3. Slett bruker\n");
+					int choice = 0;
+					while (choice < 1 || choice > 3){
+						choice = Integer.parseInt(user_input.nextLine());
+						if(choice == 1){
+							System.out.println("Skriv inn brukernavn til brukeren du ønsker å endre:");
+							String brukernavn = user_input.nextLine();
+						}
+					}
 				} else if(option == 9){
 					current_user = null;
 					System.out.println("Du er n√• logget ut.\n\n");
