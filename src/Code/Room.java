@@ -20,6 +20,10 @@ public class Room {
 		this.description = description;
 		this.roomSchedule = new ArrayList<Event>();
 	}
+	
+	public int getRoomID(){
+		return roomID;
+	}
 	public String getName() {
 		return name;
 	}

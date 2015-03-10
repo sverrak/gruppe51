@@ -26,10 +26,28 @@ public class Employee {
 	private int telnum;
 	private List<Message> inbox;
 	
-	public Employee(String name, String position, String username, 
+	// GreatestEmployeeID er String for at vi skal skille mellom de to konstruktÃ¸rene.
+	public Employee(String greatestEmployeeID, String name, String position, String username, 
 			String password, int telnum, Boolean admin) { // endret konstruktoren til ï¿½ ta in admin(true/false)
 		super();
-	//	this.employeeID = employeeID;
+		this.employeeID = Integer.parseInt(greatestEmployeeID);
+		this.name = name;
+		this.position = position;
+		this.username = username;
+		this.password = password;
+		this.telnum = telnum;
+		this.admin = admin;
+		this.inbox = new ArrayList<Message>();
+		groups = new ArrayList<Group>();
+		upcomingEvents = new ArrayList<Event>();
+		declinedEvents = new ArrayList<Event>();
+		eventsAttending = new ArrayList<Event>();
+	}
+	
+	public Employee(int employeeID, String name, String position, String username, 
+			String password, int telnum, Boolean admin) { // endret konstruktoren til ï¿½ ta in admin(true/false)
+		super();
+		this.employeeID = employeeID;
 		this.name = name;
 		this.position = position;
 		this.username = username;
@@ -324,7 +342,7 @@ public class Employee {
 			calendar.clear();					// holder dette? Se ovenfor dersom insufficient
 			calendar.set(Calendar.WEEK_OF_YEAR, weekOfYear);
 			calendar.set(Calendar.YEAR, year);
-			long timeStartWeek = calendar.getTimeInMillis();	//returnerer tidspunkt på starten av uka i millisec
+			long timeStartWeek = calendar.getTimeInMillis();	//returnerer tidspunkt pï¿½ starten av uka i millisec
 			calendar.add(Calendar.WEEK_OF_YEAR, 1);
 			long timeEndWeek = calendar.getTimeInMillis();
 			
@@ -377,7 +395,7 @@ public class Employee {
 		public void printWeeklySchedule(int weekOfYear, int year){
 			ArrayList<ArrayList<String>> schedule = generateWeeklySchedule(weekOfYear, year);	
 			
-			String str = "|08:00|----------SØNDAG------------+-----------MANDAG-----------+-----------TIRSDAG----------+----------ONSDAG------------+-------------TORSDAG--------+-----------FREDAG-----------+-----------LØRDAG-----------+\n";
+			String str = "|08:00|----------SONDAG------------+-----------MANDAG-----------+-----------TIRSDAG----------+----------ONSDAG------------+-------------TORSDAG--------+-----------FREDAG-----------+-----------LORDAG-----------+\n";
 			for (int row = 0; row < 32; row++) {
 			str += "|+++++|";
 				for (int col = 0; col < 7; col++){

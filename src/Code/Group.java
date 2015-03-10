@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class Group {
-
+	private int groupID;
 	private String groupName;
 	private String description;
 	private Employee responsible;
@@ -22,6 +22,9 @@ public class Group {
 		subgroups = new ArrayList<Group>();
 	}
 	
+	public int getGroupID() {
+		return groupID;
+	}
 	
 	public String getGroupName() {
 		return groupName;

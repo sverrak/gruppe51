@@ -8,24 +8,25 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+<<<<<<< HEAD
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+=======
+import java.sql.Time;
+>>>>>>> 6f3c4df5b04c401608c4a2653d8097d112e20f3b
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Collection;
+import java.util.Date;
 
 public class ConnectionToDatabase {
-	 /* CalendarProgram cp1 = null;
-	  private Connection con = null;
-	  private Statement stmt1 = null;
-	  private Statement stmt2 = null;
-	  private Statement stmt3 = null;
-	  private Statement stmt4 = null;
-	  private Statement stmt5 = null;
-	  private PreparedStatement preparedStatement = null; */
+
 	  private ResultSet resultSet = null; 
 	  private ArrayList<ResultSetMetaData> metaData = new ArrayList<ResultSetMetaData>();
 	  private ArrayList<ResultSet> resultData = new ArrayList<ResultSet>();	
 	  private List<Employee> employees = new ArrayList<Employee>();
+	  private List<Room> rooms = new ArrayList<Room>();
 	
 
 	
@@ -172,56 +173,145 @@ public class ConnectionToDatabase {
 		preparedStatement.executeUpdate(); //Her oppdateres databasen	
 		
 	}
-	// Fredrik: hva betyr setterne i disse metoden?
-	public void WriteEventToDatabase(Connection con, Event e) throws SQLException{
+	
+	public void fetchRooms(Connection con, String requestedStartTime, String requestedEndTime, int requestedCapacity) throws SQLException{
 		
-		//Trenger en for-lï¿½kke som itererer gjennom alle eksisterende events i selskapet og skriver de til databasen
-		//Hvis eventet allerede eksisterer,  ignorer oppdatering
+		java.util.Date requestedStart = new java.util.Date();
+		java.util.Date requestedEnd = new java.util.Date();
+		
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy H:m:s");
+		try {
+			requestedStart = formatter.parse(requestedStartTime);
+			requestedEnd = formatter.parse(requestedEndTime);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		Statement stmt = null;
+		stmt = con.createStatement();
+
+		String sql = "SELECT R.name, R.capacity, E.startTime, E.endTime, E.roomID FROM Room AS R INNER JOIN Event AS E ON  R.roomID = E.roomID";
+		ResultSet rs = stmt.executeQuery(sql);
+		ResultSetMetaData rsmd = rs.getMetaData();
+		int numberOfCol = rsmd.getColumnCount();
+		
+		ArrayList<ResultSet> tempRS = new ArrayList<ResultSet>();
+		ArrayList<ResultSetMetaData> tempRSMD = new ArrayList<ResultSetMetaData>();
+		int counter = 0;
+		
+		while (counter < metaData.size()) {
+			
+			int numberOfColumns = metaData.get(counter).getColumnCount();
+				
+			      for (int i = 1; i <= numberOfColumns; i++) {
+				   //     if (i > 1) System.out.print(",  ");
+				   //     String columnName = metaData.get(counter).getColumnName(i);
+
+				  }
+			      while (resultData.get(counter).next()) {
+				        for (int i = 1; i <= numberOfColumns; i++) {
+				  //      if (i > 1) System.out.print(",  "); 
+				          java.util.Date startDato = new java.util.Date();
+				          java.util.Date endDato = new java.util.Date();
+				          int roomID = 0;
+				          
+				          startDato = convertDateTimeToDate(resultData.get(counter).getString("startDate"));
+				          endDato = convertDateTimeToDate(resultData.get(counter).getString("endDate"));
+				          roomID = resultData.get(counter).getInt("roomID");
+				          
+				          if
+				          
+				          System.out.print(columnValue);
+				        }      
+				  } 
+		}
+		
+	} // midlertidlig, husk Œ returnere List<Room>
+		
+/*		int counter = 0;
+		int capacity = 0;
+		int roomID = 0;
+		String name = "";
+		String description = "";
+		
+		  
+		  while (resultData.get(counter).next()) {
+			  for (int i = 1; i <= numberOfCol; i++) {
+			  	
+				  String columnValue = resultData.get(counter).getString(i);
+		          if (i==1){
+		        	  roomID = Integer.parseInt(columnValue);
+		          }
+		          if (i==2){
+		        	  name = columnValue;
+		          }
+		          if (i==3){
+		        	  capacity = Integer.parseInt(columnValue);
+		          }
+		          if (i==4){
+		        	  description = columnValue;
+		          }
+		          if (i==5){ //Her mï¿½ roomSchedule ordnes?
+		        	  roomSchedule = columnValue;
+		          }
+			  }
+
+		        Room addRoom = new Room(roomID, name, capacity, description);   //Maa sorge for at nyttRoom-stringen har samme format som inn-parameterene til new Room 
+		  }
+		
+		return rooms;
+	}
+	
+<<<<<<< HEAD
+
+=======
+>>>>>>> 6f3c4df5b04c401608c4a2653d8097d112e20f3b
+	public void WriteEventToDatabase(Connection con, Event e) throws SQLException{
 		
 		PreparedStatement preparedStatement = null;
 		
 		String sql = "INSERT INTO Event (eventID, tittel, startTime, endTime, description, roomID)" + "VALUES (?, ?, ?, ?, ?, ?)";
 		preparedStatement = con.prepareStatement(sql);
 
-		preparedStatement.setInt(1, 1); //Her mï¿½ Event.getEventID() benyttes for hvert enkelt event
-		preparedStatement.setString(2, "Mote"); //Her mï¿½ Event.getTitle() benyttes
-		preparedStatement.setTime(3, 10:30); //Her mï¿½ Event.getStartTime() benyttes
-		preparedStatement.setTime(4, 11:30); //Her mï¿½ Event.getEndTime() benyttes
-		preparedStatement.setString(5, "Klientmote"); // Her mï¿½ Event.getDescription() benyttes
-		preparedStatement.setString(6, "Event123"); // Her mï¿½ Event.getRoomID() benyttes
+		preparedStatement.setInt(1, e.getEventID());
+		preparedStatement.setString(2, e.getTitle());
+		preparedStatement.setTime(3, (Time) e.getStartTime());
+		preparedStatement.setTime(4, (Time) e.getEndTime());
+		preparedStatement.setString(5, e.getDescription()); 
+		preparedStatement.setInt(6, e.getRoom().getRoomID()); 
 		
 		preparedStatement.executeUpdate(); //Her oppdateres databasen	
 	}	
 	
 	public void WriteRoomToDatabase(Connection con, Room r) throws SQLException{
 		
-		//Trenger en for-lï¿½kke som itererer gjennom alle eksisterende rom i selskapet og skriver de til databasen
-		//Hvis rommet allerede eksisterer,  ignorer oppdatering
 		PreparedStatement preparedStatement =  null;
 		
-		String sql = "INSERT INTO Room (roomID, name, capacity, eventID)" + "VALUES (?, ?, ?, ?)";
+		String sql = "INSERT INTO Room (roomID, name, capacity, description)" + "VALUES (?, ?, ?, ?)";
 		preparedStatement = con.prepareStatement(sql);
 
-		preparedStatement.setInt(1, roomID); //Her mï¿½ Room.getRoomID() benyttes for hvert enkelt rom
-		preparedStatement.setString(2, "name"); //Her mï¿½ Room.getName() benyttes
-		preparedStatement.setInt(3, capacity); //Her mï¿½ Room.getCapacity() benyttes
-		preparedStatement.setInt(4, eventID); //Her mï¿½ Room.getEventID() benyttes
+		preparedStatement.setInt(1, r.getRoomID()); 
+		preparedStatement.setString(2, r.getName()); 
+		preparedStatement.setInt(3, r.getCapacity()); 
+		preparedStatement.setString(4, r.getDescription()); 
 		
 		preparedStatement.executeUpdate(); //Her oppdateres databasen	
 		
 	}	
 	
 	public void WriteMessageToDatabase(Connection con, Message m) throws SQLException{
-		
-		//Trenger en for-lï¿½kke som itererer gjennom alle eksisterende events i selskapet og skriver de til databasen
-		//Hvis eventet allerede eksisterer,  ignorer oppdatering
 		PreparedStatement preparedStatement = null;
 		
-		String sql = "INSERT INTO Message (messageID, type, message)" + "VALUES (?, ?, ?)";
+		String sql = "INSERT INTO Message (messageID, subject, content, timeStamp, sender, receiver)" + "VALUES (?, ?, ?, ?, ?, ?)";
 		preparedStatement = con.prepareStatement(sql);
-		preparedStatement.setInt(1, messageID); //Her mï¿½ Message.getMessageID() benyttes for hver enkel message
-		preparedStatement.setString(2, "type"); //Her mï¿½ Message.getType() benyttes
-		preparedStatement.setString(3, "message"); //Her mï¿½ message.getMessage() benyttes
+		preparedStatement.setInt(1, m.getMessageID());
+		preparedStatement.setString(2, m.getSubject());
+		preparedStatement.setString(3, m.getContent());
+		preparedStatement.setString(3, m.getTimeStamp().toString());
+		preparedStatement.setInt(3, m.getSender().getEmployeeID());
+		preparedStatement.setInt(3, m.getReceiver().getEmployeeID());
+		
 		
 		preparedStatement.executeUpdate(); //Her oppdateres databasen	
 		
@@ -229,20 +319,50 @@ public class ConnectionToDatabase {
 	
 	public void WriteGruppeToDatabase(Connection con, Group g) throws SQLException{
 		
-		//Trenger en for-lï¿½kke som itererer gjennom alle eksisterende grupper selskapet og skriver de til databasen
-		//Hvis gruppen allerede eksisterer,  ignorer oppdatering
 		PreparedStatement preparedStatement = null;
 		
 		String sql = "INSERT INTO Gruppe (gruppeID, navn, ansvarlig, beskrivelse)" + "VALUES (?, ?, ?, ?)";
 		preparedStatement = con.prepareStatement(sql);
-		preparedStatement.setInt(1, 0003); //Her mï¿½ Gruppe.getgruppeID() benyttes for hver enkelt gruppe
-		preparedStatement.setString(2, "Mat"); //Her mï¿½ Gruppe.getName() benyttes for hver gruppe
-		preparedStatement.setString(3, "Kantinedama"); //Her mï¿½ Gruppe.getResponsible() benyttes for hver gruppe
-		preparedStatement.setString(4, "Digg mat"); //Her mï¿½ Gruppe.getDescription() benyttes for hver gruppe
+		preparedStatement.setInt(1, g.getGroupID()); 
+		preparedStatement.setString(2, g.getGroupName());
+		preparedStatement.setInt(3, g.getResponsible().getEmployeeID());
+		preparedStatement.setString(4, g.getDescription());
 
 		preparedStatement.executeUpdate(); //Her oppdateres databasen
+<<<<<<< HEAD
 			
+	} 
+=======
 	}
+	
+	public void WriteEventDeltakelseToDatabase(Connection con, Event ev, Employee emp) throws SQLException{
+		
+		PreparedStatement preparedStatement = null;
+		
+		String sql = "INSERT INTO Eventdeltakelse (event_ID, employee_ID, status, isHidden)" + "VALUES (?, ?, ?, ?)";
+		preparedStatement = con.prepareStatement(sql);
+		preparedStatement.setInt(1, ev.getEventID()); 
+		preparedStatement.setInt(2, emp.getEmployeeID());
+		
+		//SetInt
+		if(emp.getEventsAttending().contains(ev)){
+			preparedStatement.setString(3, "a");
+		} else if(emp.getDeclinedEvents().contains(ev)){
+			preparedStatement.setString(3, "d");
+		} else{
+			preparedStatement.setString(3, "i");
+		}
+		// Ikke implementert
+		preparedStatement.setString(4, "false");
+
+		preparedStatement.executeUpdate(); //Her oppdateres databasen
+	}
+	
+	//Ikke implementert.
+	public void WriteGruppeDeltakelseToDatabase(Connection con, Group g, Employee emp) throws SQLException{
+		
+	}
+>>>>>>> 6f3c4df5b04c401608c4a2653d8097d112e20f3b
 	
 	public void WriteDatabaseToJava(ArrayList<ResultSetMetaData> metaData, ArrayList<ResultSet> resultData) throws SQLException{
 		
@@ -326,24 +446,21 @@ public class ConnectionToDatabase {
 			  String name = "";
 			  int capacity = 0;
 			  String description = "";
+			  List<Event> roomSchedule = new ArrayList<Room>();
 			  
 			  while (resultData.get(counter).next()) {
-				  	for (int i = 1; i <= numberOfColumns; i++) {
+				  for (int i = 1; i <= numberOfColumns; i++) {
 				  	
 					  String columnValue = resultData.get(counter).getString(i);
 			          if (i==1){
 			        	  roomID = Integer.parseInt(columnValue);
-			          }
-			          if (i==2){
+			          } else if (i==2){
 			        	  name = columnValue;
-			          }
-			          if (i==3){
+			          } else if (i==3){
 			        	  capacity = Integer.parseInt(columnValue);
-			          }
-			          if (i==4){
+			          } else if (i==4){
 			        	  description = columnValue;
-			          }
-			          if (i==5){ //Her mï¿½ roomSchedule ordnes?
+			          } else if (i==5){ //Her mï¿½ roomSchedule ordnes?
 			        	  roomSchedule = columnValue;
 			          }
 				  }
@@ -467,15 +584,51 @@ public class ConnectionToDatabase {
 		  } 
 		      counter++;
 		}
+	} */
+	
+	public java.util.Date convertDateTimeToDate(String dateTime) throws SQLException{
+		java.util.Date dateObject = new java.util.Date();
+		String date = "";
+		
+		date = dateTime.substring(8,9);
+		date.concat("/" + dateTime.substring(5,6) + "/" + dateTime.substring(0,3) + " " + dateTime.substring(11, 18));
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy H:m:s");
+		try {
+			dateObject = formatter.parse(date);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return dateObject;
 	}
 	
-	public void PrintTables(ArrayList<ResultSetMetaData> metaData, ArrayList<ResultSet> resultData) throws SQLException{
+	public void PrintTables(ArrayList<ResultSetMetaData> metaData, ArrayList<ResultSet> resultData, String msg) throws SQLException{
 		
 		int counter = 0;
 		
 		while (counter < metaData.size()) {
 			
 			int numberOfColumns = metaData.get(counter).getColumnCount();
+			
+			if(msg.equalsIgnoreCase("available rooms")){
+				
+			      for (int i = 1; i <= numberOfColumns; i++) {
+				        if (i > 1) System.out.print(",  ");
+				        String columnName = metaData.get(counter).getColumnName(i);
+				        
+				      }
+			      while (resultData.get(counter).next()) {
+				        for (int i = 1; i <= numberOfColumns; i++) {
+				          if (i > 1) System.out.print(",  ");
+				          String columnValue = resultData.get(counter).getString(i);
+				          System.out.print(columnValue);
+				        }      
+				      } 
+			}
+			else if (msg.equalsIgnoreCase("people invited")){
+				
+			}
+			else if (msg.equalsIgnoreCase("people"))
 			  
 		      for (int i = 1; i <= numberOfColumns; i++) {
 		        if (i > 1) System.out.print(",  ");
