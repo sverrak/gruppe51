@@ -166,7 +166,6 @@ public class ConnectionToDatabase {
 		preparedStatement.executeUpdate(); //Her oppdateres databasen	
 		
 	}
-<<<<<<< HEAD
 	
 	public List<Room> fetchRooms(Connection con, String startTime, String endTime, int requestedCapacity) throws SQLException{
 		
@@ -197,7 +196,7 @@ public class ConnectionToDatabase {
 		          if (i==4){
 		        	  description = columnValue;
 		          }
-		          if (i==5){ //Her mŒ roomSchedule ordnes?
+		          if (i==5){ //Her mï¿½ roomSchedule ordnes?
 		        	  roomSchedule = columnValue;
 		          }
 			  }
@@ -208,9 +207,6 @@ public class ConnectionToDatabase {
 		return rooms;
 	}
 	
-=======
-	// Fredrik: hva betyr setterne i disse metoden?
->>>>>>> 137da76fe801fddb283db1d1ad034e6af74c978b
 	public void WriteEventToDatabase(Connection con, Event e) throws SQLException{
 		
 		//Trenger en for-lï¿½kke som itererer gjennom alle eksisterende events i selskapet og skriver de til databasen

@@ -166,8 +166,8 @@ public class CalendarProgram {
 		CalendarProgram cp = new CalendarProgram();
 	//	cp.initialize();
 	//	cp.run();
-		cp.init2();
-		cp.run2();
+		cp.initialize();
+		cp.run();
 	}
 	
 	public static void connection(){
@@ -316,7 +316,58 @@ public class CalendarProgram {
 			while(option < 1 || option > 9){
 				option = Integer.parseInt(user_input.nextLine());
 				if(option == 1){
-					//System.out.println(current_user.generateWeeklySchedule());
+					System.out.println("Skriv inn ukenummer: ");
+					int weekOfYear;
+					int year;
+					String firstOptionChoice = "";
+					while(firstOptionChoice.equalsIgnoreCase("q")){
+						weekOfYear = Integer.parseInt(user_input.nextLine());
+						year = Integer.parseInt(user_input.nextLine());
+						
+						
+						current_user.generateWeeklySchedule(weekOfYear, year);
+						
+						System.out.println("\nDu har nÃ¥ folgende valg:");
+						System.out.println("f: forrige uke | n: neste uke | q: tilbake til hovedmeny");
+						firstOptionChoice = user_input.nextLine();
+						
+					   
+						if(firstOptionChoice.equalsIgnoreCase("f")){
+						    
+							if(weekOfYear != 1){
+								current_user.generateWeeklySchedule(weekOfYear--, year);							
+							} else{
+								//Kode for Ã¥ finne antall uker i forrige year. Skriver java.util siden vi har en klasse som heter Calendar
+								java.util.Calendar cal = java.util.Calendar.getInstance();
+								cal.set(java.util.Calendar.YEAR, year - 1);
+								cal.set(java.util.Calendar.MONTH, java.util.Calendar.DECEMBER);
+								cal.set(java.util.Calendar.DAY_OF_MONTH, 31);
+								
+								int ordinalDay = cal.get(java.util.Calendar.DAY_OF_YEAR);
+								int weekDay = cal.get(java.util.Calendar.DAY_OF_WEEK) - 1; // Sunday = 0
+								int numberOfWeeks = (ordinalDay - weekDay + 10) / 7;
+								current_user.generateWeeklySchedule(numberOfWeeks, year--);
+							}
+						} else if(firstOptionChoice.equalsIgnoreCase("n")){
+							//Kode for Ã¥ finne antall uker i forrige year. Skriver java.util siden vi har en klasse som heter Calendar
+							java.util.Calendar cal = java.util.Calendar.getInstance();
+							cal.set(java.util.Calendar.YEAR, year);
+							cal.set(java.util.Calendar.MONTH, java.util.Calendar.DECEMBER);
+							cal.set(java.util.Calendar.DAY_OF_MONTH, 31);
+							
+							int ordinalDay = cal.get(java.util.Calendar.DAY_OF_YEAR);
+							int weekDay = cal.get(java.util.Calendar.DAY_OF_WEEK) - 1; // Sunday = 0
+							int numberOfWeeks = (ordinalDay - weekDay + 10) / 7;
+							
+							if(weekOfYear != numberOfWeeks){
+								current_user.generateWeeklySchedule(weekOfYear++, year);							
+							} else{
+								current_user.generateWeeklySchedule(1, year++);
+							}
+						} else if(firstOptionChoice.equalsIgnoreCase("q")){
+							break;
+					}
+					}
 				} else if(option == 2){
 					Event event = getEventInput(current_user);
 					current_user.addEvent(event);
@@ -346,7 +397,7 @@ public class CalendarProgram {
 						choice = Integer.parseInt(user_input.nextLine());
 						if(choice == 1){
 							
-							System.out.println("Skriv inn brukernavn til brukeren du ¿nsker Œ endre:");
+							System.out.println("Skriv inn brukernavn til brukeren du ï¿½nsker ï¿½ endre:");
 							String userName = (user_input.nextLine());
 							if(ctd.checkUserName(con, userName) == true){
 								Employee tempEmployee = null;
@@ -399,7 +450,7 @@ public class CalendarProgram {
 										}
 									else if (brukerChoice == 4){
 										
-										System.out.println("\nSikker pŒ at du vil slette: '" + tempEmployee.getName() + "', fra databasen?");
+										System.out.println("\nSikker pï¿½ at du vil slette: '" + tempEmployee.getName() + "', fra databasen?");
 										if (user_input.nextLine().equalsIgnoreCase("ja")){
 											String sql = "DELETE FROM Employee WHERE username = ?";
 											ctd.deleteUser(con, sql, tempEmployee);
