@@ -372,7 +372,6 @@ public class Employee {
 	
 	//skal gi en visning i konsollen av innevaerende ukes plan soen-loer. UFERDIG!
 		public void printWeeklySchedule(int weekOfYear, int year){
-			
 			ArrayList<ArrayList<String>> schedule = generateWeeklySchedule(weekOfYear, year);	
 			
 			String str = "|08:00|--------SØNDAG----------+---------MANDAG---------+---------TIRSDAG--------+--------ONSDAG----------+-----------TORSDAG------+--------FREDAG----------+---------LØRDAG---------+\n";
@@ -389,13 +388,15 @@ public class Employee {
 				}
 				str += "\n";
 				str += "|";
-				if (row < 4){
+				if (row < 3){
 					str += "0";
 				}
 				if ( row % 2 == 0){
-					str += (8 + row/2) + ":00";
+			//		str += (8 + row/2) + ":00";		//gammel implementasjon. ble feil
+					str += ((8 + row/2) + ":30");
 					} else{
-						str += ((8 + row/2) + ":30");
+			//			str += ((8 + row/2) + ":30");	//gammel implementasjon. ble feil
+						str += (9 + row/2) + ":00";
 						}
 				
 				str += "|------------------------+------------------------+------------------------+------------------------+------------------------+------------------------+------------------------+\n";
