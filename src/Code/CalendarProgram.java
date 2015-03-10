@@ -287,7 +287,7 @@ public class CalendarProgram {
 		admin = Boolean.parseBoolean(user_input.nextLine());
 
 		
-		Employee employee = new Employee(name, position, username, password, tlf, admin);
+		Employee employee = new Employee(getGreatestEmployeeID(), name, position, username, password, tlf, admin);
 		employees.add(employee);
 		
 		ctd.NewEmployee(con, employee);
@@ -296,6 +296,15 @@ public class CalendarProgram {
 	}
 	
 		
+	private String getGreatestEmployeeID() {
+		int greatestID = 0;
+		for (Employee employee : employees) {
+			if(employee.getEmployeeID() > greatestID){
+				greatestID = employee.getEmployeeID();
+			}
+		}
+		return greatestID + "";
+	}
 	private void run() throws SQLException {
 		current_user = login();
 		System.out.println("\nDu er nå logget inn. Skriv quit for å logge ut");
@@ -523,9 +532,9 @@ public class CalendarProgram {
 		Date dato7 = new Date(116, 3, 19, 19, 30, 0);
 		Date dato8 = new Date(116, 3, 19, 21, 00, 0);
 		
-		Employee biti = new Employee("Bendik", "Junior", "biti", "bata", 123, false);
-		Employee sverre = new Employee("Sverre", "Senior", "sverrak", "heiia", 45884408, false);
-		Employee yolo = new Employee("Jola", "Junior+", "bata", "biti", 123, false);
+		Employee biti = new Employee(getGreatestEmployeeID(), "Bendik", "Junior", "biti", "bata", 123, false);
+		Employee sverre = new Employee(getGreatestEmployeeID(), "Sverre", "Senior", "sverrak", "heiia", 45884408, false);
+		Employee yolo = new Employee(getGreatestEmployeeID(), "Jola", "Junior+", "bata", "biti", 123, false);
 		current_user = null;
 		
 		employees = new ArrayList<Employee>();
