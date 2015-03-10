@@ -29,7 +29,7 @@ public class ConnectionToDatabase {
 	
 
 	
-	public List<Employee> Sporring(Connection con, String sporring) throws SQLException{
+	public List<Employee> SporringEmployees(Connection con, String sporring) throws SQLException{
 		
 		Statement stmt = null;
 		stmt = con.createStatement();
@@ -56,9 +56,9 @@ public class ConnectionToDatabase {
 			 String position = "";
 			 String username = "";
 			 int telnum = 0;
-			 Boolean admin = false;
 			  
 			  while (resultData.get(counter).next()) {
+				  Boolean admin = false;
 			        for (int i = 1; i <= numberOfColumns; i++) {
 			          String columnValue = resultData.get(counter).getString(i);
 			          if (i==1){
@@ -91,34 +91,98 @@ public class ConnectionToDatabase {
 		}
 	}
 	
+	public void updateEmployeeTelnum(Connection con, String sql, int telnum, Employee e) throws SQLException{
+		
+		PreparedStatement preparedStatement = null;
+		preparedStatement = con.prepareStatement(sql);
+		
+		preparedStatement.setInt(1, telnum);
+		preparedStatement.setString(2, e.getUsername());
+		
+		preparedStatement.executeUpdate();	
+		
+	}
+	public void updateEmployeePos(Connection con, String sql, String pos, Employee e) throws SQLException{
+		
+		PreparedStatement preparedStatement = null;
+		preparedStatement = con.prepareStatement(sql);
+		
+		preparedStatement.setString(1, pos);
+		preparedStatement.setString(2, e.getUsername());
+		
+		preparedStatement.executeUpdate();	
+		
+	}
 	
-	public void NewEmployee(Connection con, Employee e) throws SQLException{
+	public void updateEmployeeAdmin(Connection con, String sql, String adm, Employee e) throws SQLException{
+		
+		PreparedStatement preparedStatement = null;
+		preparedStatement = con.prepareStatement(sql);
+		
+		preparedStatement.setString(1, adm);
+		preparedStatement.setString(2, e.getUsername());
+		
+		preparedStatement.executeUpdate();	
+		
+	}
+	// Ikke implementert
+	public Boolean checkUserName(Connection con, String s) throws SQLException{
 		
 		//Trenger en for-l�kke som itererer gjennom alle eksisterende employees i selskapet og skriver de til databasen
 		//Hvis vedkommende allerede eksisterer,  ignorer oppdatering
+
+		Statement stmt = null;
+		stmt = con.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT username FROM Employee");
+		
+		while (rs.next()){
+			if (rs.getString("username").equalsIgnoreCase(s)){
+				return true;
+			}
+		}
+		
+		return false;	
+	}
+	
+	public void deleteUser(Connection con, String sql, Employee e) throws SQLException{
+		
+		PreparedStatement preparedStatement = null;
+		
+		preparedStatement = con.prepareStatement(sql);
+		preparedStatement.setInt(1,e.getEmployeeID());
+		preparedStatement.executeUpdate();
+	}
+	
+	public void NewEmployee(Connection con, Employee e) throws SQLException{
 		
 		PreparedStatement preparedStatement = null;
 
-		String sql = "INSERT INTO Employee (name, password, position, username, telnum, admin)" + " VALUES (?, ?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO Employee (name, password, position, username, telnum, admin)" + " VALUES (?, ?, ?, ?, ?, ?)";
 
 		preparedStatement = con.prepareStatement(sql);
+
 		preparedStatement.setString(1, e.getName()); //Her m� Employee.getEmployeeID() benyttes for hver enkelt employee
 		preparedStatement.setString(2, e.getPassword()); //Her m� Employee.getName() benyttes
 		preparedStatement.setString(3, e.getPosition()); //Her m� Employee.getPassword() benyttes
 		preparedStatement.setString(4, e.getUsername()); //Her m� Employee.getPosition() benyttes
 		preparedStatement.setInt(5, e.getTelnum()); // Her m� Employee.getUsername() benyttes
+		preparedStatement.setString(6, e.isAdmin().toString());
+
 		
 		preparedStatement.executeUpdate(); //Her oppdateres databasen	
 		
 	}
-	
-/*	public void WriteEventToDatabase() throws SQLException{
+	// Fredrik: hva betyr setterne i disse metoden?
+	public void WriteEventToDatabase(Connection con, Event e) throws SQLException{
 		
 		//Trenger en for-l�kke som itererer gjennom alle eksisterende events i selskapet og skriver de til databasen
 		//Hvis eventet allerede eksisterer,  ignorer oppdatering
 		
+		PreparedStatement preparedStatement = null;
+		
 		String sql = "INSERT INTO Event (eventID, tittel, startTime, endTime, description, roomID)" + "VALUES (?, ?, ?, ?, ?, ?)";
 		preparedStatement = con.prepareStatement(sql);
+
 		preparedStatement.setInt(1, 1); //Her m� Event.getEventID() benyttes for hvert enkelt event
 		preparedStatement.setString(2, "Mote"); //Her m� Event.getTitle() benyttes
 		preparedStatement.setTime(3, 10:30); //Her m� Event.getStartTime() benyttes
@@ -127,16 +191,17 @@ public class ConnectionToDatabase {
 		preparedStatement.setString(6, "Event123"); // Her m� Event.getRoomID() benyttes
 		
 		preparedStatement.executeUpdate(); //Her oppdateres databasen	
-		
 	}	
 	
-	public void WriteRoomToDatabase() throws SQLException{
+	public void WriteRoomToDatabase(Connection con, Room r) throws SQLException{
 		
 		//Trenger en for-l�kke som itererer gjennom alle eksisterende rom i selskapet og skriver de til databasen
 		//Hvis rommet allerede eksisterer,  ignorer oppdatering
+		PreparedStatement preparedStatement =  null;
 		
 		String sql = "INSERT INTO Room (roomID, name, capacity, eventID)" + "VALUES (?, ?, ?, ?)";
 		preparedStatement = con.prepareStatement(sql);
+
 		preparedStatement.setInt(1, roomID); //Her m� Room.getRoomID() benyttes for hvert enkelt rom
 		preparedStatement.setString(2, "name"); //Her m� Room.getName() benyttes
 		preparedStatement.setInt(3, capacity); //Her m� Room.getCapacity() benyttes
@@ -146,10 +211,11 @@ public class ConnectionToDatabase {
 		
 	}	
 	
-	public void WriteMessageToDatabase() throws SQLException{
+	public void WriteMessageToDatabase(Connection con, Message m) throws SQLException{
 		
 		//Trenger en for-l�kke som itererer gjennom alle eksisterende events i selskapet og skriver de til databasen
 		//Hvis eventet allerede eksisterer,  ignorer oppdatering
+		PreparedStatement preparedStatement = null;
 		
 		String sql = "INSERT INTO Message (messageID, type, message)" + "VALUES (?, ?, ?)";
 		preparedStatement = con.prepareStatement(sql);
@@ -161,10 +227,11 @@ public class ConnectionToDatabase {
 		
 	}	
 	
-	public void WriteGruppeToDatabase() throws SQLException{
+	public void WriteGruppeToDatabase(Connection con, Group g) throws SQLException{
 		
 		//Trenger en for-l�kke som itererer gjennom alle eksisterende grupper selskapet og skriver de til databasen
 		//Hvis gruppen allerede eksisterer,  ignorer oppdatering
+		PreparedStatement preparedStatement = null;
 		
 		String sql = "INSERT INTO Gruppe (gruppeID, navn, ansvarlig, beskrivelse)" + "VALUES (?, ?, ?, ?)";
 		preparedStatement = con.prepareStatement(sql);
@@ -227,36 +294,33 @@ public class ConnectionToDatabase {
 			  String position = "";
 			  String username = "";
 			  int telnum = 0;
+			  Boolean isAdmin;
 			  
 			  while (resultData.get(counter).next()) {
 			        for (int i = 1; i <= numberOfColumns; i++) {
 			          String columnValue = resultData.get(counter).getString(i);
 			          if (i==1){
 			        	  employeeID = Integer.parseInt(columnValue);
-			          }
-			          if (i==2){
+			          } else if (i==2){
 			        	  name = columnValue;
-			          }
-			          if (i==3){
+			          } else if (i==3){
 			        	  password = columnValue;
-			          }
-			          if (i==4){
+			          } else if (i==4){
 			        	  position = columnValue;
-			          }
-			          if (i==5){
+			          } else if (i==5){
 			        	  username = columnValue;
-			          }
-			          if (i==6){
+			          } else if (i==6){
 			        	  telnum = Integer.parseInt(columnValue);
+			          } else if (i==7){
+			        	  isAdmin = Boolean.parseBoolean(columnValue);
 			          }
 			        }
-			        	Employee i = new Employee(name, password, position, username, telnum);//Maa sorge for at nyEmployee-stringen har samme format som inn-parameterene til new Employee
+			        	Employee i = new Employee(name, password, position, username, telnum, isAdmin);//Maa sorge for at nyEmployee-stringen har samme format som inn-parameterene til new Employee
 			            employees.add(i);
 			      } 
-			  return employees;
 			  
 		  }
-	/*	  else if (decider == 2){
+		  else if (decider == 2){
 			  
 			  int roomID = 0;
 			  String name = "";
@@ -403,7 +467,7 @@ public class ConnectionToDatabase {
 		  } 
 		      counter++;
 		}
-	}*/
+	}
 	
 	public void PrintTables(ArrayList<ResultSetMetaData> metaData, ArrayList<ResultSet> resultData) throws SQLException{
 		

@@ -219,7 +219,7 @@ public class CalendarProgram {
 	public Employee login() throws SQLException{
 		
 		String sporring = "SELECT * FROM Employee";
-		this.employees = ctd.Sporring(con, sporring);
+		this.employees = ctd.SporringEmployees(con, sporring);
 		
 		user_input = new Scanner(System.in);
 		username = "";
@@ -246,10 +246,10 @@ public class CalendarProgram {
 		
 			
 	}
-	private Employee createNewUser() throws SQLException{
-		System.out.println("Fyll inn feltene til den nye brukeren");
+	private void createNewUser() throws SQLException{
+		System.out.println("Fyll inn feltene til den nye brukeren!\n");
 		String sporring = "SELECT * FROM Employee";
-		employees = ctd.Sporring(con, sporring);
+		employees = ctd.SporringEmployees(con, sporring);
 		int employeeID = employees.get(employees.size()-1).getEmployeeID() + 1;
 		username = "";
 		while(username == null || username.equals("")){
@@ -286,7 +286,6 @@ public class CalendarProgram {
 		ctd.NewEmployee(con, employee);
 		
 		System.out.println("Du er nå lagt til i databasen");
-		return employee;
 	}
 	
 		
@@ -299,9 +298,10 @@ public class CalendarProgram {
 		while(current_user != null){
 			System.out.println("Hva vil du gjøre?");
 			if(current_user.isAdmin() == true){
-				System.out.println("1: se alle upcoming events[goingTo] | 2: legg til ny event | 3: åpne innboks | 4: administrer dine events | 5: legg til flere brukere | 9: quit");				
-			} else{
-				System.out.println("1: se alle upcoming events[goingTo] | 2: legg til ny event | 3: åpne innboks | 4: administrer dine events | 9: quit");
+				System.out.println("1: Se alle upcoming events[goingTo] | 2: Legg til ny event | 3: Apne innboks | 4: Administrer dine events | 5: Administrer brukere | 9: quit");				
+			} 
+			else{
+				System.out.println("1: Se alle upcoming events[goingTo] | 2: Legg til ny event | 3: Apne innboks | 4: Administrer dine events | 9: quit");
 			}
 			
 			int option = 0;
@@ -327,17 +327,96 @@ public class CalendarProgram {
 						}
 					
 					} else{
-						System.out.println("Ingen meldinger å vise\n");
+						System.out.println("Ingen meldinger aa vise\n");
 					}
 				} else if(option == 4){
 					
 				} else if(option == 5 && current_user.isAdmin()){
-					createNewUser();
+					int choice = 0;
+					int brukerChoice = 0;
+					while (choice < 1 || choice > 2){
+						System.out.println("1. Endre bruker | 2. Legg til ny bruker");
+						choice = Integer.parseInt(user_input.nextLine());
+						if(choice == 1){
+							
+							System.out.println("Skriv inn brukernavn til brukeren du �nsker � endre:");
+							String userName = (user_input.nextLine());
+							if(ctd.checkUserName(con, userName) == true){
+								Employee tempEmployee = null;
+								for (Employee employee : employees){
+									if(employee.getUsername().equalsIgnoreCase(userName)){
+										tempEmployee = employee;
+									}
+								}
+
+								while(brukerChoice < 1 || brukerChoice > 3){
+									System.out.println("1. Endre tlf | 2. Endre position | 3. Endre admin-rettigheter");
+									brukerChoice = Integer.parseInt(user_input.nextLine());
+									if (brukerChoice == 1){
+										System.out.println("Nytt tlfnr:");
+										int tlf = Integer.parseInt(user_input.nextLine());
+										String s = "UPDATE Employee SET telnum = ? WHERE username = ?";
+										ctd.updateEmployeeTelnum(con, s, tlf, tempEmployee);
+										tempEmployee.setTelnum(tlf);
+										System.out.println("Oppdateringen var vellykket\n");
+									}
+									else if (brukerChoice == 2){
+										System.out.println("Ny position:");
+										String pos = user_input.nextLine();
+										String s = "UPDATE Employee SET position = ? WHERE username = ?";
+										ctd.updateEmployeePos(con, s, pos, tempEmployee);
+										tempEmployee.setPosition(pos);
+										System.out.println("Oppdateringen var vellykket\n");
+									}
+									else if (brukerChoice == 3){
+										if (tempEmployee.isAdmin() == true){
+											System.out.println(tempEmployee.getName() + " har admin-rettigheter, vil du fjerne disse?\n\n");
+											if (user_input.nextLine().equalsIgnoreCase("ja")){
+												String sql = "UPDATE Employee SET admin = ? WHERE username = ?";
+												String adm = "nei";
+												ctd.updateEmployeeAdmin(con, sql, adm, tempEmployee);
+												tempEmployee.setAdmin(false);
+												System.out.println("Oppdateringen var vellykket\n\n");
+											}
+										}
+										else if (tempEmployee.isAdmin() == false){
+											System.out.println(tempEmployee.getName() + " har ikke admin-rettigheter, vil du gi han admin-rettigheter?\n\n");
+											if (user_input.nextLine().equalsIgnoreCase("ja")){	
+												String sql = "UPDATE Employee SET admin = ? WHERE username = ?";
+												String adm = "ja";
+												ctd.updateEmployeeAdmin(con, sql, adm, tempEmployee);
+												tempEmployee.setAdmin(true);
+												System.out.println("Oppdateringen var vellykket\n\n");
+												
+											}
+										}
+									}
+									System.out.println("1. Rediger, " + tempEmployee.getName() + ", ytterligere | 2. Administrer ny bruker | 3. Tilbake til hovedmeny");
+									if (Integer.parseInt(user_input.nextLine()) == 1){
+										brukerChoice = 0;
+									}
+									else if(Integer.parseInt(user_input.nextLine()) == 2){
+										choice = 0;
+									}
+									else if(Integer.parseInt(user_input.nextLine()) == 3){
+										option = 3;
+									}
+								}
+							}
+							else{
+								System.out.println("Brukernavnet: '" + userName + "', eksisterer ikke i databasen.\nVennligst skriv inn et gyldig brukernavn!\n");
+								choice = 0;
+							}
+						}
+						else if(choice == 2){
+							createNewUser();
+						}
+					}
 				} else if(option == 9){
 					current_user = null;
-					System.out.println("Du er nå logget ut.\n\n");
+					System.out.println("Du er naa logget ut.\n\n");
 					
-					//metode for å skrive tilbake til server mangler her
+					//metode for aa skrive tilbake til server mangler her
 					main(null);
 				}
 					
@@ -364,15 +443,6 @@ public class CalendarProgram {
 		addRoom(r6);
 		addRoom(r7);
 		
-		Employee biti = new Employee("Bendik", "Junior", "biti", "bata", 123, false);
-		Employee sverre = new Employee("Sverre", "Senior", "sverrak", "heiia", 45884408, false);
-		Employee yolo = new Employee("Jola", "Junior+", "bata", "biti", 123, false);
-		current_user = null;
-		
-		employees = new ArrayList<Employee>();
-		addEmployee(biti);
-		addEmployee(sverre);
-		addEmployee(yolo); 
 		
 	}
 	
@@ -385,6 +455,16 @@ public class CalendarProgram {
 		Date dato6 = new Date(116, 3, 19, 21, 30, 0);
 		Date dato7 = new Date(116, 3, 19, 19, 30, 0);
 		Date dato8 = new Date(116, 3, 19, 21, 00, 0);
+		
+		Employee biti = new Employee("Bendik", "Junior", "biti", "bata", 123, false);
+		Employee sverre = new Employee("Sverre", "Senior", "sverrak", "heiia", 45884408, false);
+		Employee yolo = new Employee("Jola", "Junior+", "bata", "biti", 123, false);
+		current_user = null;
+		
+		employees = new ArrayList<Employee>();
+		addEmployee(biti);
+		addEmployee(sverre);
+		addEmployee(yolo); 
 		
 		Event birthday = biti.createEvent("Bursdag", dato1, dato2, "halla paarae");
 		Event birthdayAgain = biti.createEvent("Bursdag igjen", dato3, dato4, "halla paasan");
@@ -405,6 +485,10 @@ public class CalendarProgram {
 		System.out.println(birthdayAgain.getPeopleGoing() + "" + birthdayAgain.getPeopleInvited());
 		biti.cancelEvent(birthday, "Ingen ville komme :(");
 		System.out.println(biti.getUpcomingEvents());
+		
+		System.out.println();
+		System.out.println();
+		biti.printWeeklySchedule(12, 2015);
 	}
 
 }
