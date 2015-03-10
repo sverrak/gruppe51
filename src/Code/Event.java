@@ -142,8 +142,8 @@ public class Event implements Comparable<Event>{
 	
 	@Override
 	public String toString() {
-		String str = this.title + " har foelgende deltakere " + peopleGoing.toString() + "og avholdes kl: " + this.getHour() + ":";
-		return  str + this.getMinute() + ", den " + this.getDay() + ". " + this.getMonth();		// maaneden blir ikke omgjort til streng som oenskelig :(
+		String str = this.title + " har foelgende deltakere " + peopleGoing + peopleInvited+ "og avholdes kl: " + this.getHour() + ":";
+		return  str + this.getMinute() + ", den " + this.getDay() + ". " + this.getMonth();
 	}
 	
 	// Metodene nedenfor brukes i compareTo()-metoden

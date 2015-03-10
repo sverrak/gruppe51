@@ -122,10 +122,10 @@ public class Employee {
 		if (eventsAttending.size() == 0 || isAvailable(startTime, endTime)){
 			Event event = new Event(title, startTime, endTime, description, this);
 			eventsAttending.add(event);
-			event.addEmployee(this);
+			event.getPeopleGoing().add(this);
 			return event;
 		}
-		System.out.println("Du er opptatt pï¿½ tidspunktet. " + title + " ble ikke opprettet.");
+		System.out.println("Du er opptatt paa tidspunktet. " + title + " ble ikke opprettet.");
 		return null;
 	}
 	
@@ -259,8 +259,8 @@ public class Employee {
 	public boolean inviteEmployeeToEvent(Employee employee, Event event){
 		if (event.getCreator() != this){
 			return false;
-		}else if(! employee.isAvailable(event.getStartTime(), event.getEndTime())){
-			return false;
+//		}else if(! employee.isAvailable(event.getStartTime(), event.getEndTime())){
+//			return false;
 		} else if(event.getPeopleDeclined().contains(employee) || event.getPeopleGoing().contains(employee) || event.getPeopleInvited().contains(employee)){
 			return false;
 		}
@@ -372,7 +372,6 @@ public class Employee {
 	
 	//skal gi en visning i konsollen av innevaerende ukes plan soen-loer. UFERDIG!
 		public void printWeeklySchedule(int weekOfYear, int year){
-			
 			ArrayList<ArrayList<String>> schedule = generateWeeklySchedule(weekOfYear, year);	
 			
 			String str = "|08:00|--------SØNDAG----------+---------MANDAG---------+---------TIRSDAG--------+--------ONSDAG----------+-----------TORSDAG------+--------FREDAG----------+---------LØRDAG---------+\n";
@@ -389,13 +388,15 @@ public class Employee {
 				}
 				str += "\n";
 				str += "|";
-				if (row < 4){
+				if (row < 3){
 					str += "0";
 				}
 				if ( row % 2 == 0){
-					str += (8 + row/2) + ":00";
+			//		str += (8 + row/2) + ":00";		//gammel implementasjon. ble feil
+					str += ((8 + row/2) + ":30");
 					} else{
-						str += ((8 + row/2) + ":30");
+			//			str += ((8 + row/2) + ":30");	//gammel implementasjon. ble feil
+						str += (9 + row/2) + ":00";
 						}
 				
 				str += "|------------------------+------------------------+------------------------+------------------------+------------------------+------------------------+------------------------+\n";
