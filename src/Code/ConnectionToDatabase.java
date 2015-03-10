@@ -56,9 +56,9 @@ public class ConnectionToDatabase {
 			 String position = "";
 			 String username = "";
 			 int telnum = 0;
-			 Boolean admin = false;
 			  
 			  while (resultData.get(counter).next()) {
+				  Boolean admin = false;
 			        for (int i = 1; i <= numberOfColumns; i++) {
 			          String columnValue = resultData.get(counter).getString(i);
 			          if (i==1){
@@ -91,24 +91,36 @@ public class ConnectionToDatabase {
 		}
 	}
 	
-	public void updateEmployeeTelnum(Connection con, String sql, int telnum, String username) throws SQLException{
+	public void updateEmployeeTelnum(Connection con, String sql, int telnum, Employee e) throws SQLException{
 		
 		PreparedStatement preparedStatement = null;
 		preparedStatement = con.prepareStatement(sql);
 		
 		preparedStatement.setInt(1, telnum);
-		preparedStatement.setString(2,username);
+		preparedStatement.setString(2, e.getUsername());
 		
 		preparedStatement.executeUpdate();	
 		
 	}
-	public void updateEmployeePos(Connection con, String sql, String pos, String username) throws SQLException{
+	public void updateEmployeePos(Connection con, String sql, String pos, Employee e) throws SQLException{
 		
 		PreparedStatement preparedStatement = null;
 		preparedStatement = con.prepareStatement(sql);
 		
 		preparedStatement.setString(1, pos);
-		preparedStatement.setString(2,username);
+		preparedStatement.setString(2, e.getUsername());
+		
+		preparedStatement.executeUpdate();	
+		
+	}
+	
+	public void updateEmployeeAdmin(Connection con, String sql, String adm, Employee e) throws SQLException{
+		
+		PreparedStatement preparedStatement = null;
+		preparedStatement = con.prepareStatement(sql);
+		
+		preparedStatement.setString(1, adm);
+		preparedStatement.setString(2, e.getUsername());
 		
 		preparedStatement.executeUpdate();	
 		
@@ -118,7 +130,7 @@ public class ConnectionToDatabase {
 		
 		Statement stmt = null;
 		stmt = con.createStatement();
-		ResultSet rs = stmt.executeQuery("SElECT username FROM Employee");
+		ResultSet rs = stmt.executeQuery("SELECT username FROM Employee");
 		
 		while (rs.next()){
 			if (rs.getString("username").equalsIgnoreCase(s)){
@@ -129,10 +141,16 @@ public class ConnectionToDatabase {
 		return false;	
 	}
 	
-	public void NewEmployee(Connection con, Employee e) throws SQLException{
+	public void deleteUser(Connection con, String sql, Employee e) throws SQLException{
 		
-		//Trenger en for-l¿kke som itererer gjennom alle eksisterende employees i selskapet og skriver de til databasen
-		//Hvis vedkommende allerede eksisterer,  ignorer oppdatering
+		PreparedStatement preparedStatement = null;
+		
+		preparedStatement = con.prepareStatement(sql);
+		preparedStatement.setInt(1,e.getEmployeeID());
+		preparedStatement.executeUpdate();
+	}
+	
+	public void NewEmployee(Connection con, Employee e) throws SQLException{
 		
 		PreparedStatement preparedStatement = null;
 
@@ -144,6 +162,7 @@ public class ConnectionToDatabase {
 		preparedStatement.setString(3, e.getPosition()); //Her mŒ Employee.getPassword() benyttes
 		preparedStatement.setString(4, e.getUsername()); //Her mŒ Employee.getPosition() benyttes
 		preparedStatement.setInt(5, e.getTelnum()); // Her mŒ Employee.getUsername() benyttes
+		preparedStatement.setString(6, e.isAdmin().toString());
 		
 		preparedStatement.executeUpdate(); //Her oppdateres databasen	
 		

@@ -157,10 +157,10 @@ public class CalendarProgram {
 	
 	public static void main(String[] args) throws SQLException {
 		CalendarProgram cp = new CalendarProgram();
-	//	cp.initialize();
-	//	cp.run();
-		cp.init2();
-		cp.run2();
+		cp.initialize();
+		cp.run();
+	//	cp.init2();
+	//	cp.run2();
 	}
 	
 	public static void connection(){
@@ -246,8 +246,8 @@ public class CalendarProgram {
 		
 			
 	}
-	private Employee createNewUser() throws SQLException{
-		System.out.println("Fyll inn feltene til den nye brukeren");
+	private void createNewUser() throws SQLException{
+		System.out.println("Fyll inn feltene til den nye brukeren!\n");
 		String sporring = "SELECT * FROM Employee";
 		employees = ctd.SporringEmployees(con, sporring);
 		int employeeID = employees.get(employees.size()-1).getEmployeeID() + 1;
@@ -286,7 +286,6 @@ public class CalendarProgram {
 		ctd.NewEmployee(con, employee);
 		
 		System.out.println("Du er n√• lagt til i databasen");
-		return employee;
 	}
 	
 		
@@ -299,8 +298,9 @@ public class CalendarProgram {
 		while(current_user != null){
 			System.out.println("Hva vil du gj√∏re?");
 			if(current_user.isAdmin() == true){
-				System.out.println("1: Se alle upcoming events[goingTo] | 2: Legg til ny event | 3: Apne innboks | 4: Administrer dine events | 5: administrer brukere | 9: quit");				
-			} else{
+				System.out.println("1: Se alle upcoming events[goingTo] | 2: Legg til ny event | 3: Apne innboks | 4: Administrer dine events | 5: Administrer brukere | 9: quit");				
+			} 
+			else{
 				System.out.println("1: Se alle upcoming events[goingTo] | 2: Legg til ny event | 3: Apne innboks | 4: Administrer dine events | 9: quit");
 			}
 			
@@ -332,40 +332,84 @@ public class CalendarProgram {
 				} else if(option == 4){
 					
 				} else if(option == 5 && current_user.isAdmin()){
-					System.out.println("1. Endre bruker | 2. Legg til ny bruker");
 					int choice = 0;
-					while (choice < 1 || choice > 3){
+					int brukerChoice = 0;
+					while (choice < 1 || choice > 2){
+						System.out.println("1. Endre bruker | 2. Legg til ny bruker");
 						choice = Integer.parseInt(user_input.nextLine());
 						if(choice == 1){
-<<<<<<< HEAD
+							
 							System.out.println("Skriv inn brukernavn til brukeren du ønsker å endre:");
 							String userName = (user_input.nextLine());
-							if(ctd.checkUserName(con, username) == true){
-								choice = 0;
-								System.out.println("1. Endre tlf | 2. Endre position | 3. Gjør til admin");
-								while(choice < 1 || choice > 3){
-									if (choice == 1){
+							if(ctd.checkUserName(con, userName) == true){
+								Employee tempEmployee = null;
+								for (Employee employee : employees){
+									if(employee.getUsername().equalsIgnoreCase(userName)){
+										tempEmployee = employee;
+									}
+								}
+
+								while(brukerChoice < 1 || brukerChoice > 3){
+									System.out.println("1. Endre tlf | 2. Endre position | 3. Endre admin-rettigheter");
+									brukerChoice = Integer.parseInt(user_input.nextLine());
+									if (brukerChoice == 1){
 										System.out.println("Nytt tlfnr:");
 										int tlf = Integer.parseInt(user_input.nextLine());
 										String s = "UPDATE Employee SET telnum = ? WHERE username = ?";
-										ctd.updateEmployeeTelnum(con, s, tlf, userName);
+										ctd.updateEmployeeTelnum(con, s, tlf, tempEmployee);
+										tempEmployee.setTelnum(tlf);
+										System.out.println("Oppdateringen var vellykket\n");
 									}
-									else if (choice == 2){
+									else if (brukerChoice == 2){
 										System.out.println("Ny position:");
 										String pos = user_input.nextLine();
 										String s = "UPDATE Employee SET position = ? WHERE username = ?";
-										ctd.updateEmployeePos(con, s, pos, userName);
+										ctd.updateEmployeePos(con, s, pos, tempEmployee);
+										tempEmployee.setPosition(pos);
+										System.out.println("Oppdateringen var vellykket\n");
 									}
-									else if (choice == 3){
-										System.out.println("Sikker på at du vil slette bruker: " + userName + "?");
-										if (user_input.nextLine().equalsIgnoreCase("yes"))
+									else if (brukerChoice == 3){
+										if (tempEmployee.isAdmin() == true){
+											System.out.println(tempEmployee.getName() + " har admin-rettigheter, vil du fjerne disse?\n\n");
+											if (user_input.nextLine().equalsIgnoreCase("ja")){
+												String sql = "UPDATE Employee SET admin = ? WHERE username = ?";
+												String adm = "nei";
+												ctd.updateEmployeeAdmin(con, sql, adm, tempEmployee);
+												tempEmployee.setAdmin(false);
+												System.out.println("Oppdateringen var vellykket\n\n");
+											}
+										}
+										else if (tempEmployee.isAdmin() == false){
+											System.out.println(tempEmployee.getName() + " har ikke admin-rettigheter, vil du gi han admin-rettigheter?\n\n");
+											if (user_input.nextLine().equalsIgnoreCase("ja")){	
+												String sql = "UPDATE Employee SET admin = ? WHERE username = ?";
+												String adm = "ja";
+												ctd.updateEmployeeAdmin(con, sql, adm, tempEmployee);
+												tempEmployee.setAdmin(true);
+												System.out.println("Oppdateringen var vellykket\n\n");
+												
+											}
+										}
+									}
+									System.out.println("1. Rediger, " + tempEmployee.getName() + ", ytterligere | 2. Administrer ny bruker | 3. Tilbake til hovedmeny");
+									if (Integer.parseInt(user_input.nextLine()) == 1){
+										brukerChoice = 0;
+									}
+									else if(Integer.parseInt(user_input.nextLine()) == 2){
+										choice = 0;
+									}
+									else if(Integer.parseInt(user_input.nextLine()) == 3){
+										option = 3;
 									}
 								}
 							}
-=======
-							System.out.println("Skriv inn brukernavn til brukeren du oensker aa endre:");
-							String brukernavn = user_input.nextLine();
->>>>>>> 192e08b0d2b63c0a785be8c921a437ce4f6c1393
+							else{
+								System.out.println("Brukernavnet: '" + userName + "', eksisterer ikke i databasen.\nVennligst skriv inn et gyldig brukernavn!\n");
+								choice = 0;
+							}
+						}
+						else if(choice == 2){
+							createNewUser();
 						}
 					}
 				} else if(option == 9){
