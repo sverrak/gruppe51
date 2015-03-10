@@ -8,10 +8,13 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Collection;
+import java.util.Date;
 
 public class ConnectionToDatabase {
 
@@ -166,23 +169,71 @@ public class ConnectionToDatabase {
 		preparedStatement.executeUpdate(); //Her oppdateres databasen	
 		
 	}
-<<<<<<< HEAD
 	
-	public List<Room> fetchRooms(Connection con, String startTime, String endTime, int requestedCapacity) throws SQLException{
+	public void fetchRooms(Connection con, String requestedStartTime, String requestedEndTime, int requestedCapacity) throws SQLException{
+		
+		java.util.Date requestedStart = new java.util.Date();
+		java.util.Date requestedEnd = new java.util.Date();
+		
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy H:m:s");
+		try {
+			requestedStart = formatter.parse(requestedStartTime);
+			requestedEnd = formatter.parse(requestedEndTime);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		Statement stmt = null;
 		stmt = con.createStatement();
 
-		String sql = "SELECT * FROM Room";
+		String sql = "SELECT R.name, R.capacity, E.startTime, E.endTime, E.roomID FROM Room AS R INNER JOIN Event AS E ON  R.roomID = E.roomID";
 		ResultSet rs = stmt.executeQuery(sql);
+		ResultSetMetaData rsmd = rs.getMetaData();
+		int numberOfCol = rsmd.getColumnCount();
 		
+		ArrayList<ResultSet> tempRS = new ArrayList<ResultSet>();
+		ArrayList<ResultSetMetaData> tempRSMD = new ArrayList<ResultSetMetaData>();
 		int counter = 0;
+		
+		while (counter < metaData.size()) {
+			
+			int numberOfColumns = metaData.get(counter).getColumnCount();
+				
+			      for (int i = 1; i <= numberOfColumns; i++) {
+				   //     if (i > 1) System.out.print(",  ");
+				   //     String columnName = metaData.get(counter).getColumnName(i);
+
+				  }
+			      while (resultData.get(counter).next()) {
+				        for (int i = 1; i <= numberOfColumns; i++) {
+				  //      if (i > 1) System.out.print(",  "); 
+				          java.util.Date startDato = new java.util.Date();
+				          java.util.Date endDato = new java.util.Date();
+				          int roomID = 0;
+				          
+				          startDato = convertDateTimeToDate(resultData.get(counter).getString("startDate"));
+				          endDato = convertDateTimeToDate(resultData.get(counter).getString("endDate"));
+				          roomID = resultData.get(counter).getInt("roomID");
+				          
+				          if
+				          
+				          System.out.print(columnValue);
+				        }      
+				  } 
+		}
+		
+	} // midlertidlig, husk Œ returnere List<Room>
+		
+/*		int counter = 0;
+		int capacity = 0;
 		int roomID = 0;
 		String name = "";
 		String description = "";
+		
 		  
 		  while (resultData.get(counter).next()) {
-			  for (int i = 1; i <= rs.; i++) {
+			  for (int i = 1; i <= numberOfCol; i++) {
 			  	
 				  String columnValue = resultData.get(counter).getString(i);
 		          if (i==1){
@@ -208,9 +259,7 @@ public class ConnectionToDatabase {
 		return rooms;
 	}
 	
-=======
-	// Fredrik: hva betyr setterne i disse metoden?
->>>>>>> 137da76fe801fddb283db1d1ad034e6af74c978b
+
 	public void WriteEventToDatabase(Connection con, Event e) throws SQLException{
 		
 		//Trenger en for-lï¿½kke som itererer gjennom alle eksisterende events i selskapet og skriver de til databasen
@@ -280,7 +329,7 @@ public class ConnectionToDatabase {
 
 		preparedStatement.executeUpdate(); //Her oppdateres databasen
 			
-	}
+	} 
 	
 	public void WriteDatabaseToJava(ArrayList<ResultSetMetaData> metaData, ArrayList<ResultSet> resultData) throws SQLException{
 		
@@ -502,15 +551,51 @@ public class ConnectionToDatabase {
 		  } 
 		      counter++;
 		}
+	} */
+	
+	public java.util.Date convertDateTimeToDate(String dateTime) throws SQLException{
+		java.util.Date dateObject = new java.util.Date();
+		String date = "";
+		
+		date = dateTime.substring(8,9);
+		date.concat("/" + dateTime.substring(5,6) + "/" + dateTime.substring(0,3) + " " + dateTime.substring(11, 18));
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy H:m:s");
+		try {
+			dateObject = formatter.parse(date);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return dateObject;
 	}
 	
-	public void PrintTables(ArrayList<ResultSetMetaData> metaData, ArrayList<ResultSet> resultData) throws SQLException{
+	public void PrintTables(ArrayList<ResultSetMetaData> metaData, ArrayList<ResultSet> resultData, String msg) throws SQLException{
 		
 		int counter = 0;
 		
 		while (counter < metaData.size()) {
 			
 			int numberOfColumns = metaData.get(counter).getColumnCount();
+			
+			if(msg.equalsIgnoreCase("available rooms")){
+				
+			      for (int i = 1; i <= numberOfColumns; i++) {
+				        if (i > 1) System.out.print(",  ");
+				        String columnName = metaData.get(counter).getColumnName(i);
+				        
+				      }
+			      while (resultData.get(counter).next()) {
+				        for (int i = 1; i <= numberOfColumns; i++) {
+				          if (i > 1) System.out.print(",  ");
+				          String columnValue = resultData.get(counter).getString(i);
+				          System.out.print(columnValue);
+				        }      
+				      } 
+			}
+			else if (msg.equalsIgnoreCase("people invited")){
+				
+			}
+			else if (msg.equalsIgnoreCase("people"))
 			  
 		      for (int i = 1; i <= numberOfColumns; i++) {
 		        if (i > 1) System.out.print(",  ");
