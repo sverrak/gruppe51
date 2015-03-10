@@ -164,10 +164,10 @@ public class CalendarProgram {
 	
 	public static void main(String[] args) throws SQLException {
 		CalendarProgram cp = new CalendarProgram();
-		cp.initialize();
-		cp.run();
-	//	cp.init2();
-	//	cp.run2();
+	//	cp.initialize();
+	//	cp.run();
+		cp.init2();
+		cp.run2();
 	}
 	
 	public static void connection(){
@@ -488,7 +488,8 @@ public class CalendarProgram {
 		Event party = biti.createEvent("party", dato5, dato6, "kom paa party!");
 		Event party2 = biti.createEvent("partyOnSameDay", dato7, dato8, "kom paa party!");	//disse to skal kollidere. Ber ikke om feilmelding
 		
-		
+		Event sverresEvent = sverre.createEvent("sverresEvent", dato1, dato2, "eventet til sverre som kolliderer med bursdag");
+		sverre.inviteEmployeeToEvent(biti, sverresEvent);
 		System.out.println("Bendiks events: " + "\n- Events invited to: " + biti.getUpcomingEvents() + "\n- Events attending: " + biti.getEventsAttending());
 		
 		System.out.println(birthday.getPeopleInvited()); // printer ekstra '[]'?
