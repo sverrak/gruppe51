@@ -122,10 +122,10 @@ public class Employee {
 		if (eventsAttending.size() == 0 || isAvailable(startTime, endTime)){
 			Event event = new Event(title, startTime, endTime, description, this);
 			eventsAttending.add(event);
-			event.addEmployee(this);
+			event.getPeopleGoing().add(this);
 			return event;
 		}
-		System.out.println("Du er opptatt p� tidspunktet. " + title + " ble ikke opprettet.");
+		System.out.println("Du er opptatt paa tidspunktet. " + title + " ble ikke opprettet.");
 		return null;
 	}
 	
