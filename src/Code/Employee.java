@@ -122,6 +122,7 @@ public class Employee {
 		if (eventsAttending.size() == 0 || isAvailable(startTime, endTime)){
 			Event event = new Event(title, startTime, endTime, description, this);
 			eventsAttending.add(event);
+			event.addEmployee(this);
 			return event;
 		}
 		System.out.println("Du er opptatt pï¿½ tidspunktet. " + title + " ble ikke opprettet.");
@@ -339,7 +340,7 @@ public class Employee {
 						lastRow += 1;
 					}
 					for (int i = firstRow; i < lastRow; i++) {		 // for alle slots fra firstRow til lastRow
-						schedule.get(i).set(col, event.getTitle() + " A"); // matrix[rad i ][col] = event.getName() + "A"		// A'en er for attending
+						schedule.get(i).set(col, event.getTitle() + " (A)"); // matrix[rad i ][col] = event.getName() + "A"		// A'en er for attending
 					}
 				}
 			}
@@ -357,10 +358,10 @@ public class Employee {
 					}
 					for (int i = firstRow; i < lastRow; i++) {		 // for alle slots fra firstRow til lastRow
 						if (schedule.get(i).equals("")){
-							schedule.get(i).set(col, event.getTitle() + " U");
+							schedule.get(i).set(col, event.getTitle() + " (U)");
 						}
 						else{
-						schedule.get(i).set(col, schedule.get(i) + "/n" + event.getTitle() + " U"); // matrix[rad i ][col] = event.getName() + "U"	// U'en er for attending
+						schedule.get(i).set(col, schedule.get(i) + "/n" + event.getTitle() + " (U)"); // matrix[rad i ][col] = event.getName() + "U"	// U'en er for attending
 						}
 					}
 				}			
@@ -374,9 +375,19 @@ public class Employee {
 			
 			ArrayList<ArrayList<String>> schedule = generateWeeklySchedule(weekOfYear, year);	
 			
-			String str = "      +-------SØNDAG---------+--------MANDAG--------+--------TIRSDAG-------+-------ONSDAG---------+----------TORSDAG-----+-------FREDAG---------+--------LØRDAG--------+\n";
-			//sb.append("     +----------------------+-----------------------+----------------------+----------------------+----------------------+----------------------+------------------------+\n");
+			String str = "|08:00|--------SØNDAG----------+---------MANDAG---------+---------TIRSDAG--------+--------ONSDAG----------+-----------TORSDAG------+--------FREDAG----------+---------LØRDAG---------+\n";
 			for (int row = 0; row < 32; row++) {
+			str += "|+++++|";
+				for (int col = 0; col < 7; col++){
+					String entry = schedule.get(row).get(col);
+					str += entry;
+					int num_of_spaces = 24 - entry.length();
+					for (int i = 0; i < num_of_spaces; i++) {
+						str += " ";
+					}
+					str += "|";
+				}
+				str += "\n";
 				str += "|";
 				if (row < 4){
 					str += "0";
@@ -386,17 +397,8 @@ public class Employee {
 					} else{
 						str += ((8 + row/2) + ":30");
 						}
-					str += "|";
-				for (int col = 0; col < 7; col++){
-					String entry = schedule.get(row).get(col);
-					str += entry;
-					int num_of_spaces = 22 - entry.length();
-					for (int i = 0; i < num_of_spaces; i++) {
-						str += " ";
-					}
-					str += "|";
-				}
-				str += "\n------+----------------------+----------------------+----------------------+----------------------+----------------------+----------------------+----------------------+\n";
+				
+				str += "|------------------------+------------------------+------------------------+------------------------+------------------------+------------------------+------------------------+\n";
 			}
 			System.out.println(str);
 		}
