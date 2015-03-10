@@ -14,18 +14,12 @@ import java.util.Scanner;
 import java.util.Collection;
 
 public class ConnectionToDatabase {
-	 /* CalendarProgram cp1 = null;
-	  private Connection con = null;
-	  private Statement stmt1 = null;
-	  private Statement stmt2 = null;
-	  private Statement stmt3 = null;
-	  private Statement stmt4 = null;
-	  private Statement stmt5 = null;
-	  private PreparedStatement preparedStatement = null; */
+
 	  private ResultSet resultSet = null; 
 	  private ArrayList<ResultSetMetaData> metaData = new ArrayList<ResultSetMetaData>();
 	  private ArrayList<ResultSet> resultData = new ArrayList<ResultSet>();	
 	  private List<Employee> employees = new ArrayList<Employee>();
+	  private List<Room> rooms = new ArrayList<Room>();
 	
 
 	
@@ -166,6 +160,46 @@ public class ConnectionToDatabase {
 		
 		preparedStatement.executeUpdate(); //Her oppdateres databasen	
 		
+	}
+	
+	public List<Room> fetchRooms(Connection con, String startTime, String endTime, int requestedCapacity) throws SQLException{
+		
+		Statement stmt = null;
+		stmt = con.createStatement();
+
+		String sql = "SELECT * FROM Room";
+		ResultSet rs = stmt.executeQuery(sql);
+		
+		int counter = 0;
+		int roomID = 0;
+		String name = "";
+		String description = "";
+		  
+		  while (resultData.get(counter).next()) {
+			  for (int i = 1; i <= rs.; i++) {
+			  	
+				  String columnValue = resultData.get(counter).getString(i);
+		          if (i==1){
+		        	  roomID = Integer.parseInt(columnValue);
+		          }
+		          if (i==2){
+		        	  name = columnValue;
+		          }
+		          if (i==3){
+		        	  capacity = Integer.parseInt(columnValue);
+		          }
+		          if (i==4){
+		        	  description = columnValue;
+		          }
+		          if (i==5){ //Her mŒ roomSchedule ordnes?
+		        	  roomSchedule = columnValue;
+		          }
+			  }
+
+		        Room addRoom = new Room(roomID, name, capacity, description);   //Maa sorge for at nyttRoom-stringen har samme format som inn-parameterene til new Room 
+		  }
+		
+		return rooms;
 	}
 	
 	public void WriteEventToDatabase(Connection con, Event e) throws SQLException{
@@ -328,7 +362,7 @@ public class ConnectionToDatabase {
 			  String description = "";
 			  
 			  while (resultData.get(counter).next()) {
-				  	for (int i = 1; i <= numberOfColumns; i++) {
+				  for (int i = 1; i <= numberOfColumns; i++) {
 				  	
 					  String columnValue = resultData.get(counter).getString(i);
 			          if (i==1){
