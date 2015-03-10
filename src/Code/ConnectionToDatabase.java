@@ -29,7 +29,7 @@ public class ConnectionToDatabase {
 	
 
 	
-	public List<Employee> Sporring(Connection con, String sporring) throws SQLException{
+	public List<Employee> SporringEmployees(Connection con, String sporring) throws SQLException{
 		
 		Statement stmt = null;
 		stmt = con.createStatement();
@@ -56,9 +56,9 @@ public class ConnectionToDatabase {
 			 String position = "";
 			 String username = "";
 			 int telnum = 0;
-			 Boolean admin = false;
 			  
 			  while (resultData.get(counter).next()) {
+				  Boolean admin = false;
 			        for (int i = 1; i <= numberOfColumns; i++) {
 			          String columnValue = resultData.get(counter).getString(i);
 			          if (i==1){
@@ -91,74 +91,121 @@ public class ConnectionToDatabase {
 		}
 	}
 	
-	public void updateEmployee(Connection con, Employee e) throws SQLException{
+	public void updateEmployeeTelnum(Connection con, String sql, int telnum, Employee e) throws SQLException{
 		
-		Statement stmt = null;
-		stmt = con.createStatement();
 		PreparedStatement preparedStatement = null;
 		preparedStatement = con.prepareStatement(sql);
 		
+		preparedStatement.setInt(1, telnum);
+		preparedStatement.setString(2, e.getUsername());
 		
+		preparedStatement.executeUpdate();	
 		
-		//String sql = "INSERT INTO Employee (employeeID, name, password, position, username, telnum, admin)" + " Values (?, ?, ?, ? ,? ,?, ?)";
+	}
+	public void updateEmployeePos(Connection con, String sql, String pos, Employee e) throws SQLException{
 		
+		PreparedStatement preparedStatement = null;
+		preparedStatement = con.prepareStatement(sql);
+		
+		preparedStatement.setString(1, pos);
+		preparedStatement.setString(2, e.getUsername());
+		
+		preparedStatement.executeUpdate();	
 		
 	}
 	
-	public void NewEmployee(Connection con, Employee e) throws SQLException{
+	public void updateEmployeeAdmin(Connection con, String sql, String adm, Employee e) throws SQLException{
 		
-		//Trenger en for-l¿kke som itererer gjennom alle eksisterende employees i selskapet og skriver de til databasen
+		PreparedStatement preparedStatement = null;
+		preparedStatement = con.prepareStatement(sql);
+		
+		preparedStatement.setString(1, adm);
+		preparedStatement.setString(2, e.getUsername());
+		
+		preparedStatement.executeUpdate();	
+		
+	}
+	// Ikke implementert
+	public Boolean checkUserName(Connection con, String s) throws SQLException{
+		
+		//Trenger en for-lï¿½kke som itererer gjennom alle eksisterende employees i selskapet og skriver de til databasen
 		//Hvis vedkommende allerede eksisterer,  ignorer oppdatering
+
+		Statement stmt = null;
+		stmt = con.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT username FROM Employee");
+		
+		while (rs.next()){
+			if (rs.getString("username").equalsIgnoreCase(s)){
+				return true;
+			}
+		}
+		
+		return false;	
+	}
+	
+	public void deleteUser(Connection con, String sql, Employee e) throws SQLException{
+		
+		PreparedStatement preparedStatement = null;
+		
+		preparedStatement = con.prepareStatement(sql);
+		preparedStatement.setInt(1,e.getEmployeeID());
+		preparedStatement.executeUpdate();
+	}
+	
+	public void NewEmployee(Connection con, Employee e) throws SQLException{
 		
 		PreparedStatement preparedStatement = null;
 
 		String sql = "INSERT INTO Employee (name, password, position, username, telnum, admin)" + " VALUES (?, ?, ?, ?, ?, ?)";
 
 		preparedStatement = con.prepareStatement(sql);
-		preparedStatement.setString(1, e.getName()); //Her mŒ Employee.getEmployeeID() benyttes for hver enkelt employee
-		preparedStatement.setString(2, e.getPassword()); //Her mŒ Employee.getName() benyttes
-		preparedStatement.setString(3, e.getPosition()); //Her mŒ Employee.getPassword() benyttes
-		preparedStatement.setString(4, e.getUsername()); //Her mŒ Employee.getPosition() benyttes
-		preparedStatement.setInt(5, e.getTelnum()); // Her mŒ Employee.getUsername() benyttes
+
+		preparedStatement.setString(1, e.getName()); //Her mï¿½ Employee.getEmployeeID() benyttes for hver enkelt employee
+		preparedStatement.setString(2, e.getPassword()); //Her mï¿½ Employee.getName() benyttes
+		preparedStatement.setString(3, e.getPosition()); //Her mï¿½ Employee.getPassword() benyttes
+		preparedStatement.setString(4, e.getUsername()); //Her mï¿½ Employee.getPosition() benyttes
+		preparedStatement.setInt(5, e.getTelnum()); // Her mï¿½ Employee.getUsername() benyttes
+		preparedStatement.setString(6, e.isAdmin().toString());
+
 		
 		preparedStatement.executeUpdate(); //Her oppdateres databasen	
 		
 	}
-	
+	// Fredrik: hva betyr setterne i disse metoden?
 	public void WriteEventToDatabase(Connection con, Event e) throws SQLException{
 		
-		//Trenger en for-l¿kke som itererer gjennom alle eksisterende events i selskapet og skriver de til databasen
+		//Trenger en for-lï¿½kke som itererer gjennom alle eksisterende events i selskapet og skriver de til databasen
 		//Hvis eventet allerede eksisterer,  ignorer oppdatering
 		
 		PreparedStatement preparedStatement = null;
 		
 		String sql = "INSERT INTO Event (eventID, tittel, startTime, endTime, description, roomID)" + "VALUES (?, ?, ?, ?, ?, ?)";
 		preparedStatement = con.prepareStatement(sql);
-		
-		preparedStatement.setInt(1, 1); //Her mŒ Event.getEventID() benyttes for hvert enkelt event
-		preparedStatement.setString(2, "Mote"); //Her mŒ Event.getTitle() benyttes
-		preparedStatement.setTime(3, 10:30); //Her mŒ Event.getStartTime() benyttes
-		preparedStatement.setTime(4, 11:30); //Her mŒ Event.getEndTime() benyttes
-		preparedStatement.setString(5, "Klientmote"); // Her mŒ Event.getDescription() benyttes
-		preparedStatement.setString(6, "Event123"); // Her mŒ Event.getRoomID() benyttes
+
+		preparedStatement.setInt(1, 1); //Her mï¿½ Event.getEventID() benyttes for hvert enkelt event
+		preparedStatement.setString(2, "Mote"); //Her mï¿½ Event.getTitle() benyttes
+		preparedStatement.setTime(3, 10:30); //Her mï¿½ Event.getStartTime() benyttes
+		preparedStatement.setTime(4, 11:30); //Her mï¿½ Event.getEndTime() benyttes
+		preparedStatement.setString(5, "Klientmote"); // Her mï¿½ Event.getDescription() benyttes
+		preparedStatement.setString(6, "Event123"); // Her mï¿½ Event.getRoomID() benyttes
 		
 		preparedStatement.executeUpdate(); //Her oppdateres databasen	
-		
 	}	
 	
 	public void WriteRoomToDatabase(Connection con, Room r) throws SQLException{
 		
-		//Trenger en for-l¿kke som itererer gjennom alle eksisterende rom i selskapet og skriver de til databasen
+		//Trenger en for-lï¿½kke som itererer gjennom alle eksisterende rom i selskapet og skriver de til databasen
 		//Hvis rommet allerede eksisterer,  ignorer oppdatering
 		PreparedStatement preparedStatement =  null;
 		
 		String sql = "INSERT INTO Room (roomID, name, capacity, eventID)" + "VALUES (?, ?, ?, ?)";
 		preparedStatement = con.prepareStatement(sql);
-		
-		preparedStatement.setInt(1, roomID); //Her mŒ Room.getRoomID() benyttes for hvert enkelt rom
-		preparedStatement.setString(2, "name"); //Her mŒ Room.getName() benyttes
-		preparedStatement.setInt(3, capacity); //Her mŒ Room.getCapacity() benyttes
-		preparedStatement.setInt(4, eventID); //Her mŒ Room.getEventID() benyttes
+
+		preparedStatement.setInt(1, roomID); //Her mï¿½ Room.getRoomID() benyttes for hvert enkelt rom
+		preparedStatement.setString(2, "name"); //Her mï¿½ Room.getName() benyttes
+		preparedStatement.setInt(3, capacity); //Her mï¿½ Room.getCapacity() benyttes
+		preparedStatement.setInt(4, eventID); //Her mï¿½ Room.getEventID() benyttes
 		
 		preparedStatement.executeUpdate(); //Her oppdateres databasen	
 		
@@ -166,16 +213,15 @@ public class ConnectionToDatabase {
 	
 	public void WriteMessageToDatabase(Connection con, Message m) throws SQLException{
 		
-		//Trenger en for-l¿kke som itererer gjennom alle eksisterende events i selskapet og skriver de til databasen
+		//Trenger en for-lï¿½kke som itererer gjennom alle eksisterende events i selskapet og skriver de til databasen
 		//Hvis eventet allerede eksisterer,  ignorer oppdatering
 		PreparedStatement preparedStatement = null;
 		
 		String sql = "INSERT INTO Message (messageID, type, message)" + "VALUES (?, ?, ?)";
 		preparedStatement = con.prepareStatement(sql);
-		
-		preparedStatement.setInt(1, messageID); //Her mŒ Message.getMessageID() benyttes for hver enkel message
-		preparedStatement.setString(2, "type"); //Her mŒ Message.getType() benyttes
-		preparedStatement.setString(3, "message"); //Her mŒ message.getMessage() benyttes
+		preparedStatement.setInt(1, messageID); //Her mï¿½ Message.getMessageID() benyttes for hver enkel message
+		preparedStatement.setString(2, "type"); //Her mï¿½ Message.getType() benyttes
+		preparedStatement.setString(3, "message"); //Her mï¿½ message.getMessage() benyttes
 		
 		preparedStatement.executeUpdate(); //Her oppdateres databasen	
 		
@@ -183,17 +229,16 @@ public class ConnectionToDatabase {
 	
 	public void WriteGruppeToDatabase(Connection con, Group g) throws SQLException{
 		
-		//Trenger en for-l¿kke som itererer gjennom alle eksisterende grupper selskapet og skriver de til databasen
+		//Trenger en for-lï¿½kke som itererer gjennom alle eksisterende grupper selskapet og skriver de til databasen
 		//Hvis gruppen allerede eksisterer,  ignorer oppdatering
 		PreparedStatement preparedStatement = null;
 		
 		String sql = "INSERT INTO Gruppe (gruppeID, navn, ansvarlig, beskrivelse)" + "VALUES (?, ?, ?, ?)";
 		preparedStatement = con.prepareStatement(sql);
-		
-		preparedStatement.setInt(1, 0003); //Her mŒ Gruppe.getgruppeID() benyttes for hver enkelt gruppe
-		preparedStatement.setString(2, "Mat"); //Her mŒ Gruppe.getName() benyttes for hver gruppe
-		preparedStatement.setString(3, "Kantinedama"); //Her mŒ Gruppe.getResponsible() benyttes for hver gruppe
-		preparedStatement.setString(4, "Digg mat"); //Her mŒ Gruppe.getDescription() benyttes for hver gruppe
+		preparedStatement.setInt(1, 0003); //Her mï¿½ Gruppe.getgruppeID() benyttes for hver enkelt gruppe
+		preparedStatement.setString(2, "Mat"); //Her mï¿½ Gruppe.getName() benyttes for hver gruppe
+		preparedStatement.setString(3, "Kantinedama"); //Her mï¿½ Gruppe.getResponsible() benyttes for hver gruppe
+		preparedStatement.setString(4, "Digg mat"); //Her mï¿½ Gruppe.getDescription() benyttes for hver gruppe
 
 		preparedStatement.executeUpdate(); //Her oppdateres databasen
 			
@@ -208,7 +253,7 @@ public class ConnectionToDatabase {
 			
 			int numberOfColumns = metaData.get(counter).getColumnCount();
 			  
-		      for (int i = 1; i <= numberOfColumns; i++) { //Er en for-l¿kke n¿dvendig her?
+		      for (int i = 1; i <= numberOfColumns; i++) { //Er en for-lï¿½kke nï¿½dvendig her?
 		        String columnName = metaData.get(counter).getColumnName(i);
 		        
 		        if (i == 1 && columnName.equalsIgnoreCase("employeeID")){
@@ -249,30 +294,28 @@ public class ConnectionToDatabase {
 			  String position = "";
 			  String username = "";
 			  int telnum = 0;
+			  Boolean isAdmin;
 			  
 			  while (resultData.get(counter).next()) {
 			        for (int i = 1; i <= numberOfColumns; i++) {
 			          String columnValue = resultData.get(counter).getString(i);
 			          if (i==1){
 			        	  employeeID = Integer.parseInt(columnValue);
-			          }
-			          if (i==2){
+			          } else if (i==2){
 			        	  name = columnValue;
-			          }
-			          if (i==3){
+			          } else if (i==3){
 			        	  password = columnValue;
-			          }
-			          if (i==4){
+			          } else if (i==4){
 			        	  position = columnValue;
-			          }
-			          if (i==5){
+			          } else if (i==5){
 			        	  username = columnValue;
-			          }
-			          if (i==6){
+			          } else if (i==6){
 			        	  telnum = Integer.parseInt(columnValue);
+			          } else if (i==7){
+			        	  isAdmin = Boolean.parseBoolean(columnValue);
 			          }
 			        }
-			        	Employee i = new Employee(name, password, position, username, telnum);//Maa sorge for at nyEmployee-stringen har samme format som inn-parameterene til new Employee
+			        	Employee i = new Employee(name, password, position, username, telnum, isAdmin);//Maa sorge for at nyEmployee-stringen har samme format som inn-parameterene til new Employee
 			            employees.add(i);
 			      } 
 			  
@@ -300,7 +343,7 @@ public class ConnectionToDatabase {
 			          if (i==4){
 			        	  description = columnValue;
 			          }
-			          if (i==5){ //Her mŒ roomSchedule ordnes?
+			          if (i==5){ //Her mï¿½ roomSchedule ordnes?
 			        	  roomSchedule = columnValue;
 			          }
 				  }
@@ -337,7 +380,7 @@ public class ConnectionToDatabase {
 				          if (i==5){
 				        	  description = columnValue;
 				          }
-				          if (i==6){  //hvordan fŒ inn en Employee her?
+				          if (i==6){  //hvordan fï¿½ inn en Employee her?
 				        	  for (i = 0; i < employees.length(); i++){
 				        		
 				        		  if (employees.get(i).getName.equalsIgnoreCase(columnValue)) {
@@ -352,7 +395,7 @@ public class ConnectionToDatabase {
 			  } 
 			  
 		  }
-		  else if (decider == 4){ // for message, denne mŒ ses n¾rmere pŒ
+		  else if (decider == 4){ // for message, denne mï¿½ ses nï¿½rmere pï¿½
 			  
 			  int messageID = 0;
 			  String type = "";
@@ -373,7 +416,7 @@ public class ConnectionToDatabase {
 			          if (i==4){
 			        	  description = columnValue;
 			          }
-			          if (i==5){ //Her mŒ roomSchedule ordnes
+			          if (i==5){ //Her mï¿½ roomSchedule ordnes
 			        	  roomSchedule = columnValue;
 			          }
 				  }
@@ -383,7 +426,7 @@ public class ConnectionToDatabase {
 		  }
 		  else if (decider == 5){
 			  
-			  int groupID = 0; // mŒ kanskje legges til i Group
+			  int groupID = 0; // mï¿½ kanskje legges til i Group
 			  String groupName = "";
 			  String description = "";
 			  Employee responsible = null;
@@ -410,7 +453,7 @@ public class ConnectionToDatabase {
 			        		 }
 			        	 }
 			          }
-			          if (i==4){ //Her mŒ participants legges til
+			          if (i==4){ //Her mï¿½ participants legges til
 			        	  description = (columnValue);
 			          }
 			          if (i==5){
