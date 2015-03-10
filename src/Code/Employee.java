@@ -259,8 +259,8 @@ public class Employee {
 	public boolean inviteEmployeeToEvent(Employee employee, Event event){
 		if (event.getCreator() != this){
 			return false;
-		}else if(! employee.isAvailable(event.getStartTime(), event.getEndTime())){
-			return false;
+//		}else if(! employee.isAvailable(event.getStartTime(), event.getEndTime())){
+//			return false;
 		} else if(event.getPeopleDeclined().contains(employee) || event.getPeopleGoing().contains(employee) || event.getPeopleInvited().contains(employee)){
 			return false;
 		}
