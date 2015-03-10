@@ -164,10 +164,17 @@ public class CalendarProgram {
 	
 	public static void main(String[] args) throws SQLException {
 		CalendarProgram cp = new CalendarProgram();
+<<<<<<< HEAD
 		cp.initialize();
 		cp.run();
 	//	cp.init2();
 	//	cp.run2();
+=======
+	//	cp.initialize();
+	//	cp.run();
+		cp.initialize();
+		cp.run();
+>>>>>>> 6f3c4df5b04c401608c4a2653d8097d112e20f3b
 	}
 	
 	public static void connection(){
@@ -287,7 +294,7 @@ public class CalendarProgram {
 		admin = Boolean.parseBoolean(user_input.nextLine());
 
 		
-		Employee employee = new Employee(name, position, username, password, tlf, admin);
+		Employee employee = new Employee(getGreatestEmployeeID(), name, position, username, password, tlf, admin);
 		employees.add(employee);
 		
 		ctd.NewEmployee(con, employee);
@@ -296,6 +303,15 @@ public class CalendarProgram {
 	}
 	
 		
+	private String getGreatestEmployeeID() {
+		int greatestID = 0;
+		for (Employee employee : employees) {
+			if(employee.getEmployeeID() > greatestID){
+				greatestID = employee.getEmployeeID();
+			}
+		}
+		return greatestID + "";
+	}
 	private void run() throws SQLException {
 		current_user = login();
 		System.out.println("\nDu er nÃ¥ logget inn. Skriv quit for Ã¥ logge ut");
@@ -316,7 +332,58 @@ public class CalendarProgram {
 			while(option < 1 || option > 9){
 				option = Integer.parseInt(user_input.nextLine());
 				if(option == 1){
-					//System.out.println(current_user.generateWeeklySchedule());
+					System.out.println("Skriv inn ukenummer: ");
+					int weekOfYear;
+					int year;
+					String firstOptionChoice = "";
+					while(firstOptionChoice.equalsIgnoreCase("q")){
+						weekOfYear = Integer.parseInt(user_input.nextLine());
+						year = Integer.parseInt(user_input.nextLine());
+						
+						
+						current_user.generateWeeklySchedule(weekOfYear, year);
+						
+						System.out.println("\nDu har nÃ¥ folgende valg:");
+						System.out.println("f: forrige uke | n: neste uke | q: tilbake til hovedmeny");
+						firstOptionChoice = user_input.nextLine();
+						
+					   
+						if(firstOptionChoice.equalsIgnoreCase("f")){
+						    
+							if(weekOfYear != 1){
+								current_user.generateWeeklySchedule(weekOfYear--, year);							
+							} else{
+								//Kode for Ã¥ finne antall uker i forrige year. Skriver java.util siden vi har en klasse som heter Calendar
+								java.util.Calendar cal = java.util.Calendar.getInstance();
+								cal.set(java.util.Calendar.YEAR, year - 1);
+								cal.set(java.util.Calendar.MONTH, java.util.Calendar.DECEMBER);
+								cal.set(java.util.Calendar.DAY_OF_MONTH, 31);
+								
+								int ordinalDay = cal.get(java.util.Calendar.DAY_OF_YEAR);
+								int weekDay = cal.get(java.util.Calendar.DAY_OF_WEEK) - 1; // Sunday = 0
+								int numberOfWeeks = (ordinalDay - weekDay + 10) / 7;
+								current_user.generateWeeklySchedule(numberOfWeeks, year--);
+							}
+						} else if(firstOptionChoice.equalsIgnoreCase("n")){
+							//Kode for Ã¥ finne antall uker i forrige year. Skriver java.util siden vi har en klasse som heter Calendar
+							java.util.Calendar cal = java.util.Calendar.getInstance();
+							cal.set(java.util.Calendar.YEAR, year);
+							cal.set(java.util.Calendar.MONTH, java.util.Calendar.DECEMBER);
+							cal.set(java.util.Calendar.DAY_OF_MONTH, 31);
+							
+							int ordinalDay = cal.get(java.util.Calendar.DAY_OF_YEAR);
+							int weekDay = cal.get(java.util.Calendar.DAY_OF_WEEK) - 1; // Sunday = 0
+							int numberOfWeeks = (ordinalDay - weekDay + 10) / 7;
+							
+							if(weekOfYear != numberOfWeeks){
+								current_user.generateWeeklySchedule(weekOfYear++, year);							
+							} else{
+								current_user.generateWeeklySchedule(1, year++);
+							}
+						} else if(firstOptionChoice.equalsIgnoreCase("q")){
+							break;
+					}
+					}
 				} else if(option == 2){
 					Event event = getEventInput(current_user);
 					current_user.addEvent(event);
@@ -346,7 +413,7 @@ public class CalendarProgram {
 						choice = Integer.parseInt(user_input.nextLine());
 						if(choice == 1){
 							
-							System.out.println("Skriv inn brukernavn til brukeren du ¿nsker Œ endre:");
+							System.out.println("Skriv inn brukernavn til brukeren du ï¿½nsker ï¿½ endre:");
 							String userName = (user_input.nextLine());
 							if(ctd.checkUserName(con, userName) == true){
 								Employee tempEmployee = null;
@@ -399,7 +466,7 @@ public class CalendarProgram {
 										}
 									else if (brukerChoice == 4){
 										
-										System.out.println("\nSikker pŒ at du vil slette: '" + tempEmployee.getName() + "', fra databasen?");
+										System.out.println("\nSikker pï¿½ at du vil slette: '" + tempEmployee.getName() + "', fra databasen?");
 										if (user_input.nextLine().equalsIgnoreCase("ja")){
 											String sql = "DELETE FROM Employee WHERE username = ?";
 											ctd.deleteUser(con, sql, tempEmployee);
@@ -472,9 +539,9 @@ public class CalendarProgram {
 		Date dato7 = new Date(116, 3, 19, 19, 30, 0);
 		Date dato8 = new Date(116, 3, 19, 21, 00, 0);
 		
-		Employee biti = new Employee("Bendik", "Junior", "biti", "bata", 123, false);
-		Employee sverre = new Employee("Sverre", "Senior", "sverrak", "heiia", 45884408, false);
-		Employee yolo = new Employee("Jola", "Junior+", "bata", "biti", 123, false);
+		Employee biti = new Employee(getGreatestEmployeeID(), "Bendik", "Junior", "biti", "bata", 123, false);
+		Employee sverre = new Employee(getGreatestEmployeeID(), "Sverre", "Senior", "sverrak", "heiia", 45884408, false);
+		Employee yolo = new Employee(getGreatestEmployeeID(), "Jola", "Junior+", "bata", "biti", 123, false);
 		current_user = null;
 		
 		employees = new ArrayList<Employee>();

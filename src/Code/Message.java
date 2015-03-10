@@ -1,12 +1,16 @@
 package Code;
 
+import java.util.Date;
+
 
 public class Message {
+	private int messageID;
 	private Employee sender;
 	private Employee receiver;
 	private Boolean isRead;
 	private String content;
 	private String subject;
+	private final Date timestamp;
 	
 	public Message(Employee sender, Employee receiver,
 			String content, String subject) {
@@ -16,11 +20,20 @@ public class Message {
 		this.isRead = false;
 		this.content = content;
 		this.subject = subject;
+		this.timestamp = new Date();
+	}
+	
+	public Date getTimeStamp(){
+		return timestamp;
+	}
+	
+	public int getMessageID(){
+		return messageID;
 	}
 	public Employee getSender() {
 		return sender;
 	}
-	public Employee getReceiever() {
+	public Employee getReceiver() {
 		return receiver;
 	}
 	public Boolean getIsRead() {
