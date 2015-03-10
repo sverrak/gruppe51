@@ -3,6 +3,7 @@ package Code;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -339,8 +340,9 @@ public class Employee {
 					if (event.getEndTime().getMinutes() >= 30){
 						lastRow += 1;
 					}
+					int num_declined = event.getPeopleDeclined().size();
 					for (int i = firstRow; i < lastRow; i++) {		 // for alle slots fra firstRow til lastRow
-						schedule.get(i).set(col, event.getTitle() + " (A)"); // matrix[rad i ][col] = event.getName() + "A"		// A'en er for attending
+						schedule.get(i).set(col, event.getTitle() + " (A) [" + num_declined + "]"); // matrix[rad i ][col] = event.getName() + "A"		// A'en er for attending  // [num_declined] for ant. som har declined eventet
 					}
 				}
 			}
@@ -356,12 +358,13 @@ public class Employee {
 					if (event.getEndTime().getMinutes() >= 30){
 						lastRow += 1;
 					}
+					int num_declined = event.getPeopleDeclined().size();
 					for (int i = firstRow; i < lastRow; i++) {		 // for alle slots fra firstRow til lastRow
 						if (schedule.get(i).equals("")){
-							schedule.get(i).set(col, event.getTitle() + " (U)");
+							schedule.get(i).set(col, event.getTitle() + " (U) [" + num_declined + "]");
 						}
 						else{
-						schedule.get(i).set(col, schedule.get(i) + "/n" + event.getTitle() + " (U)"); // matrix[rad i ][col] = event.getName() + "U"	// U'en er for attending
+						schedule.get(i).set(col, schedule.get(i).get(col) + "#" + event.getTitle() + " (U) [" + num_declined + "]"); // matrix[rad i ][col] = event.getName() + "U"	// U'en er for attending
 						}
 					}
 				}			
@@ -370,17 +373,21 @@ public class Employee {
 		}
 
 	
-	//skal gi en visning i konsollen av innevaerende ukes plan soen-loer. UFERDIG!
+	//skal gi en visning i konsollen av innevaerende ukes plan soen-loer. UFERDIG
 		public void printWeeklySchedule(int weekOfYear, int year){
 			ArrayList<ArrayList<String>> schedule = generateWeeklySchedule(weekOfYear, year);	
 			
-			String str = "|08:00|--------SØNDAG----------+---------MANDAG---------+---------TIRSDAG--------+--------ONSDAG----------+-----------TORSDAG------+--------FREDAG----------+---------LØRDAG---------+\n";
+			String str = "|08:00|----------SØNDAG------------+-----------MANDAG-----------+-----------TIRSDAG----------+----------ONSDAG------------+-------------TORSDAG--------+-----------FREDAG-----------+-----------LØRDAG-----------+\n";
 			for (int row = 0; row < 32; row++) {
 			str += "|+++++|";
 				for (int col = 0; col < 7; col++){
 					String entry = schedule.get(row).get(col);
+					String[] entryList = entry.split("#");
+					for (int i = 0; i < entryList.length; i++) {
+						
+					}
 					str += entry;
-					int num_of_spaces = 24 - entry.length();
+					int num_of_spaces = 28 - entry.length();
 					for (int i = 0; i < num_of_spaces; i++) {
 						str += " ";
 					}
@@ -399,11 +406,74 @@ public class Employee {
 						str += (9 + row/2) + ":00";
 						}
 				
-				str += "|------------------------+------------------------+------------------------+------------------------+------------------------+------------------------+------------------------+\n";
+				str += "|----------------------------+----------------------------+----------------------------+----------------------------+----------------------------+----------------------------+----------------------------+\n";
 			}
 			System.out.println(str);
 		}
 	
+		
+		public void printWeeklySchedule2(int weekOfYear, int year){
+			ArrayList<ArrayList<String>> schedule = generateWeeklySchedule(weekOfYear, year);	
+			
+			String str = "|08:00|----------SØNDAG------------+-----------MANDAG-----------+-----------TIRSDAG----------+----------ONSDAG------------+-------------TORSDAG--------+-----------FREDAG-----------+-----------LØRDAG-----------+\n";
+			for (int row = 0; row < 32; row++) {
+			str += "|+++++|";
+				List<ArrayList<String>> rader = new ArrayList<ArrayList<String>>();
+				ArrayList<String> first_row = new ArrayList(Arrays.asList("","","", "", "", "", ""));
+				rader.add(first_row);
+				String[] r = new String[7];
+				int max_num_of_events_at_once = 0;				// ant. rader vi trenger til halvtimen
+				for (int col = 0; col < 7; col++){
+					r[col] = schedule.get(row).get(col);		// gjør om raden til String[]
+					
+					
+					if (!r[col].equals("")){
+						String[] entry = r[col].split("#");			// deler opp events som kræsjer i timeplanen
+						if (entry.length > max_num_of_events_at_once){
+							while (entry.length > max_num_of_events_at_once){
+								ArrayList<String> new_row = new ArrayList(Arrays.asList("","","", "", "", "", ""));
+								max_num_of_events_at_once++;
+								rader.add(new_row);
+							}
+						}
+						for (int i = 0; i < max_num_of_events_at_once; i++) {
+							rader.get(i).set(col, entry[i]);
+						}
+					} else{
+						rader.get(0).set(col, r[col]);
+					}
+				}
+				for (int rad = 0; rad < rader.size(); rad++) {
+					for (int column = 0; column < 7; column++) {
+						String small_entry = rader.get(rad).get(column).trim();
+						str += small_entry;
+						int num_of_spaces = 28 - small_entry.length();
+						for (int i = 0; i < num_of_spaces; i++) {
+							str += " ";
+						}
+						str += "|";		// legger til noen stolper ekstra til høyre for kalenderen
+					}
+					if (rad < rader.size()-2){
+						str += "\n|+++++|";
+					}
+				}
+				str += "\n|";
+				if (row < 3){
+					str += "0";
+				}
+				if ( row % 2 == 0){
+			//		str += (8 + row/2) + ":00";		//gammel implementasjon. ble feil
+					str += ((8 + row/2) + ":30");
+					} else{
+			//			str += ((8 + row/2) + ":30");	//gammel implementasjon. ble feil
+						str += (9 + row/2) + ":00";
+						}
+				
+				str += "|----------------------------+----------------------------+----------------------------+----------------------------+----------------------------+----------------------------+----------------------------+\n";
+			}
+			System.out.println(str);
+		}
+		
 	@Override
 	public String toString() {
 		return this.name;
