@@ -326,6 +326,7 @@ public class ConnectionToDatabase {
 			  String name = "";
 			  int capacity = 0;
 			  String description = "";
+			  List<Event> roomSchedule = new ArrayList<Room>();
 			  
 			  while (resultData.get(counter).next()) {
 				  	for (int i = 1; i <= numberOfColumns; i++) {
@@ -333,17 +334,13 @@ public class ConnectionToDatabase {
 					  String columnValue = resultData.get(counter).getString(i);
 			          if (i==1){
 			        	  roomID = Integer.parseInt(columnValue);
-			          }
-			          if (i==2){
+			          } else if (i==2){
 			        	  name = columnValue;
-			          }
-			          if (i==3){
+			          } else if (i==3){
 			        	  capacity = Integer.parseInt(columnValue);
-			          }
-			          if (i==4){
+			          } else if (i==4){
 			        	  description = columnValue;
-			          }
-			          if (i==5){ //Her m� roomSchedule ordnes?
+			          } else if (i==5){ //Her m� roomSchedule ordnes?
 			        	  roomSchedule = columnValue;
 			          }
 				  }
