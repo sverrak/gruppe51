@@ -8,12 +8,9 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-<<<<<<< HEAD
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-=======
 import java.sql.Time;
->>>>>>> 6f3c4df5b04c401608c4a2653d8097d112e20f3b
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
