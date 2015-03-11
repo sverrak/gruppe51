@@ -567,7 +567,7 @@ public class CalendarProgram {
 		
 		System.out.println();
 		System.out.println();
-		biti.printWeeklySchedule(12, 2015);
+		biti.printWeeklySchedule2(12, 2015);
 	}
 
 }
