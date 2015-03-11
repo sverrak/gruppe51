@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Collection;
-import java.util.Date;
+
 
 public class ConnectionToDatabase {
 
@@ -82,7 +82,7 @@ public class ConnectionToDatabase {
 			        	  admin = true;
 			          }
 			        }
-			        	Employee i = new Employee(name, position, username, password, telnum, admin);
+			        	Employee i = new Employee(employeeID, name, position, username, password, telnum, admin);
 			        	employees.add(i);//Maa sorge for at nyEmployee-stringen har samme format som inn-parameterene til new Employee
 			      } 
 			  counter++;
@@ -216,15 +216,17 @@ public class ConnectionToDatabase {
 				          startDato = convertDateTimeToDate(resultData.get(counter).getString("startDate"));
 				          endDato = convertDateTimeToDate(resultData.get(counter).getString("endDate"));
 				          roomID = resultData.get(counter).getInt("roomID");
-				          
-				          if
+				          //Fredrik fikser
+				          /*if
 				          
 				          System.out.print(columnValue);
+				          
+				          */
 				        }      
 				  } 
 		}
 		
-	} // midlertidlig, husk Œ returnere List<Room>
+	} // midlertidlig, husk ï¿½ returnere List<Room>
 		
 /*		int counter = 0;
 		int capacity = 0;
