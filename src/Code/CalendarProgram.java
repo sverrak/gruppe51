@@ -164,17 +164,10 @@ public class CalendarProgram {
 	
 	public static void main(String[] args) throws SQLException {
 		CalendarProgram cp = new CalendarProgram();
-<<<<<<< HEAD
-		cp.initialize();
-		cp.run();
-	//	cp.init2();
-	//	cp.run2();
-=======
 	//	cp.initialize();
 	//	cp.run();
-		cp.initialize();
-		cp.run();
->>>>>>> 6f3c4df5b04c401608c4a2653d8097d112e20f3b
+		cp.init2();
+		cp.run2();
 	}
 	
 	public static void connection(){
