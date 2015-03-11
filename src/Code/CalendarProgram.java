@@ -14,6 +14,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
+import Code.Employee;
+import Code.Event;
+
 public class CalendarProgram {
 	private Connection con = null;
 	public ConnectionToDatabase ctd;
@@ -305,6 +308,7 @@ public class CalendarProgram {
 		}
 		return greatestID + "";
 	}
+	
 	private void run() throws SQLException {
 		current_user = login();
 		System.out.println("\nDu er nå logget inn. Skriv quit for å logge ut");
@@ -325,16 +329,19 @@ public class CalendarProgram {
 			while(option < 1 || option > 9){
 				option = Integer.parseInt(user_input.nextLine());
 				if(option == 1){
-					System.out.println("Skriv inn ukenummer: ");
-					int weekOfYear;
-					int year;
+					int weekOfYear = 1;
+					int year = 2015;
 					String firstOptionChoice = "";
-					while(firstOptionChoice.equalsIgnoreCase("q")){
-						weekOfYear = Integer.parseInt(user_input.nextLine());
-						year = Integer.parseInt(user_input.nextLine());
+				
+					while(! firstOptionChoice.equalsIgnoreCase("q")){
+						if (firstOptionChoice.equals("") || firstOptionChoice.equals("x")){
+							System.out.println("Skriv inn ukenummer: ");
+							weekOfYear = Integer.parseInt(user_input.nextLine());
+							System.out.println("Skriv inn year: ");
+							year = Integer.parseInt(user_input.nextLine());							
+						}
 						
-						
-						current_user.generateWeeklySchedule(weekOfYear, year);
+						current_user.printWeeklySchedule(weekOfYear, year);
 						
 						System.out.println("\nDu har nå folgende valg:");
 						System.out.println("f: forrige uke | n: neste uke | q: tilbake til hovedmeny");
@@ -397,7 +404,27 @@ public class CalendarProgram {
 						System.out.println("Ingen meldinger aa vise\n");
 					}
 				} else if(option == 4){
+					List<Event> myEvents = new ArrayList<Event>();
+					for (int i = 0; i < events.size(); i++) {
+						if(events.get(i).getCreator() == current_user){
+							myEvents.add(events.get(i));
+							System.out.println(i + ": " + events.get(i));
+						}
+					}
 					
+					if(myEvents.size() > 0){
+						String firstOptionChoice = "";
+						while(! firstOptionChoice.equals("q")){
+							System.out.println("Hvilken av disse vil du endre?");
+							firstOptionChoice = user_input.nextLine();
+							
+							System.out.println("Hva vil du endre? (t: tid, d: beskrivelse, ....");
+						
+							
+					}
+					
+					
+					}	
 				} else if(option == 5 && current_user.isAdmin()){
 					int choice = 0;
 					int brukerChoice = 0;
@@ -500,7 +527,6 @@ public class CalendarProgram {
 				
 			}
 		}
-	
 	private void init2() {
 	
 		Room r1 = new Room("R1", 500, "Fint rom1");
