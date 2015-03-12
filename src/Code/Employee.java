@@ -492,6 +492,39 @@ public class Employee {
 			System.out.println(str);
 		}
 		
+		// returnerer true hvis endring skjedde; false ellers
+	public boolean changeEventTime(Event event,Date startTime, Date endTime){		// endre til boolean?
+		if (event.getCreator() != this || startTime.getTime() > endTime.getTime()){
+			return false;
+		}
+		eventsAttending.remove(event);
+		if (this.isAvailable(startTime, endTime)){
+			event.setTime(startTime, endTime);
+			eventsAttending.add(event);		// mister sortering av lista
+			return true;
+		}else{
+		eventsAttending.add(event);		// mister sortering av lista
+		return false;
+		}
+	}
+	
+	public boolean postponeEvent(Event event, int minutes){
+		Calendar calStart = Calendar.getInstance(); // creates calendar
+	    calStart.setTime(event.getStartTime()); // sets calendar time/date
+	    calStart.add(Calendar.MINUTE, minutes); // adds minutes to the time
+	    
+	    Calendar calEnd = Calendar.getInstance(); // creates calendar
+	    calEnd.setTime(event.getEndTime()); // sets calendar time/date
+	    calEnd.add(Calendar.MINUTE, minutes); // adds minutes to the time
+		
+	    Date startTime = new Date();
+	    Date endTime = new Date();
+	    startTime.setTime(calStart.getTimeInMillis());
+	    endTime.setTime(calEnd.getTimeInMillis());
+	    
+		return changeEventTime(event, startTime, endTime);
+	}
+		
 	@Override
 	public String toString() {
 		return this.name;

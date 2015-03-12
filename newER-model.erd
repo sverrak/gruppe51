@@ -62,7 +62,7 @@
 <attribute is_hidden="false" is_key="false" name="reminderTime" type=""/>
 </attributes>
 </entity>
-<diamond id="4" is_weak="false" name="hasPlanned" x="291" y="269">
+<diamond id="4" is_weak="false" name="hasCreated" x="291" y="269">
 <attributes/>
 </diamond>
 <diamond id="8" is_weak="false" name="isMemberOf" x="88" y="304">

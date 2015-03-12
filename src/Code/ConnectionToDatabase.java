@@ -15,6 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Collection;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 72db02a26670afaa76b2fe45f35d66ea34dff98b
 
 public class ConnectionToDatabase {
 
@@ -180,6 +184,7 @@ public class ConnectionToDatabase {
 		ResultSetMetaData rsmd = rs.getMetaData();
 		int numberOfCol = rsmd.getColumnCount();
 			
+<<<<<<< HEAD
 	          java.util.Date startDato = new java.util.Date();
 	          java.util.Date endDato = new java.util.Date();
 	          String roomName = "";
@@ -216,13 +221,42 @@ public class ConnectionToDatabase {
 					          tempRoom.roomSchedule.add(tempEvent);
 					          rooms.add(tempRoom);
 				          
+=======
+			int numberOfColumns = metaData.get(counter).getColumnCount();
+				
+			      for (int i = 1; i <= numberOfColumns; i++) {
+				   //     if (i > 1) System.out.print(",  ");
+				   //     String columnName = metaData.get(counter).getColumnName(i);
+
+				  }
+			      while (resultData.get(counter).next()) {
+				        for (int i = 1; i <= numberOfColumns; i++) {
+				  //      if (i > 1) System.out.print(",  "); 
+				          java.util.Date startDato = new java.util.Date();
+				          java.util.Date endDato = new java.util.Date();
+				          int roomID = 0;
+				          
+				          startDato = convertDateTimeToDate(resultData.get(counter).getString("startDate"));
+				          endDato = convertDateTimeToDate(resultData.get(counter).getString("endDate"));
+				          roomID = resultData.get(counter).getInt("roomID");
+				          //Fredrik fikser
+				          /*if
+				          
+				          System.out.print(columnValue);
+				          
+				          */
+>>>>>>> 72db02a26670afaa76b2fe45f35d66ea34dff98b
 				        }      
 			      System.out.println(rooms);
 			      return rooms;
 				  }
 		
+<<<<<<< HEAD
 
 // midlertidlig, husk Œ returnere List<Room>
+=======
+	} // midlertidlig, husk ï¿½ returnere List<Room>
+>>>>>>> 72db02a26670afaa76b2fe45f35d66ea34dff98b
 		
 /*		int counter = 0;
 		int capacity = 0;
