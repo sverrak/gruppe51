@@ -94,10 +94,16 @@ public class CalendarProgram {
 			eventID = events.get(events.size()-1).getEventID() + 1;			
 		}*/
 		//oppretter event
+		
 		Event newEvent = new Event(title, startTime, endTime, description, employee);
 		
+		
 		//finner ledige rom
-		ctd.fetchRooms(con, startTimeString, endTimeString, capacity);
+		this.rooms = ctd.fetchRooms(con);
+		for (Room room : rooms){
+			
+			System.out.println("" + room.getName() + ":"+ room.getRoomSchedule());
+		}
 		List<Room> availableRooms = findLocation(startTime, endTime, capacity);
 		String print = "";
 		

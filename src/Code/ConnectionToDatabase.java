@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Collection;
-import java.util.Date;
 
 public class ConnectionToDatabase {
 
@@ -82,7 +81,7 @@ public class ConnectionToDatabase {
 			        	  admin = true;
 			          }
 			        }
-			        	Employee i = new Employee(name, position, username, password, telnum, admin);
+			        	Employee i = new Employee(employeeID, name, position, username, password, telnum, admin);
 			        	employees.add(i);//Maa sorge for at nyEmployee-stringen har samme format som inn-parameterene til new Employee
 			      } 
 			  counter++;
@@ -171,60 +170,59 @@ public class ConnectionToDatabase {
 		
 	}
 	
-	public void fetchRooms(Connection con, String requestedStartTime, String requestedEndTime, int requestedCapacity) throws SQLException{
-		
-		java.util.Date requestedStart = new java.util.Date();
-		java.util.Date requestedEnd = new java.util.Date();
-		
-		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy H:m:s");
-		try {
-			requestedStart = formatter.parse(requestedStartTime);
-			requestedEnd = formatter.parse(requestedEndTime);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public List<Room> fetchRooms(Connection con) throws SQLException{
 		
 		Statement stmt = null;
 		stmt = con.createStatement();
 
-		String sql = "SELECT R.name, R.capacity, E.startTime, E.endTime, E.roomID FROM Room AS R INNER JOIN Event AS E ON  R.roomID = E.roomID";
+		String sql = "SELECT R.name, R.roomDescription, R.capacity, R.roomID, E.title, E.startTime, E.endTime, E.roomID, E.eventDescription, E.creator_ID FROM Room AS R INNER JOIN Event AS E ON  R.roomID = E.roomID";
 		ResultSet rs = stmt.executeQuery(sql);
 		ResultSetMetaData rsmd = rs.getMetaData();
 		int numberOfCol = rsmd.getColumnCount();
-		
-		ArrayList<ResultSet> tempRS = new ArrayList<ResultSet>();
-		ArrayList<ResultSetMetaData> tempRSMD = new ArrayList<ResultSetMetaData>();
-		int counter = 0;
-		
-		while (counter < metaData.size()) {
 			
-			int numberOfColumns = metaData.get(counter).getColumnCount();
-				
-			      for (int i = 1; i <= numberOfColumns; i++) {
-				   //     if (i > 1) System.out.print(",  ");
-				   //     String columnName = metaData.get(counter).getColumnName(i);
-
-				  }
-			      while (resultData.get(counter).next()) {
-				        for (int i = 1; i <= numberOfColumns; i++) {
-				  //      if (i > 1) System.out.print(",  "); 
-				          java.util.Date startDato = new java.util.Date();
-				          java.util.Date endDato = new java.util.Date();
-				          int roomID = 0;
+	          java.util.Date startDato = new java.util.Date();
+	          java.util.Date endDato = new java.util.Date();
+	          String roomName = "";
+	          int roomCapacity = 0;
+	          String roomDescription = "";
+	          String eventDescription = "";
+	          int creatorID = 0;
+	          int roomID = 0;
+	          String title = "";
+	          Employee tempEmployee = null;
+			
+			      while (rs.next()) {
+			    	  
+				    	  roomName = rs.getString("name");
+				    	  roomDescription = rs.getString("eventDescription");
+				    	  roomCapacity = rs.getInt("capacity");
+				    	  roomID = rs.getInt("roomID");
+				    	  title = rs.getString("title");
+				          startDato = convertDateTimeToDate(rs.getString("startTime"));
+				          endDato = convertDateTimeToDate(rs.getString("endTime"));
+				          eventDescription = rs.getString("roomDescription");
+				          creatorID = rs.getInt("creator_ID");
 				          
-				          startDato = convertDateTimeToDate(resultData.get(counter).getString("startDate"));
-				          endDato = convertDateTimeToDate(resultData.get(counter).getString("endDate"));
-				          roomID = resultData.get(counter).getInt("roomID");
+					          for (Employee emp : employees){
+					        	  if (emp.getEmployeeID() == creatorID){
+					        		  tempEmployee = emp;
+					        	  }
+					          }
+	
+					          Room tempRoom = new Room(roomName, roomCapacity, roomDescription);
+					          Event tempEvent = new Event(title, startDato, endDato, eventDescription, tempEmployee);
+					          tempEvent.setRoom(tempRoom);
+					          tempRoom.addEventToRoom(tempEvent);
+					          tempRoom.roomSchedule.add(tempEvent);
+					          rooms.add(tempRoom);
 				          
-				          if
-				          
-				          System.out.print(columnValue);
 				        }      
-				  } 
-		}
+			      System.out.println(rooms);
+			      return rooms;
+				  }
 		
-	} // midlertidlig, husk Œ returnere List<Room>
+
+// midlertidlig, husk Œ returnere List<Room>
 		
 /*		int counter = 0;
 		int capacity = 0;
@@ -587,8 +585,7 @@ public class ConnectionToDatabase {
 		java.util.Date dateObject = new java.util.Date();
 		String date = "";
 		
-		date = dateTime.substring(8,9);
-		date.concat("/" + dateTime.substring(5,6) + "/" + dateTime.substring(0,3) + " " + dateTime.substring(11, 18));
+		date = dateTime.substring(8,10) + "/" + dateTime.substring(5,7) + "/" + dateTime.substring(0,4) + " " + dateTime.substring(11, 19);
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy H:m:s");
 		try {
 			dateObject = formatter.parse(date);

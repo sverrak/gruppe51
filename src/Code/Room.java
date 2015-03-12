@@ -10,7 +10,7 @@ public class Room {
 	private String name;
 	private int capacity;
 	private String description;
-	private List<Event> roomSchedule;
+	public List<Event> roomSchedule;
 	
 	public Room(String name, int capacity, String description) {
 		super();
