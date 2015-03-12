@@ -15,10 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Collection;
-<<<<<<< HEAD
-=======
-
->>>>>>> 72db02a26670afaa76b2fe45f35d66ea34dff98b
 
 public class ConnectionToDatabase {
 
@@ -174,38 +170,63 @@ public class ConnectionToDatabase {
 		
 	}
 	
-	public List<Room> fetchRooms(Connection con) throws SQLException{
+	public void fetchRooms(Connection con) throws SQLException{
+		Statement stmt = null;
+		stmt = con.createStatement();
+		
+		String sql = "SELECT * FROM Room";
+		ResultSet rs = stmt.executeQuery(sql);
+		
+		int roomID = 0;
+		String roomDescription = "";
+		int capacity = 0;
+		String name = "";
+		
+		while (rs.next()){
+			
+			roomID = rs.getInt("roomID");
+			roomDescription = rs.getString("roomDescription");
+			capacity = rs.getInt("capacity");
+			name = rs.getString("name");
+			
+			Room tempRoom = new Room(roomID, name, capacity, roomDescription);
+			rooms.add(tempRoom);
+		}
+	}
+	
+	public List<Room> checkRoomEvents(Connection con) throws SQLException{
 		
 		Statement stmt = null;
 		stmt = con.createStatement();
 
-		String sql = "SELECT R.name, R.roomDescription, R.capacity, R.roomID, E.title, E.startTime, E.endTime, E.roomID, E.eventDescription, E.creator_ID FROM Room AS R INNER JOIN Event AS E ON  R.roomID = E.roomID";
-		ResultSet rs = stmt.executeQuery(sql);
+		//	String sql = "SELECT R.name, R.roomDescription, R.capacity, R.roomID, E.title, E.startTime, E.endTime, E.roomID, E.eventDescription, E.creator_ID FROM Room AS R INNER JOIN Event AS E ON  R.roomID = E.roomID";
+		String sql1 = "SELECT * FROM Event";
+		ResultSet rs = stmt.executeQuery(sql1);
 		ResultSetMetaData rsmd = rs.getMetaData();
 		int numberOfCol = rsmd.getColumnCount();
 			
-<<<<<<< HEAD
+
 	          java.util.Date startDato = new java.util.Date();
 	          java.util.Date endDato = new java.util.Date();
-	          String roomName = "";
-	          int roomCapacity = 0;
-	          String roomDescription = "";
+	      //  String roomName = "";
+	      //  int roomCapacity = 0;
+	      //  String roomDescription = "";
 	          String eventDescription = "";
 	          int creatorID = 0;
 	          int roomID = 0;
 	          String title = "";
 	          Employee tempEmployee = null;
-			
+	          int counter = 0;
 			      while (rs.next()) {
-			    	  
-				    	  roomName = rs.getString("name");
-				    	  roomDescription = rs.getString("eventDescription");
-				    	  roomCapacity = rs.getInt("capacity");
+			    	  	counter ++;
+				//    	  roomName = rs.getString("name");
+				//    	  roomDescription = rs.getString("eventDescription");
+				//    	  roomCapacity = rs.getInt("capacity");
 				    	  roomID = rs.getInt("roomID");
 				    	  title = rs.getString("title");
 				          startDato = convertDateTimeToDate(rs.getString("startTime"));
 				          endDato = convertDateTimeToDate(rs.getString("endTime"));
-				          eventDescription = rs.getString("roomDescription");
+				          eventDescription = rs.getString("eventDescription");
 				          creatorID = rs.getInt("creator_ID");
 				          
 					          for (Employee emp : employees){
@@ -214,49 +235,22 @@ public class ConnectionToDatabase {
 					        	  }
 					          }
 	
-					          Room tempRoom = new Room(roomName, roomCapacity, roomDescription);
+				//	          Room tempRoom = new Room(roomName, roomCapacity, roomDescription);
 					          Event tempEvent = new Event(title, startDato, endDato, eventDescription, tempEmployee);
-					          tempEvent.setRoom(tempRoom);
-					          tempRoom.addEventToRoom(tempEvent);
-					          tempRoom.roomSchedule.add(tempEvent);
-					          rooms.add(tempRoom);
-				          
-=======
-			int numberOfColumns = metaData.get(counter).getColumnCount();
-				
-			      for (int i = 1; i <= numberOfColumns; i++) {
-				   //     if (i > 1) System.out.print(",  ");
-				   //     String columnName = metaData.get(counter).getColumnName(i);
-
-				  }
-			      while (resultData.get(counter).next()) {
-				        for (int i = 1; i <= numberOfColumns; i++) {
-				  //      if (i > 1) System.out.print(",  "); 
-				          java.util.Date startDato = new java.util.Date();
-				          java.util.Date endDato = new java.util.Date();
-				          int roomID = 0;
-				          
-				          startDato = convertDateTimeToDate(resultData.get(counter).getString("startDate"));
-				          endDato = convertDateTimeToDate(resultData.get(counter).getString("endDate"));
-				          roomID = resultData.get(counter).getInt("roomID");
-				          //Fredrik fikser
-				          /*if
-				          
-				          System.out.print(columnValue);
-				          
-				          */
->>>>>>> 72db02a26670afaa76b2fe45f35d66ea34dff98b
-				        }      
-			      System.out.println(rooms);
+					          for (Room room : rooms){
+					        	  if(room.getRoomID() == roomID){
+					        		  tempEvent.setRoom(room);
+					        	  	  room.addEventToRoom(tempEvent);
+					        	  }
+					          }
+			      }
 			      return rooms;
-				  }
+	}
 		
-<<<<<<< HEAD
+
 
 // midlertidlig, husk Œ returnere List<Room>
-=======
-	} // midlertidlig, husk ï¿½ returnere List<Room>
->>>>>>> 72db02a26670afaa76b2fe45f35d66ea34dff98b
+// midlertidlig, husk ï¿½ returnere List<Room>
 		
 /*		int counter = 0;
 		int capacity = 0;
@@ -292,10 +286,7 @@ public class ConnectionToDatabase {
 		return rooms;
 	}
 	
-<<<<<<< HEAD
 
-=======
->>>>>>> 6f3c4df5b04c401608c4a2653d8097d112e20f3b
 	public void WriteEventToDatabase(Connection con, Event e) throws SQLException{
 		
 		PreparedStatement preparedStatement = null;
@@ -358,10 +349,7 @@ public class ConnectionToDatabase {
 		preparedStatement.setString(4, g.getDescription());
 
 		preparedStatement.executeUpdate(); //Her oppdateres databasen
-<<<<<<< HEAD
-			
-	} 
-=======
+
 	}
 	
 	public void WriteEventDeltakelseToDatabase(Connection con, Event ev, Employee emp) throws SQLException{

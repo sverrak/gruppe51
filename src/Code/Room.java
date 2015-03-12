@@ -10,11 +10,11 @@ public class Room {
 	private String name;
 	private int capacity;
 	private String description;
-	public List<Event> roomSchedule;
+	public List<Event> roomSchedule = new ArrayList<Event>();
 	
-	public Room(String name, int capacity, String description) {
+	public Room(int roomID, String name, int capacity, String description) {
 		super();
-	//	this.roomID = roomID;
+		this.roomID = roomID;
 		this.name = name;
 		this.capacity = capacity;
 		this.description = description;
@@ -51,6 +51,7 @@ public class Room {
 	public Boolean addEventToRoom(Event event){
 		if (isAvailable(event.getStartTime(), event.getEndTime())){
 			roomSchedule.add(event);
+		//	System.out.println(event.getTitle() + ", was added to: " + this.getName());
 			//Hvordan sortere roomSchedule på en hensiktsmessig måte?
 			//roomSchedule.sort(c);
 			return true;
@@ -67,6 +68,7 @@ public class Room {
 	}
 	
 	public Boolean isAvailable(Date startTime, Date endTime){
+		
 		if(this.roomSchedule.size() == 0){
 			return true;
 		}

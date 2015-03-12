@@ -50,9 +50,11 @@ public class CalendarProgram {
 	public List<Room> findLocation(Date startTime, Date endTime, int capacity){
 		List<Room> availableRooms = new ArrayList<Room>();
 		for (Room room : rooms) {
-			room.getDescription();
+	//		System.out.println(room.getName());
+	//		System.out.println("" + room.roomSchedule.size());
 			if(room.isAvailable(startTime, endTime) && room.getCapacity() >= capacity){
 				availableRooms.add(room);
+				System.out.println(room.getName() + ", was added to available rooms");
 			}
 		}
 		return availableRooms;
@@ -102,12 +104,11 @@ public class CalendarProgram {
 		
 		
 		//finner ledige rom
-		this.rooms = ctd.fetchRooms(con);
-		for (Room room : rooms){
-			
-			System.out.println("" + room.getName() + ":"+ room.getRoomSchedule());
-		}
-		List<Room> availableRooms = findLocation(startTime, endTime, capacity);
+		ctd.fetchRooms(con);
+		this.rooms = ctd.checkRoomEvents(con);
+
+		List<Room> availableRooms = new ArrayList<Room>();
+		availableRooms = findLocation(startTime, endTime, capacity);
 		String print = "";
 		
 		
@@ -173,10 +174,10 @@ public class CalendarProgram {
 	
 	public static void main(String[] args) throws SQLException {
 		CalendarProgram cp = new CalendarProgram();
-	//	cp.initialize();
-	//	cp.run();
-		cp.init2();
-		cp.run2();
+		cp.initialize();
+		cp.run();
+	//	cp.init2();
+	//	cp.run2();
 	}
 	
 	public static void connection(){
