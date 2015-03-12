@@ -7,7 +7,7 @@ public class Message {
 	private int messageID;
 	private Employee sender;
 	private Employee receiver;
-	private Boolean isRead;
+	private Boolean read;
 	private String content;
 	private String subject;
 	private final Date timestamp;
@@ -17,7 +17,7 @@ public class Message {
 		super();
 		this.sender = sender;
 		this.receiver = receiver;
-		this.isRead = false;
+		this.read = false;
 		this.content = content;
 		this.subject = subject;
 		this.timestamp = new Date();
@@ -36,8 +36,8 @@ public class Message {
 	public Employee getReceiver() {
 		return receiver;
 	}
-	public Boolean getIsRead() {
-		return isRead;
+	public Boolean isRead() {
+		return read;
 	}
 	public String getContent() {
 		return content;
@@ -45,9 +45,9 @@ public class Message {
 	public String getSubject() {
 		return subject;
 	}
-	
+		
 	public String readMessage(){
-		this.isRead = true;
+		this.read = true;
 		return toString();
 	}
 	
@@ -58,7 +58,7 @@ public class Message {
 	
 	@Override
 	public String toString() {
-		this.isRead = true;
+		this.read = true;
 		String str = "FROM: " +  this.sender + "\n";
 		str += "TO: " + this.receiver + "\n";
 		str += "SUBJECT: " + this.subject + "\n";
@@ -66,7 +66,7 @@ public class Message {
 		return str;	
 	}
 	public void read() {
-		this.isRead = true;
+		this.read = true;
 		
 	}
 	

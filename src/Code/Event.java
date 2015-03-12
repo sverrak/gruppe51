@@ -142,7 +142,7 @@ public class Event implements Comparable<Event>{
 	
 	@Override
 	public String toString() {
-		String str = this.title + " har foelgende deltakere " + peopleGoing + peopleInvited+ "og avholdes kl: " + this.getHour() + ":";
+		String str = this.title + " har foelgende deltakere " + peopleGoing + peopleInvited + "og avholdes kl: " + this.getHour() + ":";
 		return  str + this.getMinute() + ", den " + this.getDay() + ". " + this.getMonth();
 	}
 	

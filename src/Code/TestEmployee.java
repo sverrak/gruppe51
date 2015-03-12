@@ -4,7 +4,7 @@ public class TestEmployee extends junit.framework.TestCase {
 
 	public void testEmployee() {
 		
-		Employee testEmployee = new Employee("Ola", "CEO", "ola1","passord", 12345678, false);
+		Employee testEmployee = new Employee(1, "Ola", "CEO", "ola1","passord", 12345678, false);
 	
 			assertEquals("Ola", testEmployee.getName());
 		testEmployee.setName("Kari");

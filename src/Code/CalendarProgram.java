@@ -418,15 +418,53 @@ public class CalendarProgram {
 							System.out.println(i + ": " + events.get(i));
 						}
 					}
-					
-					if(myEvents.size() > 0){
+					if(myEvents.size() == 0 ){
+						System.out.println("\nDu har ikke opprettet noen events enda.\n");
+					} else{
 						String firstOptionChoice = "";
+						String secondOptionChoice = "";
+						String thirdOptionChoice = "";
+						String fourthOptionChoice = "";
 						while(! firstOptionChoice.equals("q")){
 							System.out.println("Hvilken av disse vil du endre?");
 							firstOptionChoice = user_input.nextLine();
-							
-							System.out.println("Hva vil du endre? (t: tid, d: beskrivelse, ....");
-						
+							while(! secondOptionChoice.equals("q")){
+								System.out.println("Hva vil du gjore?");
+								System.out.println("1: se peopleGoing, peopleDeclined og peopleInvited | 2: endre event)");
+								secondOptionChoice = user_input.nextLine();
+								if(secondOptionChoice.equals("1")){
+									System.out.println("Du ser nå på " + events.get(Integer.parseInt(firstOptionChoice)) + ".");
+									System.out.println("Dette arrangementet har folgende deltakerstatus: ");
+									System.out.println("peopleInvited: " + events.get(Integer.parseInt(firstOptionChoice)).getPeopleInvited());
+									System.out.println("peopleGoing: " + events.get(Integer.parseInt(firstOptionChoice)).getPeopleGoing());
+									System.out.println("peopleDeclind: " + events.get(Integer.parseInt(firstOptionChoice)).getPeopleDeclined());
+								} else if(secondOptionChoice.equals("2")){									
+									System.out.println("Hva vil du endre?");
+									System.out.println("1: avlys event | 2: trekk invitasjon | 3: inviter deltakere | 4: endre rom | 4: annen endring");
+									thirdOptionChoice = user_input.nextLine();
+									if(thirdOptionChoice.equals("1")){
+										System.out.println("Hva er grunnen til avlysningen?");
+										String reason = user_input.nextLine();
+										current_user.cancelEvent(events.get(Integer.parseInt(firstOptionChoice)), reason);
+										System.out.println("Eventen er slettet.");
+									} else if(thirdOptionChoice.equals("2")){
+										System.out.println("Hvem vil du trekke invitasjonen til?");
+										for (int i = 0; i < events.get(Integer.parseInt(firstOptionChoice)).getPeopleInvited().size(); i++) {
+											System.out.println(i + "" + events.get(Integer.parseInt(firstOptionChoice)).getPeopleInvited().get(i));
+										}
+										
+										fourthOptionChoice = user_input.nextLine();
+										
+										current_user.withdrawInvitation(events.get(Integer.parseInt(firstOptionChoice)).getPeopleInvited().get(Integer.parseInt(fourthOptionChoice)), events.get(Integer.parseInt(firstOptionChoice)));
+										
+									} else if(thirdOptionChoice.equals("3")){
+										
+									} else if(thirdOptionChoice.equals("4")){
+										
+									}
+								}
+								
+							}
 							
 					}
 					
@@ -565,9 +603,9 @@ public class CalendarProgram {
 		Date dato7 = new Date(116, 3, 19, 19, 30, 0);
 		Date dato8 = new Date(116, 3, 19, 21, 00, 0);
 		
-		Employee biti = new Employee(getGreatestEmployeeID(), "Bendik", "Junior", "biti", "bata", 123, false);
-		Employee sverre = new Employee(getGreatestEmployeeID(), "Sverre", "Senior", "sverrak", "heiia", 45884408, false);
-		Employee yolo = new Employee(getGreatestEmployeeID(), "Jola", "Junior+", "bata", "biti", 123, false);
+		Employee biti = new Employee(1, "Bendik", "Junior", "biti", "bata", 123, false);
+		Employee sverre = new Employee(2, "Sverre", "Senior", "sverrak", "heiia", 45884408, false);
+		Employee yolo = new Employee(3, "Jola", "Junior+", "bata", "biti", 123, false);
 		current_user = null;
 		
 		employees = new ArrayList<Employee>();
@@ -578,27 +616,36 @@ public class CalendarProgram {
 		Event birthday = biti.createEvent("Bursdag", dato1, dato2, "halla paarae");
 		Event birthdayAgain = biti.createEvent("Bursdag igjen", dato3, dato4, "halla paasan");
 		
+		/*
 		Event party = biti.createEvent("party", dato5, dato6, "kom paa party!");
 		Event party2 = biti.createEvent("partyOnSameDay", dato7, dato8, "kom paa party!");	//disse to skal kollidere. Ber ikke om feilmelding
-		
+		*/
+		/*
 		Event sverresEvent = sverre.createEvent("sverresEvent", dato1, dato2, "eventet til sverre som kolliderer med bursdag");
 		sverre.inviteEmployeeToEvent(biti, sverresEvent);
 		System.out.println("Bendiks events: " + "\n- Events invited to: " + biti.getUpcomingEvents() + "\n- Events attending: " + biti.getEventsAttending());
+		*/
 		
-		System.out.println(birthday.getPeopleInvited()); // printer ekstra '[]'?
-		biti.inviteEmployeeToEvent(sverre, birthday);
 		System.out.println(birthday.getPeopleInvited());
+		biti.inviteEmployeeToEvent(sverre, birthday);
+		System.out.println("Invitasjon gitt: " + birthday.getPeopleInvited());
+		sverre.declineInvitation(birthday);
+		System.out.println("Etter Sverre decliner: ");
+		System.out.println("sverres upcoming: " + sverre.getUpcomingEvents() + "sverres attending: " + sverre.getEventsAttending());
+		System.out.println("Invitert til bursdag: " + birthday.getPeopleInvited());
+		System.out.println("Going to bursdag: " + birthday.getPeopleGoing());
 		
 		biti.inviteEmployeeToEvent(sverre, birthdayAgain);
 		
-		
+	/*	
 		System.out.println(birthdayAgain.getPeopleGoing() + "" + birthdayAgain.getPeopleInvited());
 		biti.cancelEvent(birthday, "Ingen ville komme :(");
 		System.out.println(biti.getUpcomingEvents());
 		
 		System.out.println();
 		System.out.println();
-		biti.printWeeklySchedule2(12, 2015);
+		biti.printWeeklySchedule(12, 2015);
+		*/
 	}
 
 }
