@@ -558,9 +558,9 @@ public class CalendarProgram {
 		Date dato7 = new Date(116, 3, 19, 19, 30, 0);
 		Date dato8 = new Date(116, 3, 19, 21, 00, 0);
 		
-		Employee biti = new Employee(getGreatestEmployeeID(), "Bendik", "Junior", "biti", "bata", 123, false);
-		Employee sverre = new Employee(getGreatestEmployeeID(), "Sverre", "Senior", "sverrak", "heiia", 45884408, false);
-		Employee yolo = new Employee(getGreatestEmployeeID(), "Jola", "Junior+", "bata", "biti", 123, false);
+		Employee biti = new Employee(1, "Bendik", "Junior", "biti", "bata", 123, false);
+		Employee sverre = new Employee(2, "Sverre", "Senior", "sverrak", "heiia", 45884408, false);
+		Employee yolo = new Employee(3, "Jola", "Junior+", "bata", "biti", 123, false);
 		current_user = null;
 		
 		employees = new ArrayList<Employee>();
@@ -591,7 +591,7 @@ public class CalendarProgram {
 		
 		System.out.println();
 		System.out.println();
-		biti.printWeeklySchedule2(12, 2015);
+		biti.printWeeklySchedule(12, 2015);
 	}
 
 }

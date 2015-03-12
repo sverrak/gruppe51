@@ -391,46 +391,8 @@ public class Employee {
 		}
 
 	
-	//skal gi en visning i konsollen av innevaerende ukes plan soen-loer. UFERDIG
+	//skal gi en visning i konsollen av innevaerende ukes plan soen-loer		
 		public void printWeeklySchedule(int weekOfYear, int year){
-			ArrayList<ArrayList<String>> schedule = generateWeeklySchedule(weekOfYear, year);	
-			
-			String str = "|08:00|----------SONDAG------------+-----------MANDAG-----------+-----------TIRSDAG----------+----------ONSDAG------------+-------------TORSDAG--------+-----------FREDAG-----------+-----------LORDAG-----------+\n";
-			for (int row = 0; row < 32; row++) {
-			str += "|+++++|";
-				for (int col = 0; col < 7; col++){
-					String entry = schedule.get(row).get(col);
-					String[] entryList = entry.split("#");
-					for (int i = 0; i < entryList.length; i++) {
-						
-					}
-					str += entry;
-					int num_of_spaces = 28 - entry.length();
-					for (int i = 0; i < num_of_spaces; i++) {
-						str += " ";
-					}
-					str += "|";
-				}
-				str += "\n";
-				str += "|";
-				if (row < 3){
-					str += "0";
-				}
-				if ( row % 2 == 0){
-			//		str += (8 + row/2) + ":00";		//gammel implementasjon. ble feil
-					str += ((8 + row/2) + ":30");
-					} else{
-			//			str += ((8 + row/2) + ":30");	//gammel implementasjon. ble feil
-						str += (9 + row/2) + ":00";
-						}
-				
-				str += "|----------------------------+----------------------------+----------------------------+----------------------------+----------------------------+----------------------------+----------------------------+\n";
-			}
-			System.out.println(str);
-		}
-	
-		
-		public void printWeeklySchedule2(int weekOfYear, int year){
 			ArrayList<ArrayList<String>> schedule = generateWeeklySchedule(weekOfYear, year);	
 			
 			String str = "|08:00|----------SØNDAG------------+-----------MANDAG-----------+-----------TIRSDAG----------+----------ONSDAG------------+-------------TORSDAG--------+-----------FREDAG-----------+-----------LØRDAG-----------+\n";
