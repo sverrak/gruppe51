@@ -571,20 +571,28 @@ public class CalendarProgram {
 		Event birthday = biti.createEvent("Bursdag", dato1, dato2, "halla paarae");
 		Event birthdayAgain = biti.createEvent("Bursdag igjen", dato3, dato4, "halla paasan");
 		
+		/*
 		Event party = biti.createEvent("party", dato5, dato6, "kom paa party!");
 		Event party2 = biti.createEvent("partyOnSameDay", dato7, dato8, "kom paa party!");	//disse to skal kollidere. Ber ikke om feilmelding
-		
+		*/
+		/*
 		Event sverresEvent = sverre.createEvent("sverresEvent", dato1, dato2, "eventet til sverre som kolliderer med bursdag");
 		sverre.inviteEmployeeToEvent(biti, sverresEvent);
 		System.out.println("Bendiks events: " + "\n- Events invited to: " + biti.getUpcomingEvents() + "\n- Events attending: " + biti.getEventsAttending());
+		*/
 		
-		System.out.println(birthday.getPeopleInvited()); // printer ekstra '[]'?
-		biti.inviteEmployeeToEvent(sverre, birthday);
 		System.out.println(birthday.getPeopleInvited());
+		biti.inviteEmployeeToEvent(sverre, birthday);
+		System.out.println("Invitasjon gitt: " + birthday.getPeopleInvited());
+		sverre.declineInvitation(birthday);
+		System.out.println("Etter Sverre decliner: ");
+		System.out.println("sverres upcoming: " + sverre.getUpcomingEvents() + "sverres attending: " + sverre.getEventsAttending());
+		System.out.println("Invitert til bursdag: " + birthday.getPeopleInvited());
+		System.out.println("Going to bursdag: " + birthday.getPeopleGoing());
 		
 		biti.inviteEmployeeToEvent(sverre, birthdayAgain);
 		
-		
+	/*	
 		System.out.println(birthdayAgain.getPeopleGoing() + "" + birthdayAgain.getPeopleInvited());
 		biti.cancelEvent(birthday, "Ingen ville komme :(");
 		System.out.println(biti.getUpcomingEvents());
@@ -592,6 +600,7 @@ public class CalendarProgram {
 		System.out.println();
 		System.out.println();
 		biti.printWeeklySchedule(12, 2015);
+		*/
 	}
 
 }

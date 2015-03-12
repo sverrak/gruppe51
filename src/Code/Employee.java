@@ -160,14 +160,19 @@ public class Employee {
 		event.getPeopleGoing().add(this);
 		eventsAttending.add(event);
 		upcomingEvents.remove(event);
+		Message msg = new Message(this, event.getCreator(),"I accept your invitation to event " + event, "Invitation Accept");
+		msg.sendMessage();
 		return true;
 	}
 	
 	// returnerer true hvis event ble fjernet, false dersom event ikke i upcomingEvents
 	public boolean declineInvitation(Event event){
 		if (upcomingEvents.contains(event)){
-			event.getPeopleDeclined().add(this);		// skal vi fjerne fra peopleInvited ogsaa??
+			event.getPeopleDeclined().add(this);
+			event.getPeopleInvited().remove(this);
 			upcomingEvents.remove(event);
+			Message msg = new Message(this, event.getCreator(),"I decline your invitation to event " + event, "Invitation Decline");
+			msg.sendMessage();
 			return true;
 		}
 		return false;
@@ -238,18 +243,18 @@ public class Employee {
 	
 	private void informAboutCancellation(Event event, String reason){
 		for (Employee participant : event.getPeopleGoing()) {
-			Message msg = new Message(this, participant, "Jeg har sett meg nodt til å avlyse eventen pga " + reason, event.getTitle() + " er avlyst.");
+			Message msg = new Message(this, participant, "Jeg har sett meg nodt til aa avlyse eventen pga " + reason, event.getTitle() + " er avlyst.");
 			msg.sendMessage();
 		}
 		for (Employee participant : event.getPeopleInvited()) {
-			Message msg = new Message(this, participant, "Jeg har sett meg nodt til å avlyse eventen pga " + reason, event.getTitle() + " er avlyst.");
+			Message msg = new Message(this, participant, "Jeg har sett meg nodt til aa avlyse eventen pga " + reason, event.getTitle() + " er avlyst.");
 			msg.sendMessage();
 		}
 	}
 	
 	public void printInbox(){
 		for (int i = 0; i < inbox.size(); i++) {
-			if(inbox.get(i).getIsRead()){
+			if(inbox.get(i).isRead()){
 				System.out.println("[X]" + inbox.get(i).getSender() + ": " + inbox.get(i).getSubject());
 			} else{
 				System.out.println("[ ]" + inbox.get(i).getSender() + ": " + inbox.get(i).getSubject());
@@ -267,10 +272,10 @@ public class Employee {
 		if (upcomingEvents.contains(event)){
 			upcomingEvents.remove(event);
 		} 
-		if (eventsAttending.contains(event)){	// dersom feil oppst�r, kan vi gj�re denne til ren 'if'
+		if (eventsAttending.contains(event)){
 			eventsAttending.remove(event);
 		}
-		if(isOnDemandFromParticipant){			
+		if(isOnDemandFromParticipant){
 			event.removeEmployee(this);
 		}
 	}
@@ -286,9 +291,9 @@ public class Employee {
 		
 		Message msg = new Message(this, employee, "Jeg har invitert deg til eventen " + event, "Invitasjon til " + event.getTitle());
 		msg.sendMessage();
-		employee.printInbox();
+//		employee.printInbox();
 		
-		// "hvis eventen er upcoming"-funksjonalitet mangler her
+		// "hvis eventen er upcoming"-funksjonalitet mangler her. m.a.o. hvis eventets tidspunkt er passert, er invitasjonen uinteressant 
 		event.addEmployee(employee);
 		employee.upcomingEvents.add(event);	
 		return true;
@@ -311,7 +316,7 @@ public class Employee {
 	}
 	
 	
-	// Ikke implementert ferdig. Her må vi finne en annen løsning på hvordan vi gjør removeEvent(). Per nå skrives en melding til 
+	// Ikke implementert ferdig. Her maa vi finne en annen loesning paa hvordan vi gjoer removeEvent(). Per naa skrives en melding til 
 	public boolean withdrawInvitation(Employee employee, Event event){
 		if (event.getCreator() != this){
 			return false;
@@ -495,11 +500,12 @@ public class Employee {
 	public int countUnreadMessages() {
 		int counter = 0;
 		for (Message msg : inbox) {
-			if (! msg.getIsRead()){
+			if (! msg.isRead()){
 				counter += 1;
 			}
 		}
 		return counter;
 	}
+	
 	
 }
