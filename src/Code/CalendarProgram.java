@@ -97,10 +97,16 @@ public class CalendarProgram {
 			eventID = events.get(events.size()-1).getEventID() + 1;			
 		}*/
 		//oppretter event
+		
 		Event newEvent = new Event(title, startTime, endTime, description, employee);
 		
+		
 		//finner ledige rom
-		ctd.fetchRooms(con, startTimeString, endTimeString, capacity);
+		this.rooms = ctd.fetchRooms(con);
+		for (Room room : rooms){
+			
+			System.out.println("" + room.getName() + ":"+ room.getRoomSchedule());
+		}
 		List<Room> availableRooms = findLocation(startTime, endTime, capacity);
 		String print = "";
 		
@@ -167,10 +173,10 @@ public class CalendarProgram {
 	
 	public static void main(String[] args) throws SQLException {
 		CalendarProgram cp = new CalendarProgram();
-	//	cp.initialize();
-	//	cp.run();
-		cp.init2();
-		cp.run2();
+		cp.initialize();
+		cp.run();
+	//	cp.init2();
+	//	cp.run2();
 	}
 	
 	public static void connection(){
@@ -411,15 +417,53 @@ public class CalendarProgram {
 							System.out.println(i + ": " + events.get(i));
 						}
 					}
-					
-					if(myEvents.size() > 0){
+					if(myEvents.size() == 0 ){
+						System.out.println("\nDu har ikke opprettet noen events enda.\n");
+					} else{
 						String firstOptionChoice = "";
+						String secondOptionChoice = "";
+						String thirdOptionChoice = "";
+						String fourthOptionChoice = "";
 						while(! firstOptionChoice.equals("q")){
 							System.out.println("Hvilken av disse vil du endre?");
 							firstOptionChoice = user_input.nextLine();
-							
-							System.out.println("Hva vil du endre? (t: tid, d: beskrivelse, ....");
-						
+							while(! secondOptionChoice.equals("q")){
+								System.out.println("Hva vil du gjore?");
+								System.out.println("1: se peopleGoing, peopleDeclined og peopleInvited | 2: endre event)");
+								secondOptionChoice = user_input.nextLine();
+								if(secondOptionChoice.equals("1")){
+									System.out.println("Du ser nå på " + events.get(Integer.parseInt(firstOptionChoice)) + ".");
+									System.out.println("Dette arrangementet har folgende deltakerstatus: ");
+									System.out.println("peopleInvited: " + events.get(Integer.parseInt(firstOptionChoice)).getPeopleInvited());
+									System.out.println("peopleGoing: " + events.get(Integer.parseInt(firstOptionChoice)).getPeopleGoing());
+									System.out.println("peopleDeclind: " + events.get(Integer.parseInt(firstOptionChoice)).getPeopleDeclined());
+								} else if(secondOptionChoice.equals("2")){									
+									System.out.println("Hva vil du endre?");
+									System.out.println("1: avlys event | 2: trekk invitasjon | 3: inviter deltakere | 4: endre rom | 4: annen endring");
+									thirdOptionChoice = user_input.nextLine();
+									if(thirdOptionChoice.equals("1")){
+										System.out.println("Hva er grunnen til avlysningen?");
+										String reason = user_input.nextLine();
+										current_user.cancelEvent(events.get(Integer.parseInt(firstOptionChoice)), reason);
+										System.out.println("Eventen er slettet.");
+									} else if(thirdOptionChoice.equals("2")){
+										System.out.println("Hvem vil du trekke invitasjonen til?");
+										for (int i = 0; i < events.get(Integer.parseInt(firstOptionChoice)).getPeopleInvited().size(); i++) {
+											System.out.println(i + "" + events.get(Integer.parseInt(firstOptionChoice)).getPeopleInvited().get(i));
+										}
+										
+										fourthOptionChoice = user_input.nextLine();
+										
+										current_user.withdrawInvitation(events.get(Integer.parseInt(firstOptionChoice)).getPeopleInvited().get(Integer.parseInt(fourthOptionChoice)), events.get(Integer.parseInt(firstOptionChoice)));
+										
+									} else if(thirdOptionChoice.equals("3")){
+										
+									} else if(thirdOptionChoice.equals("4")){
+										
+									}
+								}
+								
+							}
 							
 					}
 					
