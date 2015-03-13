@@ -36,7 +36,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
         print 'Client connected @' + self.ip + ':' + str(self.port)
          
                      
-        #make send_updates to work in a thread.
+        # send_updates to work in a thread.
         self.t = threading.Thread(target=self.send_updates)
         self.t.setDaemon=True
         self.t.start()
@@ -61,6 +61,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
             pass
          
     def process_data(self, data):
+        #Tilbake til json
         decoded = json.loads(data)
          
         if decoded['request'] == 'login':
@@ -69,17 +70,25 @@ class ClientHandler(SocketServer.BaseRequestHandler):
         if not self.logged_in:
             return
          
-        if decoded['request'] == 'logout':
+        if decoded['request'] == 'names':
+            print self.users
+
+        elif decoded['request'] == 'logout':
           self.logout()
            
-        if decoded['request'] == 'message':
+        elif decoded['request'] == 'message':
             if decoded.get("message", "") != "":
                 padd=" "*(len(max(users, key=len))-len(self.username))
                 message = self.timestamp()+padd+" %s| %s"%(self.username, decoded['message'])
                 self.broadcast(message)
+
+        elif decoded['request'] == 'help':
+            print "'login + [username]'\n'message + [content]'\n'logout'\n'help'\n'names'"
+
      
  
     def login(self, username):
+        #gyldig brukernavn?
         if(not re.match(r'^[A-Za-z0-9_]+$', username)):
             send({'response':'login', 'error':'Invalid username!', 'username':username}) 
             return
@@ -123,11 +132,12 @@ class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
 # Kjøres når programmet startes
 if __name__ == "__main__":
     # Definer host og port for serveren
-    HOST = '0.0.0.0'
-    PORT = 9999
+    HOST = '78.91.50.242'
+    PORT = 9997
  
     # Sett opp serveren
     server = ThreadedTCPServer((HOST, PORT), ClientHandler)
+
  
     # Aktiver serveren. Den vil kjøre til den avsluttes med Ctrl+C
     server.serve_forever()
