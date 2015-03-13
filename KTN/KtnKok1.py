@@ -36,12 +36,18 @@ class Client(object):
  
         if decoded.get("response", "") == "message":
             print decoded["message"].encode('utf-8')
+
+        if decoded.get("response", "") == "names":
+            print decoded["names"].encode('utf-8')
+
+        if decoded.get("response", "") == "help":
+            print decoded["help"].encode('utf-8')
                  
  
     def start(self, host, port):
         self.__init__()
         #print "Welcome to Squeak!\nPlease specify server ip:port, or leave blank for the defaults "+host+":"+str(port)
-        innInfo="78.91.50.242:9991"
+        innInfo="78.91.50.242:9989"
         if innInfo:
             host=innInfo.split(":")[0]
             port=int(innInfo.split(":")[1])

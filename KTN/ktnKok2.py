@@ -105,11 +105,11 @@ class ClientHandler(SocketServer.BaseRequestHandler):
 
     def names(self):
 
-        for x in range(self.users, len(users)):
-            self.send({"response":"names", "names":users[x].username})
+        for x in range(len(users)):
+            self.send({"response":"names", "names":users[x])
 
     def help(self): 
-        self.send({"response":"help", "help":"/login\n /help\n /names"})
+        self.send({"response":"help", "help":"Possible commands:\n[/logout] - This command will log you out of the chat\n[/help] - This command will list all possible commands\n[/names] - This command will list all users that are currently in the chat"})
 
     def logout(self):
         try:
