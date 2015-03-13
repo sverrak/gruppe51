@@ -574,13 +574,13 @@ public class CalendarProgram {
 		}
 	private void init2() {
 	
-		Room r1 = new Room("R1", 500, "Fint rom1");
-		Room r2 = new Room("R2", 400, "Fint rom2");
-		Room r3 = new Room("R3", 300, "Fint rom3");
-		Room r4 = new Room("R4", 200, "Fint rom4");
-		Room r5 = new Room("R5", 100, "Fint rom5");
-		Room r6 = new Room("R6", 50, "Fint rom6");
-		Room r7 = new Room("R7", 60, "Fint rom7");
+		Room r1 = new Room(1, "R1", 500, "Fint rom1");
+		Room r2 = new Room(2, "R2", 400, "Fint rom2");
+		Room r3 = new Room(3, "R3", 300, "Fint rom3");
+		Room r4 = new Room(4, "R4", 200, "Fint rom4");
+		Room r5 = new Room(5, "R5", 100, "Fint rom5");
+		Room r6 = new Room(6, "R6", 50, "Fint rom6");
+		Room r7 = new Room(7, "R7", 60, "Fint rom7");
 		rooms = new ArrayList<Room>();
 		addRoom(r1);
 		addRoom(r2);
