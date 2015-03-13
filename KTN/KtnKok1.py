@@ -41,7 +41,7 @@ class Client(object):
     def start(self, host, port):
         self.__init__()
         #print "Welcome to Squeak!\nPlease specify server ip:port, or leave blank for the defaults "+host+":"+str(port)
-        innInfo="78.91.50.242:9992"
+        innInfo="78.91.50.242:9991"
         if innInfo:
             host=innInfo.split(":")[0]
             port=int(innInfo.split(":")[1])
