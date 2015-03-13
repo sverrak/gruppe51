@@ -80,8 +80,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
            
         elif decoded['request'] == 'message':
             if decoded.get("message", "") != "":
-                padd=" "*10
-                message = self.timestamp()+padd+"%s:%s"%(self.username, decoded['message'])
+                message = self.timestamp()+"\t@" + "%s:%s"%(self.username, decoded['message'])
                 self.broadcast(message)
 
         elif decoded['request'] == 'help':
@@ -99,7 +98,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
             users.append(username)
             self.logged_in = True
             self.send({'response':'login', 'username':self.username})
-            self.broadcast("@" + self.username + " has joined the chat.")
+            self.broadcast(self.timestamp() + "\t@" + self.username + " has joined the chat.")
  
         else:
             self.send({'response': 'login', 'error':'Name already taken!', 'username':username})
@@ -143,13 +142,13 @@ class ClientHandler(SocketServer.BaseRequestHandler):
  
 class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
     pass
- 
+
  
 # Kjøres når programmet startes
 if __name__ == "__main__":
     # Definer host og port for serveren
     HOST = '78.91.50.242'
-    PORT = 9984
+    PORT = 9977
  
     # Sett opp serveren
     server = ThreadedTCPServer((HOST, PORT), ClientHandler)

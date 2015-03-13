@@ -34,12 +34,13 @@ class Client(object):
         if decoded.get("response", "") == "logout":
             print "You are now logged out."
             self.logged_in = False
+            self.connection = None
  
         if decoded.get("response", "") == "message":
             print decoded["message"].encode('utf-8')
 
         if decoded.get("response", "") == "names":
-            print decoded["names"].encode('utf-8')
+            print self.nameprinter(decoded["names"].encode('utf-8'))
 
         if decoded.get("response", "") == "help":
             print decoded["help"].encode('utf-8')
@@ -49,7 +50,7 @@ class Client(object):
         self.__init__()
 
         #Remember to change ip-address + port number
-        inInfo="78.91.50.242:9984"
+        inInfo="78.91.50.242:9977"
         if inInfo:
             host=inInfo.split(":")[0]
             port=int(inInfo.split(":")[1])
@@ -91,6 +92,10 @@ class Client(object):
     def names(self):
         self.send(self.parse({'request':'names'}))
 
+    def nameprinter(self, data):
+        colors = Colors()
+        print colors.OKGREEN + data + colors.ENDC
+
     def message(self, data):
         self.send(self.parse({"request":"message", "message":data}))
 
@@ -116,7 +121,13 @@ class Client(object):
                 self.send(self.parse({"request":"message", "message":data}))
             #elif data.split(" ")[0] == "message" and data.split(" ").length > 1 and data.split(" ")[1:] == self.commands[3]:
                 #self.message(data.split(" ")[1:])
-            
+
+
+class Colors():
+    OKGREEN = '\033[92m'
+    ENDC = '\033[0m'
+
+
 if __name__ == "__main__":
     client = Client()
     client.start('localhost', 9999)
