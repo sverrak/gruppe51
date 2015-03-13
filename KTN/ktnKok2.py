@@ -106,11 +106,11 @@ class ClientHandler(SocketServer.BaseRequestHandler):
     def names(self):
 
         for x in range(len(users)):
-            if(x == len(users)-1){
+            if(x == len(users)-1):
                 self.send({"response":"names", "names":users[x]+"\n"})
-            } else{
+            else:
                 self.send({"response":"names", "names":users[x]})
-            }
+            
 
 
 
@@ -148,7 +148,7 @@ class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
 if __name__ == "__main__":
     # Definer host og port for serveren
     HOST = '78.91.50.242'
-    PORT = 9988
+    PORT = 9987
  
     # Sett opp serveren
     server = ThreadedTCPServer((HOST, PORT), ClientHandler)

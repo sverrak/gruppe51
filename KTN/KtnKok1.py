@@ -50,7 +50,7 @@ class Client(object):
         self.__init__()
 
         #Remember to change ip-address + port number
-        inInfo="78.91.50.242:9988"
+        inInfo="78.91.50.242:9987"
         if inInfo:
             host=inInfo.split(":")[0]
             port=int(inInfo.split(":")[1])
