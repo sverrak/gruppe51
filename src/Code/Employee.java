@@ -25,10 +25,11 @@ public class Employee {
 	private List<Event> eventsAttending;		// sortert paa startTime. Maa gaa over alt og kanskje endre fra upcomingEvents til eventsAttending
 	private int telnum;
 	private List<Message> inbox;
+	private List<Event> hiddenEvents;	// events skjult i kalendervisningen. De befinner seg også i declinedEvents
 	
 	// GreatestEmployeeID er String for at vi skal skille mellom de to konstruktÃ¸rene.
 	public Employee(String greatestEmployeeID, String name, String position, String username, 
-			String password, int telnum, Boolean admin) { // endret konstruktoren til ï¿½ ta in admin(true/false)
+			String password, int telnum, Boolean admin) { // endret konstruktoren til aa ta in admin(true/false)
 		super();
 		this.employeeID = Integer.parseInt(greatestEmployeeID);
 		this.name = name;
@@ -45,7 +46,7 @@ public class Employee {
 	}
 	
 	public Employee(int employeeID, String name, String position, String username, 
-			String password, int telnum, Boolean admin) { // endret konstruktoren til ï¿½ ta in admin(true/false)
+			String password, int telnum, Boolean admin) { // endret konstruktoren til aa ta in admin(true/false)
 		super();
 		this.employeeID = employeeID;
 		this.name = name;
@@ -72,6 +73,9 @@ public class Employee {
 	}
 	public List<Event> getUpcomingEvents() {
 		return upcomingEvents;
+	}
+	public List<Event> getHiddenEvents() {
+		return hiddenEvents;
 	}
 	public String getName() {
 		return name;
@@ -131,7 +135,7 @@ public class Employee {
 			if (eventsAttending.size() == 0){
 				eventsAttending.add(event);
 			}else{
-				if(isAvailable(event.getStartTime(), event.getEndTime()))		// holder upcomingEvents sortert pï¿½ startTime	// ser ut til ï¿½ feile her
+				if(isAvailable(event.getStartTime(), event.getEndTime()))
 					eventsAttending.add(event);	
 				}
 			}
@@ -352,7 +356,7 @@ public class Employee {
 		}
 		return matrix;
 	}
-	
+		
 	public ArrayList<ArrayList<String>> generateWeeklySchedule(int weekOfYear, int year){
 			ArrayList<ArrayList<String>> schedule = generateEmptySchedule();
 			// Get calendar, clear it and set week number and year.
@@ -405,11 +409,37 @@ public class Employee {
 					}
 				}			
 			}
-			return schedule;		// maa kanskje returnere hvilken uke i aaret det er ogsaa
+			for (Event event : declinedEvents) {
+				if(hiddenEvents.contains(event)){
+					break;
+				}
+				if (event.getStartTime().getTime() > timeStartWeek && event.getStartTime().getTime() < timeEndWeek){
+					int col = event.getStartTime().getDay() -1;					//	(index til kolonne i matrix) ma sjekke hvilken verdi hver dag retiurnerer
+					int firstRow = (event.getStartTime().getHours() - 8) * 2; 	//	(index til rad i matrix)
+					if (event.getStartTime().getMinutes() >= 30){
+						firstRow += 1;
+					}
+					int lastRow = (event.getEndTime().getHours() - 8) * 2; 	//	(index til rad i matrix
+					if (event.getEndTime().getMinutes() >= 30){
+						lastRow += 1;
+					}
+					int num_declined = event.getPeopleDeclined().size();
+					for (int i = firstRow; i < lastRow; i++) {		 // for alle slots fra firstRow til lastRow
+						if (schedule.get(i).equals("")){
+							schedule.get(i).set(col, event.getTitle() + " (D) [" + num_declined + "]");
+						}
+						else{
+						schedule.get(i).set(col, schedule.get(i).get(col) + "#" + event.getTitle() + " (U) [" + num_declined + "]"); // matrix[rad i ][col] = event.getName() + "U"	// U'en er for attending
+						}
+					}
+				}			
+			}
+			return schedule;
 		}
 
 	
-	//skal gi en visning i konsollen av innevaerende ukes plan soen-loer		
+	//skal gi en visning i konsollen av innevaerende ukes plan soen-loer
+	//mangler aa vise declined events som ikke er hidden!
 		public void printWeeklySchedule(int weekOfYear, int year){
 			ArrayList<ArrayList<String>> schedule = generateWeeklySchedule(weekOfYear, year);	
 			
@@ -520,5 +550,14 @@ public class Employee {
 		return counter;
 	}
 	
-	
+	public void hideEvent(Event event){
+		if(declinedEvents.contains(event)){
+			hiddenEvents.add(event);
+		}
+	}
+	public void showDeclinedEvent(Event event){
+		if (hiddenEvents.contains(event)){
+			hiddenEvents.remove(event);
+		}
+	}
 }
