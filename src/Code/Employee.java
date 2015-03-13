@@ -220,24 +220,37 @@ public class Employee {
 		return true;
 	}
 
-	//vet ikke om dette er lurt, men proever
-	public void reactOnUpdate(Event event, String attribute){
+	public void reactOnUpdate(Event event, String attribute, String oldField){
 		System.out.println("Det har skjedd en endring av ");
 		System.out.println(attribute + " i eventen " + event.toString());
-		System.out.println("\n + oensker du aa fjerne eventen paa bakgrunn av dette? (true/false)");
-		Scanner user_input = new Scanner(System.in);
-		
-		String answer = user_input.nextLine();
-		if(answer.equals("true")){
+		if (attribute.equals("tid")){
+			System.out.println("Tidspunkt endret fra: " + oldField +"\ntil: " + event.getStartTime() + " - " + event.getEndTime());
+		}else if (attribute.equals("title")){
+			System.out.println("Navnet på eventet ble endret fra: " + oldField +  " til: " + event.getTitle());
+		}else if (attribute.equals("description")){
+			System.out.println("Beskrivelsen på eventet " + event + " ble endret fra: " + oldField + " til " + event.getDescription());
+		}else{
+			System.out.println("Update type not recognized. No update happened to " + event);
+			return;
+		}
+		System.out.println("\n + oensker du aa fjerne eventen paa bakgrunn av dette? (ja/nei)");
+		Scanner scanner = new Scanner(System.in);
+		String input = scanner.next(); 
+		while (! (input.equals("ja") || input.equals("nei"))){
+			System.out.println("Vennligst svar [ja] for aa fjerne eller [nei] for aa la det staa.");
+			input = scanner.next(); 
+		}
+		scanner.close();
+
+		if(input.equals("ja")){
 			removeEvent(event, true);
 			informAboutCantParticipate(event, attribute);
 		}
-		user_input.close();
 	}
 	
 	//informerer creator om at vedkommende ikke kan delta paa eventen
 	private void informAboutCantParticipate(Event event, String reason){
-		Message msg = new Message(this, event.getCreator(), "Jeg kan dessverre ikke delta pga " + reason, "Avmelding pÃ¥ " + event.getTitle());
+		Message msg = new Message(this, event.getCreator(), "Jeg kan dessverre ikke delta pga " + reason, "Avmelding paa " + event.getTitle());
 		msg.sendMessage();
 	}
 	

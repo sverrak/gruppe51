@@ -47,10 +47,11 @@ public class Event implements Comparable<Event>{
 	}
 
 	public void setTitle(String title) {
+		String oldTitle = this.title;
+		this.title = title;
 		if(this.title != null){
-			fireChange("title");			// kanskje er rekkefolgen paa disse 
-		}									
-		this.title = title;					// et problem?
+			fireChange("title", oldTitle);
+		}
 	}
 
 	public Date getStartTime() {
@@ -59,34 +60,35 @@ public class Event implements Comparable<Event>{
 
 	// Maa ogsaa sjekke om naavaerende rom er ledig rom paa tidspunktet
 	public void setTime(Date startTime, Date endTime) {
-		if(this.creator.isAvailable(startTime, endTime)){
-			if(startTime.compareTo(endTime) > 1){
-				System.out.println("Sluttidspunkt kan ikke vaere foer starttidspunkt.");
-				return;
-			}
-			if (!this.getRoom().isAvailable(startTime, endTime)){
-				Scanner scanner = new Scanner(System.in);
-				System.out.println("Current location is not available at given time. Proceed and remove room from location [yes] or cancel request [no]?");
-				String input = scanner.next(); 
-				while (! (input.equals("yes") || input.equals("no"))){
-					System.out.println("Please answer [yes] to proceed or [no] to abort time change.");
-					input = scanner.next(); 
-				}
-				scanner.close();
-				if (input.equals("no")){
-					return;
-				}		// gets here only if input was "yes"
-				this.setRoom(null);
-			}
-			Date oldStartTime = this.startTime;
-			Date oldEndTime = this.endTime;
-			this.startTime = startTime;
-			this.endTime = endTime;	
-			if(!(this.startTime == null && this.endTime == null)){
-				fireChange("tid");				
-			}
-		}else{
+		if(! this.creator.isAvailable(startTime, endTime)){
 			System.out.println("Du er allerede opptatt paa dette tidspunktet.");
+			return;
+		}
+		if(startTime.compareTo(endTime) > 1){
+			System.out.println("Sluttidspunkt kan ikke vaere foer starttidspunkt.");
+			return;
+		}
+		if (!this.getRoom().isAvailable(startTime, endTime)){
+			Scanner scanner = new Scanner(System.in);
+			System.out.println("Current location is not available at given time. Proceed and remove room from location [yes] or cancel request [no]?");
+			String input = scanner.next(); 
+			while (! (input.equals("yes") || input.equals("no"))){
+				System.out.println("Please answer [yes] to proceed or [no] to abort time change.");
+				input = scanner.next(); 
+			}
+			scanner.close();
+			if (input.equals("no")){
+				return;
+			}		// gets here only if input was "yes"
+			this.setRoom(null);
+		}
+		Date oldStartTime = this.startTime;
+		Date oldEndTime = this.endTime;
+		this.startTime = startTime;
+		this.endTime = endTime;	
+		if(!(oldStartTime == null && oldEndTime == null)){
+			String str = oldStartTime + " - " + oldEndTime;
+			fireChange("tid", str);				
 		}
 	}
 
@@ -99,15 +101,17 @@ public class Event implements Comparable<Event>{
 	}
 
 	public void setDescription(String description) {
-		// For eksempel. Bare for at man ikke skal være helt dust og sette dritlang description
+		// Bare for at man ikke skal vaere helt dust og sette dritlang description
 		if(description.length() < 255){
-			if(this.description != null){
-				fireChange("description");				
-			}
-			this.description = description;
-		} else{
 			System.out.println("Error. Beskrivelsen er for lang");
+			return;
 		}
+		String oldDesc = this.description;
+		this.description = description;
+		if(oldDesc != null){
+			fireChange("description", oldDesc);				
+		}
+		this.description = description;
 	}
 
 	public Room getRoom() {
@@ -140,9 +144,9 @@ public class Event implements Comparable<Event>{
 		}
 	}
 	
-	public void fireChange(String attribute){
+	public void fireChange(String attribute, String oldField){
 		for (Employee employee : peopleInvited) {
-			employee.reactOnUpdate(this, attribute);
+			employee.reactOnUpdate(this, attribute, oldField);
 		}
 	}
 	
