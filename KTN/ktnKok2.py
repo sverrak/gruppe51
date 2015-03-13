@@ -133,7 +133,7 @@ class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
 if __name__ == "__main__":
     # Definer host og port for serveren
     HOST = '78.91.50.242'
-    PORT = 9997
+    PORT = 9996
  
     # Sett opp serveren
     server = ThreadedTCPServer((HOST, PORT), ClientHandler)
