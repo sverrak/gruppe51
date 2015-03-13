@@ -41,7 +41,7 @@ class Client(object):
     def start(self, host, port):
         self.__init__()
         #print "Welcome to Squeak!\nPlease specify server ip:port, or leave blank for the defaults "+host+":"+str(port)
-        innInfo="78.91.50.242:9996"
+        innInfo="78.91.50.242:9992"
         if innInfo:
             host=innInfo.split(":")[0]
             port=int(innInfo.split(":")[1])
@@ -97,17 +97,16 @@ class Client(object):
         while True:
             #this thread stops here until it has data, so no need for time.sleep
             data = raw_input()
-            command = data
+            print data
+            command = re.findall("^[/]\w+", data)
+            print command
             if command:
-                if data == self.commands[0]:
-                    self.disconnect
-                elif data == self.commands[1]:
-                    self.help
-                elif data == self.commands[2]:
-                    self.names
-                if data.split(" ").length > 1:
-                    if data.split(" ")[1:] == self.commands[3]:
-                        self.message(data.split(" ")[1:])
+                if command[0] in self.commands:
+                    self.commands[command[0]]()
+                continue
+
+            elif data.split(" ")[0] == "message" and data.split(" ").length > 1 and data.split(" ")[1:] == self.commands[3]:
+                self.message(data.split(" ")[1:])
             
 if __name__ == "__main__":
     client = Client()

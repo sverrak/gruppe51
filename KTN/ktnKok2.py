@@ -60,6 +60,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
         except:
             pass
          
+
     def process_data(self, data):
         #Tilbake til json
         decoded = json.loads(data)
@@ -71,7 +72,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
             return
          
         if decoded['request'] == 'names':
-            print self.users
+            print users
 
         elif decoded['request'] == 'logout':
           self.logout()
@@ -83,7 +84,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
                 self.broadcast(message)
 
         elif decoded['request'] == 'help':
-            print "'login + [username]'\n'message + [content]'\n'logout'\n'help'\n'names'"
+            self.help()
 
      
  
@@ -101,7 +102,13 @@ class ClientHandler(SocketServer.BaseRequestHandler):
  
         else:
             self.send({'response': 'login', 'error':'Name already taken!', 'username':username})
-         
+
+    def names(self):
+        print users
+
+    def help(self):
+        print "'login + [username]'\n'message + [content]'\n'logout'\n'help'\n'names'"
+
     def logout(self):
         try:
             users.remove(self.username)
@@ -133,7 +140,7 @@ class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
 if __name__ == "__main__":
     # Definer host og port for serveren
     HOST = '78.91.50.242'
-    PORT = 9996
+    PORT = 9992
  
     # Sett opp serveren
     server = ThreadedTCPServer((HOST, PORT), ClientHandler)
