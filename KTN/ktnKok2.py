@@ -72,7 +72,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
             return
          
         if decoded['request'] == 'names':
-            print users
+            self.names()
 
         elif decoded['request'] == 'logout':
           self.logout()
@@ -104,10 +104,12 @@ class ClientHandler(SocketServer.BaseRequestHandler):
             self.send({'response': 'login', 'error':'Name already taken!', 'username':username})
 
     def names(self):
-        self.send(users)
+
+        for x in range(self.users, len(users)):
+            self.send({"response":"names", "names":users[x].username})
 
     def help(self): 
-        self.send("'login + [username]'\n'message + [content]'\n'logout'\n'help'\n'names'")
+        self.send({"response":"help", "help":"/login\n /help\n /names"})
 
     def logout(self):
         try:
