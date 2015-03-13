@@ -45,12 +45,13 @@ class Client(object):
 
         if decoded.get("response", "") == "help":
             print decoded["help"].encode('utf-8')
-                 
+
+
  
     def start(self, host, port):
         self.__init__()
 
-        inInfo="78.91.50.242:9975"
+        inInfo="78.91.50.242:9974"
         if inInfo:
             host=inInfo.split(":")[0]
             port=int(inInfo.split(":")[1])
@@ -116,8 +117,8 @@ class Client(object):
                     self.commands[command[0]]()
                 continue
 
-            if data != "":
-                self.send(self.parse({"request":"message", "message":data}))
+            if data.split(" ")[0] == "msg":
+                self.send(self.parse({"request":"message", "message":data[4:]}))
 
 class Colors():
     OKGREEN = '\033[92m'
