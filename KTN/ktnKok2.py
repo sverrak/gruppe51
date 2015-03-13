@@ -18,7 +18,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
     global users
      
     def timestamp(self):
-        return datetime.now().strftime("%H:%M")
+        return datetime.now().strftime("%H:%M:%S")
      
     def broadcast(self, data):
         """sends data to all clients"""
@@ -115,14 +115,14 @@ class ClientHandler(SocketServer.BaseRequestHandler):
 
 
     def help(self): 
-        self.send({"response":"help", "help":"\nPossible commands:\n[/logout] - This command will log you out of the chat\n[/help] - This command will list all possible commands\n[/names] - This command will list all users that are currently in the chat"})
+        self.send({"response":"help", "help":"\nPossible commands:\n[logout] - This command will log you out of the chat\n[help] - This command will list all possible commands\n[names] - This command will list all users that are currently in the chat\n[msg + <message>] - This command will list all users that are currently in the chat"})
 
     def logout(self):
         try:
             users.remove(self.username)
             self.logged_in = False
             self.send({'response': 'logout ', 'nick': self.username})
-            self.broadcast("@" + self.username + " has left the chat.")
+            self.broadcast(self.timestamp + "\t@" + self.username + " has left the chat.")
         except ValueError:
             send({'response': 'logout', 'error':'Not logged in!', 'nick': self.username})
      
@@ -136,23 +136,22 @@ class ClientHandler(SocketServer.BaseRequestHandler):
                     for x in range(self.sentdata, len(all_messages)):
                         self.send({"response":"message", "message":all_messages[x]})
                         self.sentdata += 1
-            #Have to sleep it, else it will try to drain the cpu
+            #Hvis ikke, vil cpuen klikke
             time.sleep(0.2) #0.2 seconds
  
  
 class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
-    pass
+    allow_reuse_address = True
 
  
 # Kjøres når programmet startes
 if __name__ == "__main__":
     # Definer host og port for serveren
     HOST = '78.91.50.242'
-    PORT = 9977
- 
-    # Sett opp serveren
-    server = ThreadedTCPServer((HOST, PORT), ClientHandler)
+    PORT = 9975
+    
 
- 
-    # Aktiver serveren. Den vil kjøre til den avsluttes med Ctrl+C
+    # Set up and initiate the TCP server
+    server = ThreadedTCPServer((HOST, PORT), ClientHandler)
+    print 'Server running...'
     server.serve_forever()

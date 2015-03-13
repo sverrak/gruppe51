@@ -35,6 +35,7 @@ class Client(object):
             print "You are now logged out."
             self.logged_in = False
             self.connection = None
+            self.disconnect()
  
         if decoded.get("response", "") == "message":
             print decoded["message"].encode('utf-8')
@@ -49,15 +50,14 @@ class Client(object):
     def start(self, host, port):
         self.__init__()
 
-        #Remember to change ip-address + port number
-        inInfo="78.91.50.242:9977"
+        inInfo="78.91.50.242:9975"
         if inInfo:
             host=inInfo.split(":")[0]
             port=int(inInfo.split(":")[1])
              
         self.connection.connect((host, port))
         self.logged_in = False 
-        self.commands = {"/logout":self.disconnect, "/help":self.help, "/names":self.names}
+        self.commands = {"logout":self.disconnect, "help":self.help, "names":self.names}
          
         while not self.logged_in:
             self.username = raw_input('Username: ')
@@ -66,7 +66,6 @@ class Client(object):
             response = self.connection.recv(1024).strip()
             self.process_json(response)
          
-        #make take_input work in a thread.
         t = threading.Thread(target=self.take_input)
         t.setDaemon=True
         t.start()
@@ -94,7 +93,7 @@ class Client(object):
 
     def nameprinter(self, data):
         colors = Colors()
-        print colors.OKGREEN + data + colors.ENDC
+        return colors.OKGREEN + data + colors.ENDC
 
     def message(self, data):
         self.send(self.parse({"request":"message", "message":data}))
@@ -109,9 +108,9 @@ class Client(object):
     def take_input(self):
         """lets the user write a message"""
         while True:
-            #this thread stops here until it has data, so no need for time.sleep
+            
             data = raw_input()
-            command = re.findall("^[/]\w+", data)
+            command = data.split(" ")
             if command:
                 if command[0] in self.commands:
                     self.commands[command[0]]()
@@ -119,9 +118,6 @@ class Client(object):
 
             if data != "":
                 self.send(self.parse({"request":"message", "message":data}))
-            #elif data.split(" ")[0] == "message" and data.split(" ").length > 1 and data.split(" ")[1:] == self.commands[3]:
-                #self.message(data.split(" ")[1:])
-
 
 class Colors():
     OKGREEN = '\033[92m'
