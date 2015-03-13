@@ -104,9 +104,8 @@ class ClientHandler(SocketServer.BaseRequestHandler):
             self.send({'response': 'login', 'error':'Name already taken!', 'username':username})
 
     def names(self):
-
-        for x in range(self.users, len(users)):
-            self.send({"response":"names", "names":users[x].username})
+        for x in range(len(users)):
+            self.send({"response":"names", "names":users[x]})
 
     def help(self): 
         self.send({"response":"help", "help":"/login\n /help\n /names"})
@@ -142,7 +141,7 @@ class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
 if __name__ == "__main__":
     # Definer host og port for serveren
     HOST = '78.91.50.242'
-    PORT = 9991
+    PORT = 9989
  
     # Sett opp serveren
     server = ThreadedTCPServer((HOST, PORT), ClientHandler)
