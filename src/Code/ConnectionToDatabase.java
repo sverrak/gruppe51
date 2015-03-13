@@ -146,7 +146,7 @@ public class ConnectionToDatabase {
 		PreparedStatement preparedStatement = null;
 		
 		preparedStatement = con.prepareStatement(sql);
-		preparedStatement.setInt(1,e.getEmployeeID());
+		preparedStatement.setString(1,e.getUsername());
 		preparedStatement.executeUpdate();
 	}
 	

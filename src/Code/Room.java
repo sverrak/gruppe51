@@ -2,6 +2,7 @@ package Code;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -51,6 +52,7 @@ public class Room {
 	public Boolean addEventToRoom(Event event){
 		if (isAvailable(event.getStartTime(), event.getEndTime())){
 			roomSchedule.add(event);
+			Collections.sort(roomSchedule);
 		//	System.out.println(event.getTitle() + ", was added to: " + this.getName());
 			//Hvordan sortere roomSchedule på en hensiktsmessig måte?
 			//roomSchedule.sort(c);
@@ -72,9 +74,17 @@ public class Room {
 		if(this.roomSchedule.size() == 0){
 			return true;
 		}
-		for (int i = 0; i < roomSchedule.size() - 1; i++) {
-			if(roomSchedule.get(i).getEndTime().compareTo(startTime) < 0 && endTime.compareTo(roomSchedule.get(i+1).getStartTime()) < 0){
+		else if(this.roomSchedule.size() == 1){
+			if(roomSchedule.get(0).getEndTime().compareTo(startTime) < 0 || roomSchedule.get(0).getStartTime().compareTo(endTime) > 0){
 				return true;
+			}
+		}
+		else {
+			
+			for (int i = 0; i < roomSchedule.size() - 1; i++) {
+				if(roomSchedule.get(i).getEndTime().compareTo(startTime) < 0 && endTime.compareTo(roomSchedule.get(i+1).getStartTime()) < 0){
+					return true;
+				}
 			}
 		}
 		return false;	

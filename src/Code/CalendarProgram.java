@@ -333,7 +333,7 @@ public class CalendarProgram {
 			
 			int option = 0;
 			
-			while(option < 1 || option > 9){
+			while(option == 0){
 				option = Integer.parseInt(user_input.nextLine());
 				if(option == 1){
 					int weekOfYear = 1;
@@ -462,22 +462,18 @@ public class CalendarProgram {
 									} else if(thirdOptionChoice.equals("4")){
 										
 									}
-								}
-								
-							}
-							
+								}	
+							}		
 					}
-					
-					
-					}	
-				} else if(option == 5 && current_user.isAdmin()){
+				}	
+			} else if(option == 5 && current_user.isAdmin()){
 					int choice = 0;
 					int brukerChoice = 0;
-					while (choice < 1 || choice > 2){
-						System.out.println("1. Administrer bruker | 2. Legg til ny bruker");
+					
+					while (choice == 0){
+						System.out.println("1. Administrer bruker | 2. Legg til ny bruker | 3. Tilbake til hovedmeny");
 						choice = Integer.parseInt(user_input.nextLine());
-						if(choice == 1){
-							
+						if(choice == 1){	
 							System.out.println("Skriv inn brukernavn til brukeren du �nsker � endre:");
 							String userName = (user_input.nextLine());
 							if(ctd.checkUserName(con, userName) == true){
@@ -488,8 +484,8 @@ public class CalendarProgram {
 									}
 								}
 
-								while(brukerChoice < 1 || brukerChoice > 3){
-									System.out.println("1. Endre tlf | 2. Endre position | 3. Endre admin-rettigheter | 4. Slett bruker");
+								while(brukerChoice == 0){
+									System.out.println("1. Endre tlf | 2. Endre position | 3. Endre admin-rettigheter | 4. Slett bruker | 5. Exit");
 									brukerChoice = Integer.parseInt(user_input.nextLine());
 									if (brukerChoice == 1){
 										System.out.println("Nytt tlfnr:");
@@ -512,23 +508,24 @@ public class CalendarProgram {
 											System.out.println(tempEmployee.getName() + " har admin-rettigheter, vil du fjerne disse?\n\n");
 											if (user_input.nextLine().equalsIgnoreCase("ja")){
 												String sql = "UPDATE Employee SET admin = ? WHERE username = ?";
-												String adm = "nei";
+												String adm = "false";
 												ctd.updateEmployeeAdmin(con, sql, adm, tempEmployee);
 												tempEmployee.setAdmin(false);
 												System.out.println("Oppdateringen var vellykket\n\n");
 											}
 										}
-										else if (tempEmployee.isAdmin() == false){
-											System.out.println(tempEmployee.getName() + " har ikke admin-rettigheter, vil du gi han admin-rettigheter?\n\n");
-											if (user_input.nextLine().equalsIgnoreCase("ja")){	
-												String sql = "UPDATE Employee SET admin = ? WHERE username = ?";
-												String adm = "ja";
-												ctd.updateEmployeeAdmin(con, sql, adm, tempEmployee);
-												tempEmployee.setAdmin(true);
-												System.out.println("Oppdateringen var vellykket\n\n");
+									}
+									else if (tempEmployee.isAdmin() == false){
+										System.out.println(tempEmployee.getName() + " har ikke admin-rettigheter, vil du gi han admin-rettigheter?\n\n");
+										if (user_input.nextLine().equalsIgnoreCase("ja")){	
+											String sql = "UPDATE Employee SET admin = ? WHERE username = ?";
+											String adm = "true";
+											ctd.updateEmployeeAdmin(con, sql, adm, tempEmployee);
+											tempEmployee.setAdmin(true);
+											System.out.println("Oppdateringen var vellykket\n\n");
 												
-											}
 										}
+									}
 									else if (brukerChoice == 4){
 										
 										System.out.println("\nSikker p� at du vil slette: '" + tempEmployee.getName() + "', fra databasen?");
@@ -538,40 +535,35 @@ public class CalendarProgram {
 											System.out.println("Oppdateringen var vellykket\n\n");
 										}
 									}
-									}
-									System.out.println("1. Rediger, " + tempEmployee.getName() + ", ytterligere | 2. Administrer ny bruker | 3. Tilbake til hovedmeny");
-									if (Integer.parseInt(user_input.nextLine()) == 1){
-										brukerChoice = 0;
-									}
-									else if(Integer.parseInt(user_input.nextLine()) == 2){
-										choice = 0;
-									}
-									else if(Integer.parseInt(user_input.nextLine()) == 3){
-										option = 3;
-									}
+
+								System.out.println("1. Rediger, " + tempEmployee.getName() + ", ytterligere | 2. Administrer ny bruker | 3. Tilbake til hovedmeny");
+								String checkOption = user_input.nextLine();
+								if (Integer.parseInt(checkOption) == 1){
+									brukerChoice = 0;
+								}
+								else if(Integer.parseInt(checkOption) == 2){
+									choice = 0;
 								}
 							}
-							else{
-								System.out.println("Brukernavnet: '" + userName + "', eksisterer ikke i databasen.\nVennligst skriv inn et gyldig brukernavn!\n");
-								choice = 0;
+						}else{
+							System.out.println("Brukernavnet: '" + userName + "', eksisterer ikke i databasen.\nVennligst skriv inn et gyldig brukernavn!\n");
+							choice = 0;
 							}
-						}
-						else if(choice == 2){
+					}	else if(choice == 2){
 							createNewUser();
 						}
-					}
-				} else if(option == 9){
-					current_user = null;
-					System.out.println("Du er naa logget ut.\n\n");
+				}
+			}  else if(option == 9){
+				current_user = null;
+				System.out.println("Du er naa logget ut.\n\n");
 					
 					//metode for aa skrive tilbake til server mangler her
 					main(null);
 				}
 					
-				}
-				
-			}
+			}			
 		}
+	}
 	private void init2() {
 	
 		Room r1 = new Room(1, "R1", 500, "Fint rom1");
