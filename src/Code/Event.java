@@ -72,6 +72,7 @@ public class Event implements Comparable<Event>{
 					System.out.println("Please answer [yes] to proceed or [no] to abort time change.");
 					input = scanner.next(); 
 				}
+				scanner.close();
 				if (input.equals("no")){
 					return;
 				}		// gets here only if input was "yes"
