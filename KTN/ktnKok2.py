@@ -98,24 +98,25 @@ class ClientHandler(SocketServer.BaseRequestHandler):
             users.append(username)
             self.logged_in = True
             self.send({'response':'login', 'username':self.username})
-            self.broadcast("*** " + self.username + " has joined the chat.")
+            self.broadcast("@" + self.username + " has joined the chat.")
  
         else:
             self.send({'response': 'login', 'error':'Name already taken!', 'username':username})
 
     def names(self):
+
         for x in range(len(users)):
             self.send({"response":"names", "names":users[x]})
 
     def help(self): 
-        self.send({"response":"help", "help":"/login\n /help\n /names"})
+        self.send({"response":"help", "help":"Possible commands:\n[/logout] - This command will log you out of the chat\n[/help] - This command will list all possible commands\n[/names] - This command will list all users that are currently in the chat"})
 
     def logout(self):
         try:
             users.remove(self.username)
             self.logged_in = False
-            self.send({'response': 'logout', 'nick': self.username})
-            self.broadcast("*** " + self.username + " has left the chat.")
+            self.send({'response': 'logout ', 'nick': self.username})
+            self.broadcast("@" + self.username + " has left the chat.")
         except ValueError:
             send({'response': 'logout', 'error':'Not logged in!', 'nick': self.username})
      

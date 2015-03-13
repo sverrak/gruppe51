@@ -32,6 +32,7 @@ class Client(object):
             return
          
         if decoded.get("response", "") == "logout":
+            print "You are now logged out."
             self.logged_in = False
  
         if decoded.get("response", "") == "message":
@@ -46,10 +47,12 @@ class Client(object):
  
     def start(self, host, port):
         self.__init__()
-        innInfo="78.91.50.242:9989"
-        if innInfo:
-            host=innInfo.split(":")[0]
-            port=int(innInfo.split(":")[1])
+
+        #Remember to change ip-address + port number
+        inInfo="78.91.50.242:9989"
+        if inInfo:
+            host=inInfo.split(":")[0]
+            port=int(inInfo.split(":")[1])
              
         self.connection.connect((host, port))
         self.logged_in = False 
