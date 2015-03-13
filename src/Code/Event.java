@@ -48,25 +48,45 @@ public class Event implements Comparable<Event>{
 
 	public void setTitle(String title) {
 		if(this.title != null){
-			fireChange("title");			
-		}
-		this.title = title;
+			fireChange("title");			// kanskje er rekkefolgen paa disse 
+		}									
+		this.title = title;					// et problem?
 	}
 
 	public Date getStartTime() {
 		return startTime;
 	}
 
-	// Må også sjekke om det er ledige rom på tidspunktet
+	// Maa ogsaa sjekke om naavaerende rom er ledig rom paa tidspunktet
 	public void setTime(Date startTime, Date endTime) {
 		if(this.creator.isAvailable(startTime, endTime)){
-			if(this.startTime == null && this.endTime == null){
+			if(startTime.compareTo(endTime) > 1){
+				System.out.println("Sluttidspunkt kan ikke vaere foer starttidspunkt.");
+				return;
+			}
+			if (!this.getRoom().isAvailable(startTime, endTime)){
+				Scanner scanner = new Scanner(System.in);
+				System.out.println("Current location is not available at given time. Proceed and remove room from location [yes] or cancel request [no]?");
+				String input = scanner.next(); 
+				while (! (input.equals("yes") || input.equals("no"))){
+					System.out.println("Please answer [yes] to proceed or [no] to abort time change.");
+					input = scanner.next(); 
+				}
+				scanner.close();
+				if (input.equals("no")){
+					return;
+				}		// gets here only if input was "yes"
+				this.setRoom(null);
+			}
+			Date oldStartTime = this.startTime;
+			Date oldEndTime = this.endTime;
+			this.startTime = startTime;
+			this.endTime = endTime;	
+			if(!(this.startTime == null && this.endTime == null)){
 				fireChange("tid");				
 			}
-			if(startTime.compareTo(endTime) < 1){
-				this.startTime = startTime;	
-				this.endTime = endTime;				
-			}
+		}else{
+			System.out.println("Du er allerede opptatt paa dette tidspunktet.");
 		}
 	}
 
