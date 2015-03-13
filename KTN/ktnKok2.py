@@ -72,6 +72,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
             return
          
         if decoded['request'] == 'names':
+            self.send({"response":"names", "names":"\nThese users are currently logged in:"})
             self.names()
 
         elif decoded['request'] == 'logout':
@@ -79,7 +80,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
            
         elif decoded['request'] == 'message':
             if decoded.get("message", "") != "":
-                padd=" "*(len(max(users, key=len))-len(self.username))
+                padd=" "*10
                 message = self.timestamp()+padd+"%s:%s"%(self.username, decoded['message'])
                 self.broadcast(message)
 
@@ -104,7 +105,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
             self.send({'response': 'login', 'error':'Name already taken!', 'username':username})
 
     def names(self):
-
+        
         for x in range(len(users)):
             if(x == len(users)-1):
                 self.send({"response":"names", "names":users[x]+"\n"})
@@ -148,7 +149,7 @@ class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
 if __name__ == "__main__":
     # Definer host og port for serveren
     HOST = '78.91.50.242'
-    PORT = 9987
+    PORT = 9984
  
     # Sett opp serveren
     server = ThreadedTCPServer((HOST, PORT), ClientHandler)
