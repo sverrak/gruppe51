@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -125,7 +126,7 @@ public class Employee {
 	}
 
 // skal opprette nytt event med personen som inviterer som attending
-
+// hva brukes den til?
 	public void addEvent(Event event){
 		event.getPeopleGoing().add(this);
 		if(eventsAttending != null){		// hva er dette godt for?
@@ -145,6 +146,7 @@ public class Employee {
 		if (eventsAttending.size() == 0 || isAvailable(startTime, endTime)){
 			Event event = new Event(title, startTime, endTime, description, this);
 			eventsAttending.add(event);
+			Collections.sort(eventsAttending);
 			event.getPeopleGoing().add(this);
 			return event;
 		}
@@ -163,6 +165,7 @@ public class Employee {
 		}
 		event.getPeopleGoing().add(this);
 		eventsAttending.add(event);
+		Collections.sort(eventsAttending);
 		upcomingEvents.remove(event);
 		Message msg = new Message(this, event.getCreator(),"I accept your invitation to event " + event, "Invitation Accept");
 		msg.sendMessage();
@@ -295,6 +298,9 @@ public class Employee {
 		if(isOnDemandFromParticipant){
 			event.removeEmployee(this);
 		}
+		declinedEvents.add(event);		//la til dette. Haaper ikke noe føkkes opp...
+		Collections.sort(declinedEvents);
+		event.getPeopleDeclined().add(this);
 	}
 		
 	public boolean inviteEmployeeToEvent(Employee employee, Event event){
@@ -312,7 +318,8 @@ public class Employee {
 		
 		// "hvis eventen er upcoming"-funksjonalitet mangler her. m.a.o. hvis eventets tidspunkt er passert, er invitasjonen uinteressant 
 		event.addEmployee(employee);
-		employee.upcomingEvents.add(event);	
+		employee.upcomingEvents.add(event);
+		Collections.sort(upcomingEvents);
 		return true;
 	}
 
@@ -507,14 +514,17 @@ public class Employee {
 		if (event.getCreator() != this || startTime.getTime() > endTime.getTime()){
 			return false;
 		}
+		List<Event> oldEventsAttending = eventsAttending;
 		eventsAttending.remove(event);
+		
 		if (this.isAvailable(startTime, endTime)){
 			event.setTime(startTime, endTime);
-			eventsAttending.add(event);		// mister sortering av lista
+			eventsAttending.add(event);
+			Collections.sort(eventsAttending);
 			return true;
 		}else{
-		eventsAttending.add(event);		// mister sortering av lista
-		return false;
+			eventsAttending = oldEventsAttending;
+			return false;
 		}
 	}
 	
@@ -553,6 +563,7 @@ public class Employee {
 	public void hideEvent(Event event){
 		if(declinedEvents.contains(event)){
 			hiddenEvents.add(event);
+			Collections.sort(hiddenEvents);
 		}
 	}
 	public void showDeclinedEvent(Event event){

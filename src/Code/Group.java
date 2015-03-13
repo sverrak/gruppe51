@@ -14,12 +14,17 @@ public class Group {
 	
 	
 	public Group(String groupName, String description, Employee responsible) {
-		super();
 		this.groupName = groupName;
 		this.description = description;
 		this.responsible = responsible;
 		participants = new ArrayList<Employee>();
 		subgroups = new ArrayList<Group>();
+	}
+	
+	public Collection<Group> getSubgroups() {
+		return subgroups;
+	}public Collection<Group> getSupergroups() {
+		return supergroups;
 	}
 	
 	public int getGroupID() {
@@ -30,25 +35,17 @@ public class Group {
 		return groupName;
 	}
 
-
-
 	public void setGroupName(String groupName) {
 		this.groupName = groupName;
 	}
-
-
 
 	public String getDescription() {
 		return description;
 	}
 
-
-
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
-
 
 	public Employee getResponsible() {
 		return responsible;
@@ -58,35 +55,35 @@ public class Group {
 		return participants;
 	}
 
-
 	public void setResponsible(Employee responsible) {
 		this.responsible = responsible;
 	}
 	
 // "Grupper administreres utenfor systemet..." - kravlista fra DB.
-	public Boolean addEmployee(Employee employee){
-		return true;
+	public void addEmployee(Employee employee){
+		participants.add(employee);
 	}
-	public Boolean removeEmployee(Employee employee){
-		return true;
+	public void removeEmployee(Employee employee){
+		participants.remove(employee);
 	}
 	
+	//hva er hensikten med denne metoden??
 	public ArrayList<Employee> printParticipants(){
 		return (ArrayList<Employee>) this.participants;
 	}
 	
 	public void addSubgroupToGroup(Group group){
 		this.subgroups.add(group);
-		group.addSupergroupToGroup(this);
+		group.addGroupToSupergroup(this);
 	}
 	
 	// Skal bare kalles fra funksjonen over
-	private void addSupergroupToGroup(Group group){
+	private void addGroupToSupergroup(Group group){
 		this.supergroups.add(group);
+		group.addSubgroupToGroup(this);
 	}
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
 		return this.groupName;
 	}
 	
