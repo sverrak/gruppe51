@@ -97,16 +97,16 @@ class Client(object):
         while True:
             #this thread stops here until it has data, so no need for time.sleep
             data = raw_input()
-            print data
             command = re.findall("^[/]\w+", data)
-            print command
             if command:
                 if command[0] in self.commands:
                     self.commands[command[0]]()
                 continue
 
-            elif data.split(" ")[0] == "message" and data.split(" ").length > 1 and data.split(" ")[1:] == self.commands[3]:
-                self.message(data.split(" ")[1:])
+            if data != "":
+                self.send(self.parse({"request":"message", "message":data}))
+            #elif data.split(" ")[0] == "message" and data.split(" ").length > 1 and data.split(" ")[1:] == self.commands[3]:
+                #self.message(data.split(" ")[1:])
             
 if __name__ == "__main__":
     client = Client()
