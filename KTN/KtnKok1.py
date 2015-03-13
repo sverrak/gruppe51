@@ -39,6 +39,7 @@ class Client(object):
             print decoded["message"].encode('utf-8')
 
         if decoded.get("response", "") == "names":
+            print "\nThese users are currently logged in:"
             print decoded["names"].encode('utf-8')
 
         if decoded.get("response", "") == "help":
@@ -49,7 +50,7 @@ class Client(object):
         self.__init__()
 
         #Remember to change ip-address + port number
-        inInfo="78.91.50.242:9989"
+        inInfo="78.91.50.242:9988"
         if inInfo:
             host=inInfo.split(":")[0]
             port=int(inInfo.split(":")[1])

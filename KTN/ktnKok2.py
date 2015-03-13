@@ -80,7 +80,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
         elif decoded['request'] == 'message':
             if decoded.get("message", "") != "":
                 padd=" "*(len(max(users, key=len))-len(self.username))
-                message = self.timestamp()+padd+" %s| %s"%(self.username, decoded['message'])
+                message = self.timestamp()+padd+"%s:%s"%(self.username, decoded['message'])
                 self.broadcast(message)
 
         elif decoded['request'] == 'help':
@@ -106,10 +106,16 @@ class ClientHandler(SocketServer.BaseRequestHandler):
     def names(self):
 
         for x in range(len(users)):
-            self.send({"response":"names", "names":users[x]})
+            if(x == len(users)-1){
+                self.send({"response":"names", "names":users[x]+"\n"})
+            } else{
+                self.send({"response":"names", "names":users[x]})
+            }
+
+
 
     def help(self): 
-        self.send({"response":"help", "help":"Possible commands:\n[/logout] - This command will log you out of the chat\n[/help] - This command will list all possible commands\n[/names] - This command will list all users that are currently in the chat"})
+        self.send({"response":"help", "help":"\nPossible commands:\n[/logout] - This command will log you out of the chat\n[/help] - This command will list all possible commands\n[/names] - This command will list all users that are currently in the chat"})
 
     def logout(self):
         try:
@@ -142,7 +148,7 @@ class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
 if __name__ == "__main__":
     # Definer host og port for serveren
     HOST = '78.91.50.242'
-    PORT = 9989
+    PORT = 9988
  
     # Sett opp serveren
     server = ThreadedTCPServer((HOST, PORT), ClientHandler)
