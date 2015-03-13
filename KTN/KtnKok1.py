@@ -82,6 +82,9 @@ class Client(object):
     def names(self):
         self.send(self.parse({'request':'names'}))
 
+    def message(self, data):
+        self.send(self.parse({"request":"message", "message":data}))
+
     def disconnect(self):
         self.send(self.parse({'request':'logout'}))
          
@@ -94,18 +97,17 @@ class Client(object):
         while True:
             #this thread stops here until it has data, so no need for time.sleep
             data = raw_input()
-            command = re.findall("^[/]\w+", data)
+            command = data.split(" ")[0]
             if command:
-                if command[0] in self.commands:
-                    self.commands[command[0]]()
-                elif command[1] in self.commands:
-                    self.commands[command[1]]()
-                elif command[2] in self.commands:
-                    self.commands[command[2]]()
+                if command == self.commands[0]:
+                    self.disconnect
+                elif command == self.commands[1]:
+                    self.help
+                elif command == self.commands[2]:
+                    self.names
+                elif command == self.commands[3]:
+                    self.message(data.split(" ")[1:])
             
-            if data != "":
-                self.send(self.parse({"request":"message", "message":data}))
- 
 if __name__ == "__main__":
     client = Client()
     client.start('localhost', 9999)
