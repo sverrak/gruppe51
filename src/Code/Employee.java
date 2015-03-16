@@ -208,14 +208,17 @@ public class Employee {
 		}
 		informAboutCancellation(event, reason);
 		
-		for (int i = event.getPeopleInvited().size(); i < -1; i--) {			
-			Employee employee = event.getPeopleInvited().get(i);
-			employee.removeEvent(event, false);
+		if (event.getPeopleInvited().size()>0){
+			for (int i = event.getPeopleInvited().size()-1; i > -1; i--) {
+				Employee employee = event.getPeopleInvited().get(i);
+				employee.removeEvent(event, false);
+			}
 		}
-		
-		for (int i = event.getPeopleGoing().size(); i < -1; i--) {			
-			Employee employee = event.getPeopleGoing().get(i);
-			employee.removeEvent(event, false);
+		if (event.getPeopleGoing().size()>0){
+			for (int i = event.getPeopleGoing().size()-1; i > -1; i--) {
+				Employee employee = event.getPeopleGoing().get(i);
+				employee.removeEvent(event, false);
+			}
 		}
 		
 		if (event.getRoom()!= null){
@@ -223,7 +226,20 @@ public class Employee {
 		}
 		return true;
 	}
-
+	
+	// Dette fjerner employeens deltakelse paa eventen. 
+		private void removeEvent(Event event, Boolean isOnDemandFromParticipant){
+			upcomingEvents.remove(event);	// fjernes hvis event ligger der
+			eventsAttending.remove(event);	// fjernes hvis event ligger der
+			if(isOnDemandFromParticipant){
+				Message msg = new Message(this, event.getCreator(), "Endringen av eventen har gjort at jeg dessverre ikke kan delta", "Varsel om at jeg ikke kan delta");
+				msg.sendMessage();	
+				declinedEvents.add(event);		//la til dette. Haaper ikke noe føkkes opp...
+				Collections.sort(declinedEvents);
+				event.getPeopleDeclined().add(this);
+			}
+		}
+		
 	public void reactOnUpdate(Event event, String attribute, String oldField){
 		System.out.println("Det har skjedd en endring av ");
 		System.out.println(attribute + " i eventen " + event.toString());
@@ -283,23 +299,7 @@ public class Employee {
 	public List<Message> getInbox() {
 		return inbox;
 	}
-	
-	// Dette fjerner employeens deltakelse paa eventen. 
-	private void removeEvent(Event event, Boolean isOnDemandFromParticipant){
-		if (upcomingEvents.contains(event)){
-			upcomingEvents.remove(event);
-		} 
-		if (eventsAttending.contains(event)){
-			eventsAttending.remove(event);
-		}
-		if(isOnDemandFromParticipant){
-			event.removeEmployee(this);
-		}
-		declinedEvents.add(event);		//la til dette. Haaper ikke noe føkkes opp...
-		Collections.sort(declinedEvents);
-		event.getPeopleDeclined().add(this);
-	}
-		
+			
 	public boolean inviteEmployeeToEvent(Employee employee, Event event){
 		if (event.getCreator() != this){
 			return false;
