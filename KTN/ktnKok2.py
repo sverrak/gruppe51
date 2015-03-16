@@ -122,7 +122,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
             users.remove(self.username)
             self.logged_in = False
             self.send({'response': 'logout ', 'nick': self.username})
-            self.broadcast(self.timestamp + "\t@" + self.username + " has left the chat.")
+            self.broadcast(self.timestamp() + "\t@" + self.username + " has left the chat.")
         except ValueError:
             send({'response': 'logout', 'error':'Not logged in!', 'nick': self.username})
      
@@ -148,7 +148,7 @@ class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
 if __name__ == "__main__":
     # Definer host og port for serveren
     HOST = '78.91.50.242'
-    PORT = 9974
+    PORT = 9955
     
 
     # Set up and initiate the TCP server

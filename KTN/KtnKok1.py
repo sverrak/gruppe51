@@ -51,7 +51,7 @@ class Client(object):
     def start(self, host, port):
         self.__init__()
 
-        inInfo="78.91.50.242:9973"
+        inInfo="78.91.50.242:9955"
         if inInfo:
             host=inInfo.split(":")[0]
             port=int(inInfo.split(":")[1])
@@ -111,13 +111,14 @@ class Client(object):
         while True:
             
             data = raw_input()
-            command = data.split(" ")
+            command = data
+            command = command.split(" ")[0]
             if command:
-                if command[0] in self.commands:
-                    self.commands[command[0]]()
-                continue
+                if command in self.commands:
+                    self.commands[command]()
+                    continue
 
-            if data.split(" ")[0] == "msg":
+            if command == "msg":
                 self.send(self.parse({"request":"message", "message":data[3:]}))
 
 class Colors():
