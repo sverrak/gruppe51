@@ -12,6 +12,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Collection;
@@ -25,7 +26,7 @@ public class ConnectionToDatabase {
 	  private List<Room> rooms = new ArrayList<Room>();
 	
 
-	
+	// Denne metoden brukes i initialiseringen for å hente ut og sjekke om brukeren eksisterer i databasen
 	public List<Employee> SporringEmployees(Connection con, String sporring) throws SQLException{
 		
 		Statement stmt = null;
@@ -39,6 +40,7 @@ public class ConnectionToDatabase {
 		
 	}
 	
+	// Hjelpemetode for SporringEmployees
 	public void InitFetchEmployees (ArrayList<ResultSetMetaData> metaData1, ArrayList<ResultSet> resultData) throws SQLException{
 		
 		int counter = 0;
@@ -88,6 +90,7 @@ public class ConnectionToDatabase {
 		}
 	}
 	
+	// Oppdaterer databasen når 
 	public void updateEmployeeTelnum(Connection con, String sql, int telnum, Employee e) throws SQLException{
 		
 		PreparedStatement preparedStatement = null;
