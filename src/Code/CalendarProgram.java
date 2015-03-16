@@ -76,9 +76,9 @@ public class CalendarProgram {
 		System.out.println("Beskrivelse: ");
 		description = user_input.nextLine();
 
-		System.out.println("Starttidspunkt[16/03/2015 12:00:00]: ");
+		System.out.println("Starttidspunkt, f.eks.: 16/03/2015 12:00:00: ");
 		String startTimeString = user_input.nextLine();			// formatet p� disse m� vi ha orden p�
-		System.out.println("Sluttidspunkt[16/03/2015 12:00:00]: ");
+		System.out.println("Sluttidspunkt f.eks.: 16/03/2015 12:00:00: ");
 		String endTimeString = user_input.nextLine();
 		System.out.println("Kapasitet: ");
 		int capacity = Integer.parseInt(user_input.nextLine());
@@ -119,7 +119,7 @@ public class CalendarProgram {
 		}
 		
 		//bruker velger rom
-		System.out.println("Skriv nummer på rommet du vil ha");
+		System.out.println("Skriv nummer paa rommet du vil ha");
 		if (user_input.nextLine().equals("")){
 			
 			newEvent.setRoom(null);
@@ -138,7 +138,7 @@ public class CalendarProgram {
 			System.out.println("" + i + ": " + availableEmployees.get(i));
 		}
 		
-		System.out.println("Hvem vil du invitere til dette arrangementet[tom streng for å avslutte]?");
+		System.out.println("Hvem vil du invitere til dette arrangementet[tom streng for aa avslutte]?");
 		String input = user_input.nextLine();
 		
 		int counter = 1;
@@ -150,7 +150,7 @@ public class CalendarProgram {
 			}
 			/*newEvent.addEmployee(availableEmployees.get(Integer.parseInt(input)));
 			availableEmployees.get(Integer.parseInt(input)).addEvent(newEvent);*/
-			System.out.println("Noen flere[tom streng for å avslutte]?");
+			System.out.println("Noen flere[tom streng for aa avslutte]?");
 			input = user_input.nextLine();
 		}
 		
@@ -256,7 +256,7 @@ public class CalendarProgram {
 			}
 			
 			if(current_user == null){
-				System.out.println("Feil brukernavn/passord. Prøv igjen");
+				System.out.println("Feil brukernavn/passord. Proev igjen");
 			} 
 		}
 		return current_user;
@@ -270,7 +270,7 @@ public class CalendarProgram {
 		int employeeID = employees.get(employees.size()-1).getEmployeeID() + 1;
 		username = "";
 		while(username == null || username.equals("")){
-			System.out.println("Ønsket brukernavn: ");
+			System.out.println("Oensket brukernavn: ");
 			username = user_input.nextLine();
 			if(employees.size() > 0){
 				for (Employee emp : employees) {
@@ -283,7 +283,7 @@ public class CalendarProgram {
 			}
 		}
 		
-		System.out.println("Ønsket passord:");
+		System.out.println("Oensket passord:");
 		password = user_input.nextLine();
 		
 		System.out.println("Ditt navn:");
@@ -302,7 +302,7 @@ public class CalendarProgram {
 		
 		ctd.NewEmployee(con, employee);
 		
-		System.out.println("Du er nå lagt til i databasen");
+		System.out.println("Du er naa lagt til i databasen");
 	}
 	
 		
@@ -318,12 +318,12 @@ public class CalendarProgram {
 	
 	private void run() throws SQLException {
 		current_user = login();
-		System.out.println("\nDu er nå logget inn. Skriv quit for å logge ut");
+		System.out.println("\nDu er naa logget inn. Skriv quit for aa logge ut");
 		System.out.println("Hei, " + current_user.getName() + "!");
 		
 		System.out.println("Du har " + current_user.countUnreadMessages() + " uleste meldinger i innboksen din\n");
 		while(current_user != null){
-			System.out.println("Hva vil du gjøre?");
+			System.out.println("Hva vil du gjoere?");
 			if(current_user.isAdmin() == true){
 				System.out.println("1: Se alle upcoming events[goingTo] | 2: Legg til ny event | 3: Apne innboks | 4: Administrer dine events | 5: Administrer brukere | 9: quit");				
 			} 
@@ -350,7 +350,7 @@ public class CalendarProgram {
 						
 						current_user.printWeeklySchedule(weekOfYear, year);
 						
-						System.out.println("\nDu har nå folgende valg:");
+						System.out.println("\nDu har naa folgende valg:");
 						System.out.println("f: forrige uke | n: neste uke | q: tilbake til hovedmeny");
 						firstOptionChoice = user_input.nextLine();
 						
@@ -400,10 +400,10 @@ public class CalendarProgram {
 					if(current_user.getInbox().size() > 0){
 						current_user.printInbox();
 						while(option != -1){
-							System.out.println("Hvilken melding vil du åpne?");
+							System.out.println("Hvilken melding vil du aapne?");
 							option = Integer.parseInt(user_input.nextLine());
 							System.out.println(current_user.getInbox().get(option).toString());
-							System.out.println("\nVil du åpne flere meldinger?");
+							System.out.println("\nVil du aapne flere meldinger?");
 							current_user.printInbox();						
 						}
 					
@@ -433,7 +433,7 @@ public class CalendarProgram {
 								System.out.println("1: se peopleGoing, peopleDeclined og peopleInvited | 2: endre event)");
 								secondOptionChoice = user_input.nextLine();
 								if(secondOptionChoice.equals("1")){
-									System.out.println("Du ser nå på " + events.get(Integer.parseInt(firstOptionChoice)) + ".");
+									System.out.println("Du ser naa paa " + events.get(Integer.parseInt(firstOptionChoice)) + ".");
 									System.out.println("Dette arrangementet har folgende deltakerstatus: ");
 									System.out.println("peopleInvited: " + events.get(Integer.parseInt(firstOptionChoice)).getPeopleInvited());
 									System.out.println("peopleGoing: " + events.get(Integer.parseInt(firstOptionChoice)).getPeopleGoing());
@@ -474,7 +474,7 @@ public class CalendarProgram {
 						System.out.println("1. Administrer bruker | 2. Legg til ny bruker | 3. Tilbake til hovedmeny");
 						choice = Integer.parseInt(user_input.nextLine());
 						if(choice == 1){	
-							System.out.println("Skriv inn brukernavn til brukeren du �nsker � endre:");
+							System.out.println("Skriv inn brukernavn til brukeren du oensker aa endre:");
 							String userName = (user_input.nextLine());
 							if(ctd.checkUserName(con, userName) == true){
 								Employee tempEmployee = null;
@@ -528,7 +528,7 @@ public class CalendarProgram {
 									}
 									else if (brukerChoice == 4){
 										
-										System.out.println("\nSikker p� at du vil slette: '" + tempEmployee.getName() + "', fra databasen?");
+										System.out.println("\nSikker paa at du vil slette: '" + tempEmployee.getName() + "', fra databasen?");
 										if (user_input.nextLine().equalsIgnoreCase("ja")){
 											String sql = "DELETE FROM Employee WHERE username = ?";
 											ctd.deleteUser(con, sql, tempEmployee);

@@ -49,7 +49,7 @@ public class Event implements Comparable<Event>{
 	public void setTitle(String title) {
 		String oldTitle = this.title;
 		this.title = title;
-		if(this.title != null){
+		if(oldTitle != null){
 			fireChange("title", oldTitle);
 		}
 	}
@@ -102,7 +102,7 @@ public class Event implements Comparable<Event>{
 
 	public void setDescription(String description) {
 		// Bare for at man ikke skal vaere helt dust og sette dritlang description
-		if(description.length() < 255){
+		if(description.length() > 255){
 			System.out.println("Error. Beskrivelsen er for lang");
 			return;
 		}
@@ -145,8 +145,10 @@ public class Event implements Comparable<Event>{
 	}
 	
 	public void fireChange(String attribute, String oldField){
-		for (Employee employee : peopleInvited) {
-			employee.reactOnUpdate(this, attribute, oldField);
+		if (! (peopleInvited.size() == 0)){
+			for (Employee employee : peopleInvited) {
+				employee.reactOnUpdate(this, attribute, oldField);
+			}
 		}
 	}
 	
