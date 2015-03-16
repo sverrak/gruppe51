@@ -59,7 +59,8 @@ public class Message {
 	@Override
 	public String toString() {
 		this.read = true;
-		String str = "FROM: " +  this.sender + "\n";
+		String str = timestamp + "\n";
+		str += "FROM: " +  this.sender + "\n";
 		str += "TO: " + this.receiver + "\n";
 		str += "SUBJECT: " + this.subject + "\n";
 		str += "CONTENT:" + this.content + "\n";

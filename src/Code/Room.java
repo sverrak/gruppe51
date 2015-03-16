@@ -54,7 +54,7 @@ public class Room {
 			roomSchedule.add(event);
 			Collections.sort(roomSchedule);
 		//	System.out.println(event.getTitle() + ", was added to: " + this.getName());
-			//Hvordan sortere roomSchedule på en hensiktsmessig måte?
+			//Hvordan sortere roomSchedule på en hensiktsmessig maate?
 			//roomSchedule.sort(c);
 			return true;
 		}
@@ -68,7 +68,7 @@ public class Room {
 		}
 		return false;
 	}
-	
+/*	
 	public Boolean isAvailable(Date startTime, Date endTime){
 		
 		if(this.roomSchedule.size() == 0){
@@ -88,6 +88,24 @@ public class Room {
 			}
 		}
 		return false;	
+	}
+	*/
+	//bruker samme isAvailable som i Employee-klassen da denne ser ut til � fungere
+	public boolean isAvailable(Date startTime, Date endTime){
+		if(this.roomSchedule.size() == 0){
+			return true;
+		} else if(roomSchedule.get(0).getStartTime().compareTo(endTime) > 0){
+			return true;
+		} 		
+		for (int i = 0; i < roomSchedule.size()-1; i++) {
+			if(roomSchedule.get(i).getEndTime().compareTo(startTime) < 0 && endTime.compareTo(roomSchedule.get(i+1).getStartTime()) < 0){ // fortegn her virker galt. Motsatt tegn f�r hele dritten til � henge, men det skyldes kanskje feil i compareTo
+				return true;
+			}
+		}
+		if (roomSchedule.get(roomSchedule.size()-1).getEndTime().compareTo(startTime) < 0){
+			return true;
+		}
+		return false;
 	}
 	
 	@Override

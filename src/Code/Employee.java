@@ -167,7 +167,7 @@ public class Employee {
 		eventsAttending.add(event);
 		Collections.sort(eventsAttending);
 		upcomingEvents.remove(event);
-		Message msg = new Message(this, event.getCreator(),"I accept your invitation to event " + event, "Invitation Accept");
+		Message msg = new Message(this, event.getCreator(),"I accept your invitation to event " + event.getTitle(), "Invitation Accept");
 		msg.sendMessage();
 		return true;
 	}
@@ -178,7 +178,7 @@ public class Employee {
 			event.getPeopleDeclined().add(this);
 			event.getPeopleInvited().remove(this);
 			upcomingEvents.remove(event);
-			Message msg = new Message(this, event.getCreator(),"I decline your invitation to event " + event, "Invitation Decline");
+			Message msg = new Message(this, event.getCreator(),"I decline your invitation to event " + event.getTitle(), "Invitation Decline");
 			msg.sendMessage();
 			return true;
 		}
@@ -186,14 +186,11 @@ public class Employee {
 	}
 // returnerer true hvis employee-objektet er tilgjengelig i tidsrommet
 	public boolean isAvailable(Date startTime, Date endTime){
-		if(this.eventsAttending.size() == 0){		// kommer ikke inn her :(
+		if(this.eventsAttending.size() == 0){
 			return true;
 		} else if(eventsAttending.get(0).getStartTime().compareTo(endTime) > 0){
 			return true;
-		} else if (eventsAttending.get(eventsAttending.size()-1).getEndTime().compareTo(startTime) < 0){
-			return true;
-		}
-		
+		} 		
 		for (int i = 0; i < eventsAttending.size()-1; i++) {
 			if(eventsAttending.get(i).getEndTime().compareTo(startTime) < 0 && endTime.compareTo(eventsAttending.get(i+1).getStartTime()) < 0){ // fortegn her virker galt. Motsatt tegn f�r hele dritten til � henge, men det skyldes kanskje feil i compareTo
 				return true;

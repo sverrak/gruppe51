@@ -174,10 +174,10 @@ public class CalendarProgram {
 	
 	public static void main(String[] args) throws SQLException {
 		CalendarProgram cp = new CalendarProgram();
-		cp.initialize();
-		cp.run();
-	//	cp.init2();
-	//	cp.run2();
+	//	cp.initialize();
+	//	cp.run();
+		cp.init2();
+		cp.run2();
 	}
 	
 	public static void connection(){
@@ -628,6 +628,8 @@ public class CalendarProgram {
 		System.out.println("Going to bursdag: " + birthday.getPeopleGoing());
 		
 		biti.inviteEmployeeToEvent(sverre, birthdayAgain);
+		
+		System.out.println(sverre.getInbox().get(0));
 		
 	/*	
 		System.out.println(birthdayAgain.getPeopleGoing() + "" + birthdayAgain.getPeopleInvited());
