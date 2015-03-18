@@ -1,6 +1,7 @@
 package Code;
 
 import java.util.Date;
+import java.sql.Timestamp;
 
 
 public class Message {
@@ -10,9 +11,9 @@ public class Message {
 	private Boolean read;
 	private String content;
 	private String subject;
-	private final Date timestamp;
+	private final java.sql.Timestamp timestamp;
 	
-	public Message(Employee sender, Employee receiver,
+	public Message(Employee sender, Employee receiver, java.sql.Timestamp dateTime,
 			String content, String subject) {
 		super();
 		this.sender = sender;
@@ -20,10 +21,24 @@ public class Message {
 		this.read = false;
 		this.content = content;
 		this.subject = subject;
-		this.timestamp = new Date();
+		this.timestamp = dateTime;
+
 	}
 	
-	public Date getTimeStamp(){
+	public Message(Employee sender, Employee receiver, String content, String subject){
+		super();
+		this.sender = sender;
+		this.receiver = receiver;
+		this.read = false;
+		this.content = content;
+		this.subject = subject;
+		
+		java.util.Date date = new java.util.Date();
+		this.timestamp = new java.sql.Timestamp(date.getTime());
+		
+	}
+	
+	public Timestamp getTimeStamp(){
 		return timestamp;
 	}
 	

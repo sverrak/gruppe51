@@ -53,9 +53,6 @@ public class Room {
 		if (isAvailable(event.getStartTime(), event.getEndTime())){
 			roomSchedule.add(event);
 			Collections.sort(roomSchedule);
-		//	System.out.println(event.getTitle() + ", was added to: " + this.getName());
-			//Hvordan sortere roomSchedule på en hensiktsmessig maate?
-			//roomSchedule.sort(c);
 			return true;
 		}
 		return false;	
