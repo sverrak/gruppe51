@@ -392,7 +392,7 @@ public class ConnectionToDatabase {
 		String sql = "INSERT INTO Gruppe (gruppeID, navn, ansvarlig, beskrivelse)" + "VALUES (?, ?, ?, ?)";
 		preparedStatement = con.prepareStatement(sql);
 		preparedStatement.setInt(1, g.getGroupID()); 
-		preparedStatement.setString(2, g.getGroupName());
+		preparedStatement.setString(2, g.getName());
 		preparedStatement.setInt(3, g.getResponsible().getEmployeeID());
 		preparedStatement.setString(4, g.getDescription());
 
@@ -567,7 +567,7 @@ public class ConnectionToDatabase {
 				          if (i==5){
 				        	  description = columnValue;
 				          }
-				          if (i==6){  //hvordan f� inn en Employee her?
+				          if (i==6){  //hvordan faa inn en Employee her?
 				        	  for (i = 0; i < employees.size(); i++){
 				        		
 				        		  if (employees.get(i).getName().equalsIgnoreCase(columnValue)) {

@@ -3,10 +3,6 @@ package Code;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -61,6 +57,21 @@ public class CalendarProgram {
 		return availableRooms;
 	}
 
+	public static boolean isInteger(String s) {
+	    return isInteger(s,10);
+	}
+	public static boolean isInteger(String s, int radix) {
+	    if(s.isEmpty()) return false;
+	    for(int i = 0; i < s.length(); i++) {
+	        if(i == 0 && s.charAt(i) == '-') {
+	            if(s.length() == 1) return false;
+	            else continue;
+	        }
+	        if(Character.digit(s.charAt(i),radix) < 0) return false;
+	    }
+	    return true;
+	}
+	
 	public Event getEventInput(Employee employee) throws SQLException{
 		//initalisering
 		System.out.println("");
@@ -151,9 +162,10 @@ public class CalendarProgram {
 		List<Employee> peopleInvited = new ArrayList<Employee>();
 		
 		int counter = 1;
-		while(((! input.equals("")) && counter < newEvent.getRoom().getCapacity()) || (! input.equals("")) && ! newEvent.getPlace().isEmpty()){
+		
+		while(isInteger(input,10) && (counter < newEvent.getRoom().getCapacity() || ! newEvent.getPlace().isEmpty())){
 			if(current_user.inviteEmployeeToEvent(availableEmployees.get(Integer.parseInt(input)), newEvent)){
-				peopleInvited.add(availableEmployees.get(Integer.parseInt(input)));
+				peopleInvited.add(availableEmployees.get(Integer.parseInt(input)));			// blir galt hvis bruker skriver inn noe annet enn int
 				ctd.WriteMessageToDatabase(con, availableEmployees.get(Integer.parseInt(input)));
 				
 				counter += 1;
