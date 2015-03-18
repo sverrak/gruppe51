@@ -1,17 +1,13 @@
 package Code;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Calendar;
-import java.util.TimeZone;
 
 public class Employee {
 	private Boolean admin; // la til adminobjekt
@@ -206,14 +202,17 @@ public class Employee {
 		}
 		informAboutCancellation(event, reason);
 		
-		for (int i = event.getPeopleInvited().size(); i < -1; i--) {			
-			Employee employee = event.getPeopleInvited().get(i);
-			employee.removeEvent(event, false);
+		if (event.getPeopleInvited().size()>0){
+			for (int i = event.getPeopleInvited().size()-1; i > -1; i--) {
+				Employee employee = event.getPeopleInvited().get(i);
+				employee.removeEvent(event, false);
+			}
 		}
-		
-		for (int i = event.getPeopleGoing().size(); i < -1; i--) {			
-			Employee employee = event.getPeopleGoing().get(i);
-			employee.removeEvent(event, false);
+		if (event.getPeopleGoing().size()>0){
+			for (int i = event.getPeopleGoing().size()-1; i > -1; i--) {
+				Employee employee = event.getPeopleGoing().get(i);
+				employee.removeEvent(event, false);
+			}
 		}
 		
 		if (event.getRoom()!= null){
@@ -221,7 +220,20 @@ public class Employee {
 		}
 		return true;
 	}
-
+	
+	// Dette fjerner employeens deltakelse paa eventen. 
+		private void removeEvent(Event event, Boolean isOnDemandFromParticipant){
+			upcomingEvents.remove(event);	// fjernes hvis event ligger der
+			eventsAttending.remove(event);	// fjernes hvis event ligger der
+			if(isOnDemandFromParticipant){
+				Message msg = new Message(this, event.getCreator(), "Endringen av eventen har gjort at jeg dessverre ikke kan delta", "Varsel om at jeg ikke kan delta");
+				msg.sendMessage();	
+				declinedEvents.add(event);		//la til dette. Haaper ikke noe føkkes opp...
+				Collections.sort(declinedEvents);
+				event.getPeopleDeclined().add(this);
+			}
+		}
+		
 	public void reactOnUpdate(Event event, String attribute, String oldField){
 		System.out.println("Det har skjedd en endring av ");
 		System.out.println(attribute + " i eventen " + event.toString());
@@ -282,23 +294,7 @@ public class Employee {
 	public List<Message> getInbox() {
 		return inbox;
 	}
-	
-	// Dette fjerner employeens deltakelse paa eventen. 
-	private void removeEvent(Event event, Boolean isOnDemandFromParticipant){
-		if (upcomingEvents.contains(event)){
-			upcomingEvents.remove(event);
-		} 
-		if (eventsAttending.contains(event)){
-			eventsAttending.remove(event);
-		}
-		if(isOnDemandFromParticipant){
-			event.removeEmployee(this);
-		}
-		declinedEvents.add(event);		//la til dette. Haaper ikke noe føkkes opp...
-		Collections.sort(declinedEvents);
-		event.getPeopleDeclined().add(this);
-	}
-		
+			
 	public boolean inviteEmployeeToEvent(Employee employee, Event event){
 		if (event.getCreator() != this){
 			return false;
@@ -348,7 +344,7 @@ public class Employee {
 	}
 	
 	// oppretter "tom" matrise for ukeplan. Alle felter er 0
-	private ArrayList<ArrayList<String>> generateEmptySchedule(){
+	public static ArrayList<ArrayList<String>> generateEmptySchedule(){
 		ArrayList<ArrayList<String>> matrix= new ArrayList<ArrayList<String>>();
 		for (int row = 0; row < 32; row++) {
 			matrix.add(new ArrayList<String>());
@@ -442,7 +438,7 @@ public class Employee {
 	
 	//skal gi en visning i konsollen av innevaerende ukes plan soen-loer
 	//mangler aa vise declined events som ikke er hidden!
-		public void printWeeklySchedule(int weekOfYear, int year){
+	public void printWeeklySchedule(int weekOfYear, int year){
 			ArrayList<ArrayList<String>> schedule = generateWeeklySchedule(weekOfYear, year);	
 			
 			String str = "|08:00|----------SØNDAG------------+-----------MANDAG-----------+-----------TIRSDAG----------+----------ONSDAG------------+-------------TORSDAG--------+-----------FREDAG-----------+-----------LØRDAG-----------+\n";
@@ -492,10 +488,8 @@ public class Employee {
 					str += "0";
 				}
 				if ( row % 2 == 0){
-			//		str += (8 + row/2) + ":00";		//gammel implementasjon. ble feil
 					str += ((8 + row/2) + ":30");
 					} else{
-			//			str += ((8 + row/2) + ":30");	//gammel implementasjon. ble feil
 						str += (9 + row/2) + ":00";
 						}
 				
@@ -564,6 +558,51 @@ public class Employee {
 	public void showDeclinedEvent(Event event){
 		if (hiddenEvents.contains(event)){
 			hiddenEvents.remove(event);
+		}
+	}
+	
+	public Group createGroup(String groupName, String description) {
+		return new Group(groupName, description, this);
+	}
+	public void addEmployeeToGroup(Employee employee, Group group){
+		if (group.getResponsible() == this){
+			group.getParticipants().add(employee);
+		}else{
+			System.out.println("you are not authorized to administer participants og group: " + group.getName());
+		}
+	}
+	public void removeEmployeeFromGroup(Employee employee, Group group){
+		if (group.getResponsible() == this){
+			group.getParticipants().remove(employee);
+		}else{
+			System.out.println("you are not authorized to administer participants og group: " + group.getName());
+		}
+	}
+	public Event createGroupEvent(String title, Date startTime, Date endTime, String description, Group group){
+		if (eventsAttending.size() == 0 || isAvailable(startTime, endTime)){
+			Event event = new Event(title, startTime, endTime, description, this);
+			eventsAttending.add(event);
+			event.getPeopleGoing().add(this);
+			Collections.sort(eventsAttending);
+			group.getUpcomingEvents().add(event);
+			Collections.sort(group.getUpcomingEvents());
+			for (Employee employee : group.getParticipants()){
+				employee.getUpcomingEvents().add(event);
+				Collections.sort(employee.getUpcomingEvents());
+			}
+			return event;
+		}else{
+			System.out.println("Du er opptatt paa tidspunktet. " + title + " ble ikke opprettet.");
+			return null;
+		}
+	}
+	
+	public void printGroupSchedule(Group group, int weekOfYear, int year){
+		if (! group.getParticipants().contains(this)){
+			System.out.println("You are not in this group!");
+			return;
+		}else{
+			group.printWeeklySchedule(weekOfYear, year);
 		}
 	}
 }

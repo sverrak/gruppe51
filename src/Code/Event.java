@@ -170,7 +170,9 @@ public class Event implements Comparable<Event>{
 		this.peopleInvited.add(employee);
 	}
 	
+	/* Vil fjerne denne fordi employee.removeEvent er fikset paa og alt boer vaere i orden uten denne 
 	// Dette er en hjelpemetode for employee.removeEvent() og Employee.cancelEvent() og boer ikke kalles andre steder enn der (da faar vi inkonsistens)
+	// boer den ikke egentlig ligge i Employee? Hvorfor ligger den her??
 	public boolean removeEmployee(Employee employee){
 		if (peopleInvited.contains(employee)){
 			Message msg = new Message(employee, this.creator, "Endringen av eventen har gjort at jeg dessverre ikke kan delta", "Varsel om at jeg ikke kan delta");
@@ -179,7 +181,7 @@ public class Event implements Comparable<Event>{
 		}
 		return false;
 	}
-	
+	*/
 	@Override
 	public String toString() {
 		String str = this.title + " har foelgende deltakere " + peopleGoing + peopleInvited + "og avholdes kl: " + this.getHour() + ":";

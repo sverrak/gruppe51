@@ -637,19 +637,19 @@ public class CalendarProgram {
 		addEmployee(sverre);
 		addEmployee(yolo); 
 		
-		Event birthday = biti.createEvent("Bursdag", dato1, dato2, "halla paarae");
-		Event birthdayAgain = biti.createEvent("Bursdag igjen", dato3, dato4, "halla paasan");
+	//	Event birthday = biti.createEvent("Bursdag", dato1, dato2, "halla paarae");
+	//	Event birthdayAgain = biti.createEvent("Bursdag igjen", dato3, dato4, "halla paasan");
 		
 		/*
 		Event party = biti.createEvent("party", dato5, dato6, "kom paa party!");
 		Event party2 = biti.createEvent("partyOnSameDay", dato7, dato8, "kom paa party!");	//disse to skal kollidere. Ber ikke om feilmelding
 		*/
-		/*
+		
 		Event sverresEvent = sverre.createEvent("sverresEvent", dato1, dato2, "eventet til sverre som kolliderer med bursdag");
 		sverre.inviteEmployeeToEvent(biti, sverresEvent);
 		System.out.println("Bendiks events: " + "\n- Events invited to: " + biti.getUpcomingEvents() + "\n- Events attending: " + biti.getEventsAttending());
-		*/
 		
+		/*
 		System.out.println(birthday.getPeopleInvited());
 		biti.inviteEmployeeToEvent(sverre, birthday);
 		System.out.println("Invitasjon gitt: " + birthday.getPeopleInvited());
@@ -663,15 +663,25 @@ public class CalendarProgram {
 		
 		System.out.println(sverre.getInbox().get(0));
 		
-	/*	
+		
 		System.out.println(birthdayAgain.getPeopleGoing() + "" + birthdayAgain.getPeopleInvited());
-		biti.cancelEvent(birthday, "Ingen ville komme :(");
 		System.out.println(biti.getUpcomingEvents());
 		
 		System.out.println();
 		System.out.println();
 		biti.printWeeklySchedule(12, 2015);
 		*/
+		/*
+		sverre.cancelEvent(sverresEvent, "dette er lame event uansett");
+		biti.cancelEvent(birthday, "vet ikike. Er spontan");
+		System.out.println("Bendiks events: " + "\n- Events invited to: " + biti.getUpcomingEvents() + "\n- Events attending: " + biti.getEventsAttending());
+		biti.printWeeklySchedule(12, 2015);
+		
+		System.out.println("Biti's declined events: " + biti.getDeclinedEvents());
+		*/
+		Group gruppe51 = biti.createGroup("gruppe51", "den kegeste gjengen");
+		biti.addEmployeeToGroup(sverre, gruppe51);
+		biti.createGroupEvent("Scrum meeting", dato1, dato2, "gaar gjennom ukas oppgaver", gruppe51);
+		biti.printGroupSchedule(gruppe51, 12, 2015);
 	}
-
 }
