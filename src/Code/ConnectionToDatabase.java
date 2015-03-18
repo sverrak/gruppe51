@@ -566,7 +566,7 @@ public class ConnectionToDatabase {
 				          if (i==5){
 				        	  description = columnValue;
 				          }
-				          if (i==6){  //hvordan f� inn en Employee her?
+				          if (i==6){  //hvordan faa inn en Employee her?
 				        	  for (i = 0; i < employees.size(); i++){
 				        		
 				        		  if (employees.get(i).getName().equalsIgnoreCase(columnValue)) {
