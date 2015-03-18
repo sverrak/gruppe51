@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.sql.Time;
@@ -169,6 +170,45 @@ public class ConnectionToDatabase {
 		
 	}
 	
+	public void getMessages(Connection con) throws SQLException{
+		Statement stmt = null;
+		stmt = con.createStatement();
+		
+		String sql = "SELECT * FROM Message";
+		ResultSet rs = stmt.executeQuery(sql);
+		
+		int messageID = 0;
+		String subject = "";
+		String content = "";
+		java.sql.Timestamp dateTime = null;
+		int senderID = -1;
+		int receiverID = -1;
+		List<Employee> emps = new ArrayList<Employee>();
+		emps = SporringEmployees(con, "SELECT * FROM Employee");
+		Employee sender = null;
+		Employee receiver = null;
+		
+		while(rs.next()){
+			subject = rs.getString("subject");
+			content = rs.getString("content");
+			dateTime = (rs.getTimestamp("timeStamp"));
+			senderID = rs.getInt("sender_ID");
+			receiverID = rs.getInt("receiver_ID");
+			for (Employee e : emps){
+				if (e.getEmployeeID() == senderID){
+					sender = e;
+				}
+				else if(e.getEmployeeID() == receiverID){
+					receiver = e;
+				}
+			}
+			
+			Message msg = new Message(sender, receiver, dateTime, subject, content);
+			receiver.addMessageToInbox(msg);
+		}
+
+	}
+	
 	public void fetchRooms(Connection con) throws SQLException{
 		Statement stmt = null;
 		stmt = con.createStatement();
@@ -270,24 +310,44 @@ public class ConnectionToDatabase {
 		  }
 		
 		return rooms;
-	}
+	} */
 	
+	private java.sql.Timestamp convertDateToDateTime(java.util.Date date) throws SQLException{
+		
+		int year = date.getYear();
+		int month = date.getMonth();
+		String dateTime = ("" + year + "-" + date.getMonth() + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + date.getMinutes() + ":" + date.getSeconds());
+		java.sql.Timestamp timeS = new Timestamp(year, month, date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds(), 0);
+		//YYYY-MM-DD HH:MI:SS
+		return timeS;
+	}
 
 	public void WriteEventToDatabase(Connection con, Event e) throws SQLException{
 		
 		PreparedStatement preparedStatement = null;
+		java.sql.Timestamp startT = convertDateToDateTime(e.getStartTime());
+		java.sql.Timestamp endT = convertDateToDateTime(e.getEndTime());
 		
-		String sql = "INSERT INTO Event (eventID, tittel, startTime, endTime, description, roomID)" + "VALUES (?, ?, ?, ?, ?, ?)";
+		
+		String sql = "INSERT INTO Event (eventID, title, startTime, endTime, eventDescription, roomID, creator_ID )" + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 		preparedStatement = con.prepareStatement(sql);
 
 		preparedStatement.setInt(1, e.getEventID());
 		preparedStatement.setString(2, e.getTitle());
-		preparedStatement.setTime(3, (Time) e.getStartTime());
-		preparedStatement.setTime(4, (Time) e.getEndTime());
+		preparedStatement.setTimestamp(3, startT);
+		preparedStatement.setTimestamp(4, endT);
 		preparedStatement.setString(5, e.getDescription()); 
-		preparedStatement.setInt(6, e.getRoom().getRoomID()); 
+		preparedStatement.setInt(6, e.getRoom().getRoomID()); 		
+		preparedStatement.setInt(7, e.getCreator().getEmployeeID()); 
+
 		
-		preparedStatement.executeUpdate(); //Her oppdateres databasen	
+		try{
+		preparedStatement.executeUpdate(); //Her oppdateres databasen
+		System.out.println("" + e.getTitle() + ", ble opprettet som et event i databasen\n");
+		}
+		catch(SQLException el){
+			el.printStackTrace();
+		}
 	}	
 	
 	public void WriteRoomToDatabase(Connection con, Room r) throws SQLException{
@@ -306,17 +366,18 @@ public class ConnectionToDatabase {
 		
 	}	
 	
-	public void WriteMessageToDatabase(Connection con, Message m) throws SQLException{
+	public void WriteMessageToDatabase(Connection con, Employee e) throws SQLException{
 		PreparedStatement preparedStatement = null;
+		Message m = e.getInbox().get(e.getInbox().size()-1);
 		
-		String sql = "INSERT INTO Message (messageID, subject, content, timeStamp, sender, receiver)" + "VALUES (?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO Message (messageID, subject, content, timeStamp, sender_ID, receiver_ID)" + "VALUES (?, ?, ?, ?, ?, ?)";
 		preparedStatement = con.prepareStatement(sql);
 		preparedStatement.setInt(1, m.getMessageID());
 		preparedStatement.setString(2, m.getSubject());
 		preparedStatement.setString(3, m.getContent());
-		preparedStatement.setString(3, m.getTimeStamp().toString());
-		preparedStatement.setInt(3, m.getSender().getEmployeeID());
-		preparedStatement.setInt(3, m.getReceiver().getEmployeeID());
+		preparedStatement.setTimestamp(4, m.getTimeStamp());
+		preparedStatement.setInt(5, m.getSender().getEmployeeID());
+		preparedStatement.setInt(6, m.getReceiver().getEmployeeID());
 		
 		
 		preparedStatement.executeUpdate(); //Her oppdateres databasen	
@@ -338,34 +399,39 @@ public class ConnectionToDatabase {
 
 	}
 	
-	public void WriteEventDeltakelseToDatabase(Connection con, Event ev, Employee emp) throws SQLException{
+	public void WriteEventDeltakelseToDatabase(Connection con, Event ev, List<Employee> emp) throws SQLException{
 		
-		PreparedStatement preparedStatement = null;
+		for(Employee e : emp){
 		
-		String sql = "INSERT INTO Eventdeltakelse (event_ID, employee_ID, status, isHidden)" + "VALUES (?, ?, ?, ?)";
-		preparedStatement = con.prepareStatement(sql);
-		preparedStatement.setInt(1, ev.getEventID()); 
-		preparedStatement.setInt(2, emp.getEmployeeID());
-		
-		//SetInt
-		if(emp.getEventsAttending().contains(ev)){
-			preparedStatement.setString(3, "a");
-		} else if(emp.getDeclinedEvents().contains(ev)){
-			preparedStatement.setString(3, "d");
-		} else{
-			preparedStatement.setString(3, "i");
+			PreparedStatement preparedStatement = null;
+			
+			String sql = "INSERT INTO Eventdeltakelse (event_ID, employee_ID, status, isHidden)" + "VALUES (?, ?, ?, ?)";
+			preparedStatement = con.prepareStatement(sql);
+			
+			preparedStatement.setInt(1, ev.getEventID()); 
+			preparedStatement.setInt(2, e.getEmployeeID());
+			
+			//SetInt
+			if(e.getEventsAttending().contains(ev)){
+				preparedStatement.setString(3, "a");
+			} else if(e.getDeclinedEvents().contains(ev)){
+				preparedStatement.setString(3, "d");
+			} else{
+				preparedStatement.setString(3, "i");
+			}
+			// Ikke implementert
+			preparedStatement.setString(4, "false");
+	
+			preparedStatement.executeUpdate(); //Her oppdateres databasen
+			
+			preparedStatement.close();
 		}
-		// Ikke implementert
-		preparedStatement.setString(4, "false");
-
-		preparedStatement.executeUpdate(); //Her oppdateres databasen
 	}
 	
 	//Ikke implementert.
 	public void WriteGruppeDeltakelseToDatabase(Connection con, Group g, Employee emp) throws SQLException{
 		
 	}
->>>>>>> 6f3c4df5b04c401608c4a2653d8097d112e20f3b
 	
 	public void WriteDatabaseToJava(ArrayList<ResultSetMetaData> metaData, ArrayList<ResultSet> resultData) throws SQLException{
 		
@@ -417,7 +483,7 @@ public class ConnectionToDatabase {
 			  String position = "";
 			  String username = "";
 			  int telnum = 0;
-			  Boolean isAdmin;
+			  Boolean isAdmin = false;
 			  
 			  while (resultData.get(counter).next()) {
 			        for (int i = 1; i <= numberOfColumns; i++) {
@@ -438,7 +504,7 @@ public class ConnectionToDatabase {
 			        	  isAdmin = Boolean.parseBoolean(columnValue);
 			          }
 			        }
-			        	Employee i = new Employee(name, password, position, username, telnum, isAdmin);//Maa sorge for at nyEmployee-stringen har samme format som inn-parameterene til new Employee
+			        	Employee i = new Employee(employeeID, name, password, position, username, telnum, isAdmin);//Maa sorge for at nyEmployee-stringen har samme format som inn-parameterene til new Employee
 			            employees.add(i);
 			      } 
 			  
@@ -449,7 +515,7 @@ public class ConnectionToDatabase {
 			  String name = "";
 			  int capacity = 0;
 			  String description = "";
-			  List<Event> roomSchedule = new ArrayList<Room>();
+			  List<Event> roomSchedule = new ArrayList<Event>();
 			  
 			  while (resultData.get(counter).next()) {
 				  for (int i = 1; i <= numberOfColumns; i++) {
@@ -464,7 +530,7 @@ public class ConnectionToDatabase {
 			          } else if (i==4){
 			        	  description = columnValue;
 			          } else if (i==5){ //Her m� roomSchedule ordnes?
-			        	  roomSchedule = columnValue;
+			   //     	  roomSchedule = columnValue;
 			          }
 				  }
 
@@ -501,25 +567,27 @@ public class ConnectionToDatabase {
 				        	  description = columnValue;
 				          }
 				          if (i==6){  //hvordan f� inn en Employee her?
-				        	  for (i = 0; i < employees.length(); i++){
+				        	  for (i = 0; i < employees.size(); i++){
 				        		
-				        		  if (employees.get(i).getName.equalsIgnoreCase(columnValue)) {
+				        		  if (employees.get(i).getName().equalsIgnoreCase(columnValue)) {
 				        			  
-						        	  creator = employees(i);
+						        	  creator = employees.get(i);
 				        			  
 				        		  }	  
 				        	  }
 				          }
 				  }
-			        Event addEvent = new Event(eventID, title, startTime, endTime, description, creator);   //Maa sorge for at nyttEvent-stringen har samme format som inn-parameterene til new Event       
+			        Event addEvent = new Event(title, startTime, endTime, description, creator);   //Maa sorge for at nyttEvent-stringen har samme format som inn-parameterene til new Event       
 			  } 
 			  
 		  }
 		  else if (decider == 4){ // for message, denne m� ses n�rmere p�
 			  
 			  int messageID = 0;
-			  String type = "";
+			  String subject = "";
 			  String content = "";
+			  String description = "";
+			  List<Event> roomSchedule = new ArrayList<Event>();
 			  
 			  while (resultData.get(counter).next()) {
 				  	for (int i = 1; i <= numberOfColumns; i++) {
@@ -528,19 +596,19 @@ public class ConnectionToDatabase {
 			        	  messageID = Integer.parseInt(columnValue);
 			          }
 			          if (i==2){
-			        	  type = columnValue;
+			        	  subject = columnValue;
 			          }
 			          if (i==3){
 			        	  content = (columnValue);
 			          }
 			          if (i==4){
-			        	  description = columnValue;
+			//        	  date = columnValue;
 			          }
 			          if (i==5){ //Her m� roomSchedule ordnes
-			        	  roomSchedule = columnValue;
+			  //      	  roomSchedule = columnValue;
 			          }
 				  }
-			        Message addMessage = new Message(sender, reciever, isRead, content, subject);   //Maa sorge for at formatet her er det samme som i konstruktoren til Group-klassen      
+			//        Message addMessage = new Message(sender, reciever, isRead, content, subject);   //Maa sorge for at formatet her er det samme som i konstruktoren til Group-klassen      
 			  } 
 			  
 		  }
@@ -564,11 +632,11 @@ public class ConnectionToDatabase {
 			        	  groupName = columnValue;
 			          }
 			          if (i==3){ // hvordan finne Employee som er responsible?
-			        	 for (i = 0; i <= employees.length(); i++){
+			        	 for (i = 0; i <= employees.size(); i++){
 			        		 
-			        		 if(employees.get(i).getName.EqualsIgnoreCase(columnValue)){
+			        		 if(employees.get(i).getName().equalsIgnoreCase(columnValue)){
 			        			 
-			        			 responsible = employees(i);
+			        			 responsible = employees.get(i);
 			        			 
 			        		 }
 			        	 }
@@ -581,13 +649,13 @@ public class ConnectionToDatabase {
 			          }
 				  }
 
-			        Group addGroup = new Group(groupID, description, responsible);   //Maa sorge for at nyGruppe-stringen har samme format som inn-parameterene til new Gruppe        
+			        Group addGroup = new Group(groupName, description, responsible);   //Maa sorge for at nyGruppe-stringen har samme format som inn-parameterene til new Gruppe        
 			  }  
 			  
 		  } 
 		      counter++;
 		}
-	} */
+	} 
 	
 	public java.util.Date convertDateTimeToDate(String dateTime) throws SQLException{
 		java.util.Date dateObject = new java.util.Date();

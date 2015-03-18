@@ -18,9 +18,11 @@ public class Event implements Comparable<Event>{
 	private String description;
 	private Room room;
 	private Employee creator;
+	private String place;
 	private List<Employee> peopleInvited;
 	private List<Employee> peopleGoing;
 	private List<Employee> peopleDeclined;
+	private List<Event> events;
 	
 	private static ArrayList<String> months = new ArrayList(Arrays.asList("jan","feb","mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"));
 	
@@ -39,11 +41,16 @@ public class Event implements Comparable<Event>{
 		this.peopleInvited = new ArrayList<Employee>();
 		this.peopleGoing = new ArrayList<Employee>();
 		this.peopleDeclined = new ArrayList<Employee>();
+		this.place = null;
 		
 	}
 		
 	public String getTitle() {
 		return title;
+	}
+	
+	public void setEventID(){
+		
 	}
 
 	public void setTitle(String title) {
@@ -98,6 +105,13 @@ public class Event implements Comparable<Event>{
 
 	public String getDescription() {
 		return description;
+	}
+	
+	public void SetPlace(String s){
+		this.place = s;
+	}
+	public String getPlace(){
+		return this.place;
 	}
 
 	public void setDescription(String description) {

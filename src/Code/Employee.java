@@ -23,6 +23,7 @@ public class Employee {
 	private int telnum;
 	private List<Message> inbox;
 	private List<Event> hiddenEvents;	// events skjult i kalendervisningen. De befinner seg også i declinedEvents
+	private ConnectionToDatabase ctd = new ConnectionToDatabase();
 	
 	// GreatestEmployeeID er String for at vi skal skille mellom de to konstruktÃ¸rene.
 	public Employee(String greatestEmployeeID, String name, String position, String username, 
@@ -125,21 +126,18 @@ public class Employee {
 // hva brukes den til?
 	public void addEvent(Event event){
 		event.getPeopleGoing().add(this);
-		if(eventsAttending != null){		// hva er dette godt for?
-			if(event.getCreator() != this){		// inni her skjer det jo ingenting
-				
-			}
+/*		if(eventsAttending != null){		// hva er dette godt for?
+
 			if (eventsAttending.size() == 0){
 				eventsAttending.add(event);
-			}else{
-				if(isAvailable(event.getStartTime(), event.getEndTime()))
+			}else{ */
+				if(isAvailable(event.getStartTime(), event.getEndTime())){
 					eventsAttending.add(event);	
 				}
-			}
-		}
+	}
 	
 	public Event createEvent(String title, Date startTime, Date endTime, String description){
-		if (eventsAttending.size() == 0 || isAvailable(startTime, endTime)){
+		if (eventsAttending.size() == 0 || this.isAvailable(startTime, endTime)){
 			Event event = new Event(title, startTime, endTime, description, this);
 			eventsAttending.add(event);
 			Collections.sort(eventsAttending);
@@ -284,9 +282,10 @@ public class Employee {
 	public void printInbox(){
 		for (int i = 0; i < inbox.size(); i++) {
 			if(inbox.get(i).isRead()){
-				System.out.println("[X]" + inbox.get(i).getSender() + ": " + inbox.get(i).getSubject());
+				System.out.println("[" + i + ". Opened]" + inbox.get(i).getSender() + ": " + inbox.get(i).getSubject());
 			} else{
-				System.out.println("[ ]" + inbox.get(i).getSender() + ": " + inbox.get(i).getSubject());
+				System.out.println("[" + i + ". Not opened]" + inbox.get(i).getSender() + ": " + inbox.get(i).getSubject());
+
 			}
 		}
 	}
@@ -299,14 +298,13 @@ public class Employee {
 	public boolean inviteEmployeeToEvent(Employee employee, Event event){
 		if (event.getCreator() != this){
 			return false;
-//		}else if(! employee.isAvailable(event.getStartTime(), event.getEndTime())){
-//			return false;
 		} else if(event.getPeopleDeclined().contains(employee) || event.getPeopleGoing().contains(employee) || event.getPeopleInvited().contains(employee)){
 			return false;
 		}
 		
-		Message msg = new Message(this, employee, "Jeg har invitert deg til eventen " + event, "Invitasjon til " + event.getTitle());
+		Message msg = new Message(this, employee, "Jeg har invitert deg til eventet: " + event.getTitle() + ", som begynner: " + event.getStartTime(), "Invitasjon til " + event.getTitle());
 		msg.sendMessage();
+
 //		employee.printInbox();
 		
 		// "hvis eventen er upcoming"-funksjonalitet mangler her. m.a.o. hvis eventets tidspunkt er passert, er invitasjonen uinteressant 
