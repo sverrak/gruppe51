@@ -1,17 +1,13 @@
 package Code;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Calendar;
-import java.util.TimeZone;
 
 public class Employee {
 	private Boolean admin; // la til adminobjekt
@@ -350,7 +346,7 @@ public class Employee {
 	}
 	
 	// oppretter "tom" matrise for ukeplan. Alle felter er 0
-	private ArrayList<ArrayList<String>> generateEmptySchedule(){
+	public static ArrayList<ArrayList<String>> generateEmptySchedule(){
 		ArrayList<ArrayList<String>> matrix= new ArrayList<ArrayList<String>>();
 		for (int row = 0; row < 32; row++) {
 			matrix.add(new ArrayList<String>());
@@ -444,7 +440,7 @@ public class Employee {
 	
 	//skal gi en visning i konsollen av innevaerende ukes plan soen-loer
 	//mangler aa vise declined events som ikke er hidden!
-		public void printWeeklySchedule(int weekOfYear, int year){
+	public void printWeeklySchedule(int weekOfYear, int year){
 			ArrayList<ArrayList<String>> schedule = generateWeeklySchedule(weekOfYear, year);	
 			
 			String str = "|08:00|----------SØNDAG------------+-----------MANDAG-----------+-----------TIRSDAG----------+----------ONSDAG------------+-------------TORSDAG--------+-----------FREDAG-----------+-----------LØRDAG-----------+\n";
@@ -494,10 +490,8 @@ public class Employee {
 					str += "0";
 				}
 				if ( row % 2 == 0){
-			//		str += (8 + row/2) + ":00";		//gammel implementasjon. ble feil
 					str += ((8 + row/2) + ":30");
 					} else{
-			//			str += ((8 + row/2) + ":30");	//gammel implementasjon. ble feil
 						str += (9 + row/2) + ":00";
 						}
 				
@@ -566,6 +560,51 @@ public class Employee {
 	public void showDeclinedEvent(Event event){
 		if (hiddenEvents.contains(event)){
 			hiddenEvents.remove(event);
+		}
+	}
+	
+	public Group createGroup(String groupName, String description) {
+		return new Group(groupName, description, this);
+	}
+	public void addEmployeeToGroup(Employee employee, Group group){
+		if (group.getResponsible() == this){
+			group.getParticipants().add(employee);
+		}else{
+			System.out.println("you are not authorized to administer participants og group: " + group.getName());
+		}
+	}
+	public void removeEmployeeFromGroup(Employee employee, Group group){
+		if (group.getResponsible() == this){
+			group.getParticipants().remove(employee);
+		}else{
+			System.out.println("you are not authorized to administer participants og group: " + group.getName());
+		}
+	}
+	public Event createGroupEvent(String title, Date startTime, Date endTime, String description, Group group){
+		if (eventsAttending.size() == 0 || isAvailable(startTime, endTime)){
+			Event event = new Event(title, startTime, endTime, description, this);
+			eventsAttending.add(event);
+			event.getPeopleGoing().add(this);
+			Collections.sort(eventsAttending);
+			group.getUpcomingEvents().add(event);
+			Collections.sort(group.getUpcomingEvents());
+			for (Employee employee : group.getParticipants()){
+				employee.getUpcomingEvents().add(event);
+				Collections.sort(employee.getUpcomingEvents());
+			}
+			return event;
+		}else{
+			System.out.println("Du er opptatt paa tidspunktet. " + title + " ble ikke opprettet.");
+			return null;
+		}
+	}
+	
+	public void printGroupSchedule(Group group, int weekOfYear, int year){
+		if (! group.getParticipants().contains(this)){
+			System.out.println("You are not in this group!");
+			return;
+		}else{
+			group.printWeeklySchedule(weekOfYear, year);
 		}
 	}
 }
