@@ -3,10 +3,6 @@ package Code;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -165,24 +161,23 @@ public class CalendarProgram {
 		List<Employee> peopleInvited = new ArrayList<Employee>();
 		
 		int counter = 1;
-		if (isInteger(input,10)){
-			while(counter < newEvent.getRoom().getCapacity() || ! newEvent.getPlace().isEmpty()){
-				if(current_user.inviteEmployeeToEvent(availableEmployees.get(Integer.parseInt(input)), newEvent)){
-					peopleInvited.add(availableEmployees.get(Integer.parseInt(input)));			// blir galt hvis bruker skriver inn noe annet enn int
-					ctd.WriteMessageToDatabase(con, availableEmployees.get(Integer.parseInt(input)));
-					
-					counter += 1;
-					if(counter == capacity){
-						System.out.println("Du har nŒ invitert ");
-					}
-				} else{
-					System.out.println("Personen er allerede invitert til dette arrangementet.");
+		
+		while(isInteger(input,10) && (counter < newEvent.getRoom().getCapacity() || ! newEvent.getPlace().isEmpty())){
+			if(current_user.inviteEmployeeToEvent(availableEmployees.get(Integer.parseInt(input)), newEvent)){
+				peopleInvited.add(availableEmployees.get(Integer.parseInt(input)));			// blir galt hvis bruker skriver inn noe annet enn int
+				ctd.WriteMessageToDatabase(con, availableEmployees.get(Integer.parseInt(input)));
+				
+				counter += 1;
+				if(counter == capacity){
+					System.out.println("Du har nŒ invitert ");
 				}
-				/*newEvent.addEmployee(availableEmployees.get(Integer.parseInt(input)));
-				availableEmployees.get(Integer.parseInt(input)).addEvent(newEvent);*/
-				System.out.println("Noen flere[tom streng for aa avslutte]?");
-				input = user_input.nextLine();
+			} else{
+				System.out.println("Personen er allerede invitert til dette arrangementet.");
 			}
+			/*newEvent.addEmployee(availableEmployees.get(Integer.parseInt(input)));
+			availableEmployees.get(Integer.parseInt(input)).addEvent(newEvent);*/
+			System.out.println("Noen flere[tom streng for aa avslutte]?");
+			input = user_input.nextLine();
 		}
 		
 		current_user.addEvent(newEvent);
