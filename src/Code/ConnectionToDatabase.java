@@ -26,9 +26,8 @@ public class ConnectionToDatabase {
 	  private List<Room> rooms = new ArrayList<Room>();
 	
 
-	// Denne metoden brukes i initialiseringen for Œ hente ut og sjekke om brukeren eksisterer i databasen
+	// Denne metoden brukes i initialiseringen for aa hente ut og sjekke om brukeren eksisterer i databasen
 	public List<Employee> SporringEmployees(Connection con, String sporring) throws SQLException{
-		
 		Statement stmt = null;
 		stmt = con.createStatement();
 		ResultSet employeeSet = stmt.executeQuery(sporring);
@@ -37,7 +36,6 @@ public class ConnectionToDatabase {
 		resultData.add(employeeSet);
 		InitFetchEmployees(metaData, resultData);
 		return employees;
-		
 	}
 	
 	// Hjelpemetode for SporringEmployees
@@ -127,8 +125,7 @@ public class ConnectionToDatabase {
 	}
 	// Ikke implementert
 	public Boolean checkUserName(Connection con, String s) throws SQLException{
-		
-		//Trenger en for-lï¿½kke som itererer gjennom alle eksisterende employees i selskapet og skriver de til databasen
+		//Trenger en for-lokke som itererer gjennom alle eksisterende employees i selskapet og skriver dem til databasen
 		//Hvis vedkommende allerede eksisterer,  ignorer oppdatering
 
 		Statement stmt = null;
@@ -140,7 +137,6 @@ public class ConnectionToDatabase {
 				return true;
 			}
 		}
-		
 		return false;	
 	}
 	
@@ -202,29 +198,17 @@ public class ConnectionToDatabase {
 		Statement stmt = null;
 		stmt = con.createStatement();
 
-		//	String sql = "SELECT R.name, R.roomDescription, R.capacity, R.roomID, E.title, E.startTime, E.endTime, E.roomID, E.eventDescription, E.creator_ID FROM Room AS R INNER JOIN Event AS E ON  R.roomID = E.roomID";
 		String sql1 = "SELECT * FROM Event";
 		ResultSet rs = stmt.executeQuery(sql1);
-		ResultSetMetaData rsmd = rs.getMetaData();
-		int numberOfCol = rsmd.getColumnCount();
 			
-
 	          java.util.Date startDato = new java.util.Date();
 	          java.util.Date endDato = new java.util.Date();
-	      //  String roomName = "";
-	      //  int roomCapacity = 0;
-	      //  String roomDescription = "";
 	          String eventDescription = "";
 	          int creatorID = 0;
 	          int roomID = 0;
 	          String title = "";
 	          Employee tempEmployee = null;
-	          int counter = 0;
 			      while (rs.next()) {
-			    	  	counter ++;
-				//    	  roomName = rs.getString("name");
-				//    	  roomDescription = rs.getString("eventDescription");
-				//    	  roomCapacity = rs.getInt("capacity");
 				    	  roomID = rs.getInt("roomID");
 				    	  title = rs.getString("title");
 				          startDato = convertDateTimeToDate(rs.getString("startTime"));
@@ -238,7 +222,6 @@ public class ConnectionToDatabase {
 					        	  }
 					          }
 	
-				//	          Room tempRoom = new Room(roomName, roomCapacity, roomDescription);
 					          Event tempEvent = new Event(title, startDato, endDato, eventDescription, tempEmployee);
 					          for (Room room : rooms){
 					        	  if(room.getRoomID() == roomID){
@@ -621,6 +604,8 @@ public class ConnectionToDatabase {
 		return dateObject;
 	}
 	
+	
+	// brukes ikke lenger - FW
 	public void PrintTables(ArrayList<ResultSetMetaData> metaData, ArrayList<ResultSet> resultData, String msg) throws SQLException{
 		
 		int counter = 0;
