@@ -36,6 +36,7 @@ public class CalendarProgram {
 	private Scanner user_input;
 	
 	private List<Event> events;
+	private ArrayList<Group> groups;
 	
 	public void addEmployee(Employee e){
 		employees.add(e);
@@ -123,7 +124,7 @@ public class CalendarProgram {
 			System.out.println("Vil du spesifisere et sted eventet skal avholdes?");
 			String response1 = user_input.nextLine();
 			if (response1.equalsIgnoreCase("ja")){
-				System.out.println("Skriv inn navn pŒ stedet du vil avholde eventet: ");
+				System.out.println("Skriv inn navn pï¿½ stedet du vil avholde eventet: ");
 				String sted = user_input.nextLine();
 				newEvent.SetPlace(sted);
 			}
@@ -157,7 +158,7 @@ public class CalendarProgram {
 				
 				counter += 1;
 				if(counter == capacity){
-					System.out.println("Du har nŒ invitert ");
+					System.out.println("Du har nï¿½ invitert ");
 				}
 			} else{
 				System.out.println("Personen er allerede invitert til dette arrangementet.");
@@ -203,7 +204,7 @@ public class CalendarProgram {
 		}
 	}
 	
-	private void initialize(){
+	private void initialize() throws SQLException{
 		ctd = new ConnectionToDatabase();
 		connection();
 		String host = "jdbc:mysql://mysql.stud.ntnu.no:3306/fredrwit_kalender";
@@ -233,9 +234,12 @@ public class CalendarProgram {
 		      }catch(SQLException se){
 		      }// do nothing */
 			current_user = null;
-			employees = new ArrayList<Employee>();
+			employees = (ArrayList<Employee>) ctd.SporringEmployees(con, "SELECT * FROM Employee");
 			events = new ArrayList<Event>();
 			rooms = new ArrayList<Room>();
+			
+			this.groups = (ArrayList<Group>) ctd.SporringGroups(con, "SELECT * FROM Gruppe");
+
 			try{
 				if(con == null){
 					con.close();					
@@ -530,7 +534,7 @@ public class CalendarProgram {
 												System.out.println("Oppdateringen var vellykket\n\n");
 											}
 											else{
-												System.out.println("\nIngen endringer ble utf¿rt\n");
+												System.out.println("\nIngen endringer ble utfï¿½rt\n");
 											}
 										}
 										else if (tempEmployee.isAdmin() == false){
@@ -543,7 +547,7 @@ public class CalendarProgram {
 												System.out.println("Oppdateringen var vellykket\n\n");				
 											}
 											else{
-												System.out.println("\nIngen endringer ble utf¿rt\n");
+												System.out.println("\nIngen endringer ble utfï¿½rt\n");
 											}
 										}
 									}

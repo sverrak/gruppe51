@@ -25,6 +25,7 @@ public class ConnectionToDatabase {
 	  private ArrayList<ResultSet> resultData = new ArrayList<ResultSet>();	
 	  private List<Employee> employees = new ArrayList<Employee>();
 	  private List<Room> rooms = new ArrayList<Room>();
+	  private List<Group> groups = new ArrayList<Group>();
 	
 
 	// Denne metoden brukes i initialiseringen for aa hente ut og sjekke om brukeren eksisterer i databasen
@@ -89,7 +90,7 @@ public class ConnectionToDatabase {
 		}
 	}
 	
-	// Oppdaterer databasen nŒr 
+	// Oppdaterer databasen nï¿½r 
 	public void updateEmployeeTelnum(Connection con, String sql, int telnum, Employee e) throws SQLException{
 		
 		PreparedStatement preparedStatement = null;
@@ -275,7 +276,7 @@ public class ConnectionToDatabase {
 		
 
 
-// midlertidlig, husk Œ returnere List<Room>
+// midlertidlig, husk ï¿½ returnere List<Room>
 // midlertidlig, husk ï¿½ returnere List<Room>
 		
 /*		int counter = 0;
@@ -720,6 +721,59 @@ public class ConnectionToDatabase {
 		        System.out.println("");       
 		      } 
 		      counter++;
+		}
+	}
+
+	public List<Group> SporringGroups(Connection con, String sporring) throws SQLException {
+		Statement stmt = null;
+		stmt = con.createStatement();
+		ResultSet groupSet = stmt.executeQuery(sporring);
+		ResultSetMetaData groupsmd = groupSet.getMetaData();
+		metaData.add(groupsmd);
+		resultData.add(groupSet);
+		InitFetchGroups(metaData, resultData);
+		return groups;
+	}
+
+	private void InitFetchGroups(ArrayList<ResultSetMetaData> metaData, ArrayList<ResultSet> resultData) throws SQLException {
+		int counter = 0;
+		
+		while (counter < metaData.size()) {
+			
+			int numberOfColumns = metaData.get(counter).getColumnCount();
+			
+			 int groupID = 0;
+			 String name = "";
+			 String description = "";
+			 int responsible = 0;
+			  
+			  while (resultData.get(counter).next()) {
+			        for (int i = 1; i <= numberOfColumns; i++) {
+			          String columnValue = resultData.get(counter).getString(i);
+			          if (i==1){
+			        	  groupID = Integer.parseInt(columnValue);
+			          }
+			          if (i==2){
+			        	  name = columnValue;
+			          }
+			          if (i==3){
+			        	  responsible = Integer.parseInt(columnValue);
+			          }
+			          if (i==4){
+			        	  description = columnValue;
+			          }
+			        }
+			        Employee e = null;
+			        
+			        for (Employee employee : employees) {
+						if(employee.getEmployeeID() == responsible){
+							e = employee;
+						}
+					}
+		        	Group i = new Group(groupID, name, description, e);
+		        	groups.add(i);//Maa sorge for at nyGroup-stringen har samme format som inn-parameterene til new Group
+			      } 
+			  counter++;
 		}
 	}
 	

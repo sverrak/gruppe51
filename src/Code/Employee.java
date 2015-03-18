@@ -22,7 +22,7 @@ public class Employee {
 	private List<Event> eventsAttending;		// sortert paa startTime. Maa gaa over alt og kanskje endre fra upcomingEvents til eventsAttending
 	private int telnum;
 	private List<Message> inbox;
-	private List<Event> hiddenEvents;	// events skjult i kalendervisningen. De befinner seg også i declinedEvents
+	private List<Event> hiddenEvents;	// events skjult i kalendervisningen. De befinner seg ogsï¿½ i declinedEvents
 	private ConnectionToDatabase ctd = new ConnectionToDatabase();
 	
 	// GreatestEmployeeID er String for at vi skal skille mellom de to konstruktÃ¸rene.
@@ -58,6 +58,10 @@ public class Employee {
 		upcomingEvents = new ArrayList<Event>();
 		declinedEvents = new ArrayList<Event>();
 		eventsAttending = new ArrayList<Event>();
+	}
+	
+	public int getEmployeeID(){
+		return employeeID;
 	}
 
 	public List<Event> getEventsAttending() {
@@ -228,7 +232,7 @@ public class Employee {
 			if(isOnDemandFromParticipant){
 				Message msg = new Message(this, event.getCreator(), "Endringen av eventen har gjort at jeg dessverre ikke kan delta", "Varsel om at jeg ikke kan delta");
 				msg.sendMessage();	
-				declinedEvents.add(event);		//la til dette. Haaper ikke noe føkkes opp...
+				declinedEvents.add(event);		//la til dette. Haaper ikke noe fï¿½kkes opp...
 				Collections.sort(declinedEvents);
 				event.getPeopleDeclined().add(this);
 			}
@@ -240,9 +244,9 @@ public class Employee {
 		if (attribute.equals("tid")){
 			System.out.println("Tidspunkt endret fra: " + oldField +"\ntil: " + event.getStartTime() + " - " + event.getEndTime());
 		}else if (attribute.equals("title")){
-			System.out.println("Navnet på eventet ble endret fra: " + oldField +  " til: " + event.getTitle());
+			System.out.println("Navnet pï¿½ eventet ble endret fra: " + oldField +  " til: " + event.getTitle());
 		}else if (attribute.equals("description")){
-			System.out.println("Beskrivelsen på eventet " + event + " ble endret fra: " + oldField + " til " + event.getDescription());
+			System.out.println("Beskrivelsen pï¿½ eventet " + event + " ble endret fra: " + oldField + " til " + event.getDescription());
 		}else{
 			System.out.println("Update type not recognized. No update happened to " + event);
 			return;
@@ -441,7 +445,7 @@ public class Employee {
 	public void printWeeklySchedule(int weekOfYear, int year){
 			ArrayList<ArrayList<String>> schedule = generateWeeklySchedule(weekOfYear, year);	
 			
-			String str = "|08:00|----------SØNDAG------------+-----------MANDAG-----------+-----------TIRSDAG----------+----------ONSDAG------------+-------------TORSDAG--------+-----------FREDAG-----------+-----------LØRDAG-----------+\n";
+			String str = "|08:00|----------Sï¿½NDAG------------+-----------MANDAG-----------+-----------TIRSDAG----------+----------ONSDAG------------+-------------TORSDAG--------+-----------FREDAG-----------+-----------Lï¿½RDAG-----------+\n";
 			for (int row = 0; row < 32; row++) {
 			str += "|+++++|";
 				List<ArrayList<String>> rader = new ArrayList<ArrayList<String>>();
@@ -450,11 +454,11 @@ public class Employee {
 				String[] r = new String[7];
 				int max_num_of_events_at_once = 0;				// ant. rader vi trenger til halvtimen
 				for (int col = 0; col < 7; col++){
-					r[col] = schedule.get(row).get(col);		// gjør om raden til String[]
+					r[col] = schedule.get(row).get(col);		// gjï¿½r om raden til String[]
 					
 					
 					if (!r[col].equals("")){
-						String[] entry = r[col].split("#");			// deler opp events som kræsjer i timeplanen
+						String[] entry = r[col].split("#");			// deler opp events som krï¿½sjer i timeplanen
 						if (entry.length > max_num_of_events_at_once){
 							while (entry.length > max_num_of_events_at_once){
 								ArrayList<String> new_row = new ArrayList(Arrays.asList("","","", "", "", "", ""));
@@ -477,7 +481,7 @@ public class Employee {
 						for (int i = 0; i < num_of_spaces; i++) {
 							str += " ";
 						}
-						str += "|";		// legger til noen stolper ekstra til høyre for kalenderen
+						str += "|";		// legger til noen stolper ekstra til hï¿½yre for kalenderen
 					}
 					if (rad < rader.size()-2){
 						str += "\n|+++++|";
