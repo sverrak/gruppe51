@@ -37,7 +37,6 @@ public class Event implements Comparable<Event>{
 		this.startTime = startTime;
 		this.endTime = endTime;
 		setDescription(description);
-		this.place = null;
 		this.room = null;
 		this.peopleInvited = new ArrayList<Employee>();
 		this.peopleGoing = new ArrayList<Employee>();
@@ -68,8 +67,8 @@ public class Event implements Comparable<Event>{
 		return title;
 	}
 	
-	public void setEventID(int id){
-		this.eventID = id;
+	public void setEventID(){
+		
 	}
 
 	public void setTitle(String title) {
@@ -203,8 +202,8 @@ public class Event implements Comparable<Event>{
 	*/
 	@Override
 	public String toString() {
-		String str = this.title + " har foelgende deltakere " + peopleGoing + peopleInvited + "og avholdes kl: " + this.getHour() + ":";
-		return  str + this.getMinute() + ", den " + this.getDay() + ". " + this.getMonth();
+		String str = this.title + " har foelgende deltakere " + peopleGoing + " [attending] " + peopleInvited + " [invited] ";
+		return  str;
 	}
 	
 	// Metodene nedenfor brukes i compareTo()-metoden

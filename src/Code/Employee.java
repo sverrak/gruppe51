@@ -332,7 +332,6 @@ public class Employee {
 	// hva er hensikten med denne? HVorfor skal man sende melding til seg selv?
 	public void addMessageToInbox(Message message) {
 		this.inbox.add(message);	
-		System.out.println("La til message for: " + this.getName()); //skal vekk
 	}
 	
 	
@@ -547,7 +546,7 @@ public class Employee {
 	public int countUnreadMessages() {
 		int counter = 0;
 		for (Message msg : inbox) {
-			if (msg.isRead() == false){
+			if (! msg.isRead()){
 				counter += 1;
 			}
 		}

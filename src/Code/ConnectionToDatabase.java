@@ -24,14 +24,9 @@ public class ConnectionToDatabase {
 	  private ArrayList<ResultSetMetaData> metaData = new ArrayList<ResultSetMetaData>();
 	  private ArrayList<ResultSet> resultData = new ArrayList<ResultSet>();	
 	  private List<Employee> employees = new ArrayList<Employee>();
-<<<<<<< HEAD
-	  private List<Room> rooms = new ArrayList<Room>();
-	  private List<Event> events = new ArrayList<Event>();
-=======
 	  private ArrayList<Room> rooms = new ArrayList<Room>();
 	  private List<Group> groups = new ArrayList<Group>();
 	  private ArrayList<Event> events = new ArrayList<Event>();
->>>>>>> 678182329563560c529cff72bba90ad227cae64b
 	
 
 	// Denne metoden brukes i initialiseringen for aa hente ut og sjekke om brukeren eksisterer i databasen
@@ -190,72 +185,31 @@ public class ConnectionToDatabase {
 		java.sql.Timestamp dateTime = null;
 		int senderID = -1;
 		int receiverID = -1;
-		String isRead = "";
 		List<Employee> emps = new ArrayList<Employee>();
 		emps = SporringEmployees(con, "SELECT * FROM Employee");
 		Employee sender = null;
 		Employee receiver = null;
-		int counter = 0;
+		
 		while(rs.next()){
 			subject = rs.getString("subject");
 			content = rs.getString("content");
 			dateTime = (rs.getTimestamp("timeStamp"));
 			senderID = rs.getInt("sender_ID");
 			receiverID = rs.getInt("receiver_ID");
-			isRead = rs.getString("isRead");
 			for (Employee e : emps){
 				if (e.getEmployeeID() == senderID){
 					sender = e;
 				}
-			}
-			for (Employee e : emps){
-				if (e.getEmployeeID() == receiverID){
+				else if(e.getEmployeeID() == receiverID){
 					receiver = e;
 				}
 			}
 			
-			Message msg = new Message(sender, receiver, dateTime, subject, content, isRead);
+			Message msg = new Message(sender, receiver, dateTime, subject, content);
 			receiver.addMessageToInbox(msg);
-			counter+=1;
-			System.out.println("\n" + counter + " " + receiver.getName());
 		}
 
 	}
-	
-	public List<Event> getEvents(){
-		
-		return events;
-		
-	}
-	
-/*	public List<Event> fetchEvents(Connection con) throws SQLException{
-		Statement stmt = null;
-		stmt = con.createStatement();
-		String sql = "SELECT * FROM Event";
-		ResultSet rs = stmt.executeQuery(sql);
-		
-		int eventID = 0;
-		String title = "";
-        java.util.Date startDato = new java.util.Date();
-        java.util.Date endDato = new java.util.Date();
-        String eventDescription = "";
-        int creatorID = 0;
-        int roomID = 0;
-        
-		
-		while (rs.next()){
-	    	 
-			eventID = rs.getInt("eventID");
-			roomID = rs.getInt("roomID");
-	    	title = rs.getString("title");
-	        startDato = convertDateTimeToDate(rs.getString("startTime"));
-	        endDato = convertDateTimeToDate(rs.getString("endTime"));
-	        eventDescription = rs.getString("eventDescription");
-	        creatorID = rs.getInt("creator_ID");
-		}
-		
-		Event tempEvent = new Event(title, startTime, endTime, eventDescription, )
-	} */
 	
 	public void fetchRooms(Connection con) throws SQLException{
 		Statement stmt = null;
@@ -276,8 +230,6 @@ public class ConnectionToDatabase {
 			capacity = rs.getInt("capacity");
 			name = rs.getString("name");
 			
-			
-			
 			Room tempRoom = new Room(roomID, name, capacity, roomDescription);
 			rooms.add(tempRoom);
 		}
@@ -293,25 +245,12 @@ public class ConnectionToDatabase {
 			
 	          java.util.Date startDato = new java.util.Date();
 	          java.util.Date endDato = new java.util.Date();
-<<<<<<< HEAD
-
-=======
->>>>>>> 678182329563560c529cff72bba90ad227cae64b
 	          String eventDescription = "";
 	          int creatorID = 0;
 	          int roomID = 0;
 	          String title = "";
 	          Employee tempEmployee = null;
-<<<<<<< HEAD
-	          int counter = 0;
-	          int eventID = 0;
 			      while (rs.next()) {
-			    	  	counter ++;
-			    	  		
-			    	  	  eventID = rs.getInt("eventID");
-=======
-			      while (rs.next()) {
->>>>>>> 678182329563560c529cff72bba90ad227cae64b
 				    	  roomID = rs.getInt("roomID");
 				    	  title = rs.getString("title");
 				          startDato = convertDateTimeToDate(rs.getString("startTime"));
@@ -326,9 +265,6 @@ public class ConnectionToDatabase {
 					          }
 	
 					          Event tempEvent = new Event(title, startDato, endDato, eventDescription, tempEmployee);
-					          tempEvent.setEventID(eventID);
-					          events.add(tempEvent);
-
 					          for (Room room : rooms){
 					        	  if(room.getRoomID() == roomID){
 					        		  tempEvent.setRoom(room);
@@ -337,11 +273,6 @@ public class ConnectionToDatabase {
 					          }
 			      }
 			      return rooms;
-	}
-	
-	public List<Event> fetchEvents(){
-		System.out.println("Henter events");
-		return events;
 	}
 		
 
@@ -600,7 +531,7 @@ public class ConnectionToDatabase {
 			        	  capacity = Integer.parseInt(columnValue);
 			          } else if (i==4){
 			        	  description = columnValue;
-			          } else if (i==5){ //Her maa roomSchedule ordnes?
+			          } else if (i==5){ //Her m� roomSchedule ordnes?
 			   //     	  roomSchedule = columnValue;
 			          }
 				  }
@@ -965,6 +896,74 @@ public class ConnectionToDatabase {
 			      } 
 			  counter++;
 		}
+	}
+
+	public ListContainer sporringParticipations(Connection con, String sporring, List<Employee> employees2, List<Event> events2) throws SQLException {
+		Statement stmt = null;
+		stmt = con.createStatement();
+		ResultSet participationSet = stmt.executeQuery(sporring);
+		ResultSetMetaData participationsmd = participationSet.getMetaData();
+		metaData.add(participationsmd);
+		resultData.add(participationSet);
+		ListContainer lc = InitFetchParticipation(metaData, resultData, employees2, events2);
+		return lc;
+	}
+
+	private ListContainer InitFetchParticipation(ArrayList<ResultSetMetaData> metaData, ArrayList<ResultSet> resultData, List<Employee> employees, List<Event> events) throws SQLException {
+		int counter = 0;
+		
+		while (counter < metaData.size()) {
+			
+			int numberOfColumns = metaData.get(counter).getColumnCount();
+			
+			 int eventID = 0;
+			 int employeeID = 0;
+			 String status = "";
+			 Boolean isHidden = false; 
+			 Employee emp = null;
+			 
+			 while (resultData.get(counter).next()) {
+			        for (int i = 1; i <= numberOfColumns; i++) {
+			          String columnValue = resultData.get(counter).getString(i);
+			          if (i==1){
+			        	  eventID = Integer.parseInt(columnValue);
+			          }else if (i==2){
+			        	  employeeID = Integer.parseInt(columnValue);
+			          }else if (i==3){
+			        	  status = columnValue;
+			          }else if (i==4){
+			        	  isHidden = Boolean.parseBoolean(columnValue);
+			          }
+			        }
+			        
+			        for (Employee employee : employees) {
+						if(employee.getEmployeeID() == employeeID){
+							emp = employee;
+							break;
+						}
+					}
+			        for (Event event : events) {
+						if(event.getEventID() == eventID){
+							//System.out.println(event.toString() + emp.toString() + status);
+							// i = invited, a = attending, d = declined
+							if (status.equals("i")) {
+								event.getPeopleInvited().add(emp);
+								emp.getUpcomingEvents().add(event);
+							}else if(status.equals("a")){
+								event.getPeopleGoing().add(emp);
+								emp.getEventsAttending().add(event);
+							}else if(status.equals("d")){
+								event.getPeopleDeclined().add(emp);
+								emp.getDeclinedEvents().add(event);
+							}
+							break;
+						}
+					}
+			      } 
+			  counter++;
+		}
+		return new ListContainer(events, employees);
+		
 	}
 	
 /*	public static class PrintColumnTypes  {
