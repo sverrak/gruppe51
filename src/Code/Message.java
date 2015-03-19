@@ -74,6 +74,7 @@ public class Message {
 		
 	public String readMessage(){
 		this.read = true;
+		//db-fix fredrik? vil at isRead-feltet i databasen skal endres til true
 		return toString();
 	}
 	

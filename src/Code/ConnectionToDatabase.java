@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Collection;
 
-
 public class ConnectionToDatabase {
 
 	  private ResultSet resultSet = null; 
@@ -146,6 +145,15 @@ public class ConnectionToDatabase {
 		preparedStatement.setInt(3, e.getEventID());
 		
 		preparedStatement.executeUpdate();	
+	}
+	
+	public void UpdateMessage(Connection con, Message m) throws SQLException{
+		PreparedStatement preparedStatement = null;
+		String sql = "UPDATE Message SET isRead = ? WHERE messageID = ?";
+		preparedStatement = con.prepareStatement(sql);
+		
+		preparedStatement.setString(1, m.isRead().toString());
+		preparedStatement.setInt(2, m.getMessageID());
 	}
 	// Ikke implementert
 	public Boolean checkUserName(Connection con, String s) throws SQLException{

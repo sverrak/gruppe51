@@ -282,11 +282,12 @@ public class Employee {
 	}
 	
 	public void printInbox(){
+		System.out.println("ID-Lest\t\tFra\t\tEmne");
 		for (int i = 0; i < inbox.size(); i++) {
 			if(inbox.get(i).isRead()){
-				System.out.println("[" + i + ". Opened]" + inbox.get(i).getSender() + ": " + inbox.get(i).getSubject());
+				System.out.println("" + i + ": [X]\t\t" + inbox.get(i).getSender() + "\t\t" + inbox.get(i).getSubject());
 			} else{
-				System.out.println("[" + i + ". Not opened]" + inbox.get(i).getSender() + ": " + inbox.get(i).getSubject());
+				System.out.println("" + i + ": [ ]\t\t" + inbox.get(i).getSender() + "\t\t" + inbox.get(i).getSubject());
 
 			}
 		}

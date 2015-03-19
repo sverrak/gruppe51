@@ -364,12 +364,11 @@ public class CalendarProgram {
 				+ " uleste meldinger i innboksen din\n");
 		while (current_user != null) {
 			System.out.println("Hva vil du gjoere?");
-			if (current_user.isAdmin() == true) {
-				System.out
-						.println("1: Se alle upcoming events[goingTo] | 2: Legg til ny event | 3: Apne innboks | 4: Administrer dine events | 5: Administrer brukere | 9: quit");
-			} else {
-				System.out
-						.println("1: Se alle upcoming events[goingTo] | 2: Legg til ny event | 3: Apne innboks | 4: Administrer dine events | 9: quit");
+			if(current_user.isAdmin() == true){
+				System.out.println("1: Se alle upcoming events[goingTo] | 2: Legg til ny event | 3: Apne innboks (" + current_user.countUnreadMessages() + ") | 4: Administrer dine events | 5: Administrer brukere | 9: quit");				
+			} 
+			else{
+				System.out.println("1: Se alle upcoming events[goingTo] | 2: Legg til ny event | 3: Apne innboks (" + current_user.countUnreadMessages() + ") | 4: Administrer dine events | 9: quit");
 			}
 
 			int option = 0;
@@ -449,16 +448,20 @@ public class CalendarProgram {
 				} else if (option == 3) {
 					if (current_user.getInbox().size() > 0) {
 						current_user.printInbox();
-						while (option != -1) {
-							System.out.println("Hvilken melding vil du aapne?");
+						while(option != -1){
+							System.out.println("Hvilken melding vil du aapne? [-1 for quit]");
 							option = Integer.parseInt(user_input.nextLine());
-							System.out.println(current_user.getInbox().get(option).toString());
+							if(option == -1){
+								break;
+							}
+							System.out.println(current_user.getInbox().get(option).readMessage());
+							ctd.UpdateMessage(con, current_user.getInbox().get(option));
 							System.out.println("\nVil du aapne flere meldinger?");
 							current_user.printInbox();
 						}
 
 					} else {
-						System.out.println("Ingen meldinger aa vise\n");
+						System.out.println("\nIngen meldinger aa vise\n");
 					}
 				} else if (option == 4) {
 					List<Event> myEvents = new ArrayList<Event>();
@@ -481,9 +484,12 @@ public class CalendarProgram {
 							firstOptionChoice = user_input.nextLine();
 							Event chosen_event = events.get(Integer.parseInt(firstOptionChoice));
 							while (!secondOptionChoice.equals("q")) {
-								System.out.println("Hva vil du gjore?");
+								System.out.println("Hva vil du gjore? ['q' for å quite]");
 								System.out.println("1: se peopleGoing, peopleDeclined og peopleInvited | 2: endre event)");
 								secondOptionChoice = user_input.nextLine();
+								if(secondOptionChoice.equals("q")){
+									break;
+								}
 								if (secondOptionChoice.equals("1")) {
 									System.out.println("Du ser naa paa " + chosen_event + ".");
 									System.out.println("Dette arrangementet har folgende deltakerstatus: ");
@@ -492,7 +498,7 @@ public class CalendarProgram {
 									System.out.println("peopleDeclind: " + chosen_event.getPeopleDeclined());
 								} else if (secondOptionChoice.equals("2")) {
 									System.out.println("Hva vil du endre?");
-									System.out.println("1: avlys event | 2: trekk invitasjon | 3: inviter deltakere | 4: endre rom | 4: annen endring");
+									System.out.println("1: avlys event | 2: trekk invitasjon | 3: inviter deltakere | 4: endre rom | 5: endring av tidspunkt");
 									thirdOptionChoice = user_input.nextLine();
 									if (thirdOptionChoice.equals("1")) {
 										System.out.println("Hva er grunnen til avlysningen?");
@@ -508,7 +514,8 @@ public class CalendarProgram {
 										fourthOptionChoice = user_input.nextLine();
 
 										current_user.withdrawInvitation(events.get(Integer.parseInt(firstOptionChoice)).getPeopleInvited().get(Integer.parseInt(fourthOptionChoice)),events.get(Integer.parseInt(firstOptionChoice)));
-
+										//fjern eventdeltakelse(employee, event) fra databasen, Fredrik
+										
 									} else if (thirdOptionChoice.equals("3")) {
 										// legge til deltakere.
 										Scanner user_input = new Scanner(System.in);
@@ -545,9 +552,15 @@ public class CalendarProgram {
 										user_input.close();
 										ctd.WriteEventDeltakelseToDatabase(con,chosen_event, peopleInvited);
 									} else if (thirdOptionChoice.equals("4")) {
-
+										//databasefix for aa endre rom
+									} else if (thirdOptionChoice.equals("5")) {
+										//databasefix for aa endre tidspunkt
+										
 									}
 								}
+							}
+							if(secondOptionChoice.equals("q")){
+								break;
 							}
 						}
 					}
