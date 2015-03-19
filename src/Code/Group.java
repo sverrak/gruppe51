@@ -29,6 +29,19 @@ public class Group {
 		supergroups = new ArrayList<Group>();
 		upcomingEvents = new ArrayList<Event>();
 	}
+	
+	public Group(int groupID, String groupName, String description, Employee responsible) {
+		this.groupID = groupID;
+		this.name = groupName;
+		this.description = description;
+		this.responsible = responsible;
+		participants = new ArrayList<Employee>();
+		participants.add(responsible);
+		subgroups = new ArrayList<Group>();
+		supergroups = new ArrayList<Group>();
+		upcomingEvents = new ArrayList<Event>();
+	}
+	
 	public List<Event> getUpcomingEvents() {
 		return upcomingEvents;
 	}
@@ -72,7 +85,7 @@ public class Group {
 	public void printWeeklySchedule(int weekOfYear, int year){
 		ArrayList<ArrayList<String>> schedule = generateWeeklySchedule(weekOfYear, year);	
 		
-		String str = "|08:00|--------SØNDAG----------+----------MANDAG--------+---------TIRSDAG--------+--------ONSDAG----------+-----------TORSDAG------+---------FREDAG---------+---------LØRDAG---------+\n";
+		String str = "|08:00|--------Sï¿½NDAG----------+----------MANDAG--------+---------TIRSDAG--------+--------ONSDAG----------+-----------TORSDAG------+---------FREDAG---------+---------Lï¿½RDAG---------+\n";
 		for (int row = 0; row < 32; row++) {
 		str += "|+++++|";
 			List<ArrayList<String>> rader = new ArrayList<ArrayList<String>>();
@@ -81,11 +94,11 @@ public class Group {
 			String[] r = new String[7];
 			int max_num_of_events_at_once = 0;				// ant. rader vi trenger til halvtimen
 			for (int col = 0; col < 7; col++){
-				r[col] = schedule.get(row).get(col);		// gjør om raden til String[]
+				r[col] = schedule.get(row).get(col);		// gjï¿½r om raden til String[]
 				
 				
 				if (!r[col].equals("")){
-					String[] entry = r[col].split("#");			// deler opp events som kræsjer i timeplanen
+					String[] entry = r[col].split("#");			// deler opp events som krï¿½sjer i timeplanen
 					if (entry.length > max_num_of_events_at_once){
 						while (entry.length > max_num_of_events_at_once){
 							ArrayList<String> new_row = new ArrayList(Arrays.asList("","","", "", "", "", ""));
@@ -108,7 +121,7 @@ public class Group {
 					for (int i = 0; i < num_of_spaces; i++) {
 						str += " ";
 					}
-					str += "|";		// legger til noen stolper ekstra til høyre for kalenderen, dessverre
+					str += "|";		// legger til noen stolper ekstra til hï¿½yre for kalenderen, dessverre
 				}
 				if (rad < rader.size()-2){
 					str += "\n|+++++|";

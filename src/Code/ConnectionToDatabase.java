@@ -24,13 +24,18 @@ public class ConnectionToDatabase {
 	  private ArrayList<ResultSetMetaData> metaData = new ArrayList<ResultSetMetaData>();
 	  private ArrayList<ResultSet> resultData = new ArrayList<ResultSet>();	
 	  private List<Employee> employees = new ArrayList<Employee>();
+<<<<<<< HEAD
 	  private List<Room> rooms = new ArrayList<Room>();
 	  private List<Event> events = new ArrayList<Event>();
+=======
+	  private ArrayList<Room> rooms = new ArrayList<Room>();
+	  private List<Group> groups = new ArrayList<Group>();
+	  private ArrayList<Event> events = new ArrayList<Event>();
+>>>>>>> 678182329563560c529cff72bba90ad227cae64b
 	
 
-	// Denne metoden brukes i initialiseringen for Œ hente ut og sjekke om brukeren eksisterer i databasen
+	// Denne metoden brukes i initialiseringen for aa hente ut og sjekke om brukeren eksisterer i databasen
 	public List<Employee> SporringEmployees(Connection con, String sporring) throws SQLException{
-		
 		Statement stmt = null;
 		stmt = con.createStatement();
 		ResultSet employeeSet = stmt.executeQuery(sporring);
@@ -39,7 +44,6 @@ public class ConnectionToDatabase {
 		resultData.add(employeeSet);
 		InitFetchEmployees(metaData, resultData);
 		return employees;
-		
 	}
 	
 	// Hjelpemetode for SporringEmployees
@@ -92,7 +96,7 @@ public class ConnectionToDatabase {
 		}
 	}
 	
-	// Oppdaterer databasen nŒr 
+	// Oppdaterer databasen nï¿½r 
 	public void updateEmployeeTelnum(Connection con, String sql, int telnum, Employee e) throws SQLException{
 		
 		PreparedStatement preparedStatement = null;
@@ -129,8 +133,7 @@ public class ConnectionToDatabase {
 	}
 	// Ikke implementert
 	public Boolean checkUserName(Connection con, String s) throws SQLException{
-		
-		//Trenger en for-lï¿½kke som itererer gjennom alle eksisterende employees i selskapet og skriver de til databasen
+		//Trenger en for-lokke som itererer gjennom alle eksisterende employees i selskapet og skriver dem til databasen
 		//Hvis vedkommende allerede eksisterer,  ignorer oppdatering
 
 		Statement stmt = null;
@@ -142,7 +145,6 @@ public class ConnectionToDatabase {
 				return true;
 			}
 		}
-		
 		return false;	
 	}
 	
@@ -286,27 +288,30 @@ public class ConnectionToDatabase {
 		Statement stmt = null;
 		stmt = con.createStatement();
 
-		//	String sql = "SELECT R.name, R.roomDescription, R.capacity, R.roomID, E.title, E.startTime, E.endTime, E.roomID, E.eventDescription, E.creator_ID FROM Room AS R INNER JOIN Event AS E ON  R.roomID = E.roomID";
 		String sql1 = "SELECT * FROM Event";
 		ResultSet rs = stmt.executeQuery(sql1);
-		ResultSetMetaData rsmd = rs.getMetaData();
-		int numberOfCol = rsmd.getColumnCount();
 			
-
 	          java.util.Date startDato = new java.util.Date();
 	          java.util.Date endDato = new java.util.Date();
+<<<<<<< HEAD
 
+=======
+>>>>>>> 678182329563560c529cff72bba90ad227cae64b
 	          String eventDescription = "";
 	          int creatorID = 0;
 	          int roomID = 0;
 	          String title = "";
 	          Employee tempEmployee = null;
+<<<<<<< HEAD
 	          int counter = 0;
 	          int eventID = 0;
 			      while (rs.next()) {
 			    	  	counter ++;
 			    	  		
 			    	  	  eventID = rs.getInt("eventID");
+=======
+			      while (rs.next()) {
+>>>>>>> 678182329563560c529cff72bba90ad227cae64b
 				    	  roomID = rs.getInt("roomID");
 				    	  title = rs.getString("title");
 				          startDato = convertDateTimeToDate(rs.getString("startTime"));
@@ -341,7 +346,7 @@ public class ConnectionToDatabase {
 		
 
 
-// midlertidlig, husk Œ returnere List<Room>
+// midlertidlig, husk ï¿½ returnere List<Room>
 // midlertidlig, husk ï¿½ returnere List<Room>
 		
 /*		int counter = 0;
@@ -595,7 +600,7 @@ public class ConnectionToDatabase {
 			        	  capacity = Integer.parseInt(columnValue);
 			          } else if (i==4){
 			        	  description = columnValue;
-			          } else if (i==5){ //Her mï¿½ roomSchedule ordnes?
+			          } else if (i==5){ //Her maa roomSchedule ordnes?
 			   //     	  roomSchedule = columnValue;
 			          }
 				  }
@@ -738,6 +743,8 @@ public class ConnectionToDatabase {
 		return dateObject;
 	}
 	
+	
+	// brukes ikke lenger - FW
 	public void PrintTables(ArrayList<ResultSetMetaData> metaData, ArrayList<ResultSet> resultData, String msg) throws SQLException{
 		
 		int counter = 0;
@@ -784,6 +791,179 @@ public class ConnectionToDatabase {
 		        System.out.println("");       
 		      } 
 		      counter++;
+		}
+	}
+
+	public List<Group> SporringGroups(Connection con, String sporring) throws SQLException {
+		Statement stmt = null;
+		stmt = con.createStatement();
+		ResultSet groupSet = stmt.executeQuery(sporring);
+		ResultSetMetaData groupsmd = groupSet.getMetaData();
+		metaData.add(groupsmd);
+		resultData.add(groupSet);
+		InitFetchGroups(metaData, resultData);
+		return groups;
+	}
+
+	private void InitFetchGroups(ArrayList<ResultSetMetaData> metaData, ArrayList<ResultSet> resultData) throws SQLException {
+		int counter = 0;
+		
+		while (counter < metaData.size()) {
+			
+			int numberOfColumns = metaData.get(counter).getColumnCount();
+			
+			 int groupID = 0;
+			 String name = "";
+			 String description = "";
+			 int responsible = 0;
+			  
+			  while (resultData.get(counter).next()) {
+			        for (int i = 1; i <= numberOfColumns; i++) {
+			          String columnValue = resultData.get(counter).getString(i);
+			          if (i==1){
+			        	  groupID = Integer.parseInt(columnValue);
+			          }
+			          if (i==2){
+			        	  name = columnValue;
+			          }
+			          if (i==3){
+			        	  responsible = Integer.parseInt(columnValue);
+			          }
+			          if (i==4){
+			        	  description = columnValue;
+			          }
+			        }
+			        Employee e = null;
+			        
+			        for (Employee employee : employees) {
+						if(employee.getEmployeeID() == responsible){
+							e = employee;
+						}
+					}
+		        	Group i = new Group(groupID, name, description, e);
+		        	groups.add(i);//Maa sorge for at nyGroup-stringen har samme format som inn-parameterene til new Group
+			      } 
+			  counter++;
+		}
+	}
+
+	public ArrayList<Event> sporringEvents(Connection con, String sporring, List<Employee> employees) throws SQLException {
+		Statement stmt = null;
+		stmt = con.createStatement();
+		ResultSet eventSet = stmt.executeQuery(sporring);
+		ResultSetMetaData eventsmd = eventSet.getMetaData();
+		metaData.add(eventsmd);
+		resultData.add(eventSet);
+		InitFetchEvents(metaData, resultData, (ArrayList<Employee>) employees);
+		return events;
+	}
+
+	private void InitFetchEvents(ArrayList<ResultSetMetaData> metaData, ArrayList<ResultSet> resultData, ArrayList<Employee> employees) throws SQLException {
+		int counter = 0;
+		
+		while (counter < metaData.size()) {
+			
+			int numberOfColumns = metaData.get(counter).getColumnCount();
+			
+			 int eventID = 0;
+			 String title = "";
+			 java.util.Date startTime = null;
+			 java.util.Date endTime = null;
+			 String description = "";
+			 Room room = null;
+			 Employee creator = null;
+			 SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy H:m:s");
+			  
+			  while (resultData.get(counter).next()) {
+			        for (int i = 1; i <= numberOfColumns; i++) {
+			          String columnValue = resultData.get(counter).getString(i);
+			          if (i==1){
+			        	  eventID = Integer.parseInt(columnValue);
+			          }else if (i==2){
+			        	  title = columnValue;
+			          }else if (i==3){
+			        	  try {
+			        		  	startTime = (java.util.Date) formatter.parse(columnValue.substring(8, 10) + "/" + columnValue.substring(5, 7) + "/" + columnValue.substring(0, 4) + " " + columnValue.substring(11, columnValue.length() - 2));
+			        		  	
+							} catch (ParseException e) {
+								e.printStackTrace();
+							}
+			          }else if (i==4){
+			        	  try {
+			        		  endTime = (java.util.Date) formatter.parse(columnValue.substring(8, 10) + "/" + columnValue.substring(5, 7) + "/" + columnValue.substring(0, 4) + " " + columnValue.substring(11, columnValue.length() - 2));
+			        		  	
+							} catch (ParseException e) {
+								e.printStackTrace();
+							}
+			          }else if(i==5){
+			        	  description = columnValue;
+			          }else if(i==6){
+			        	  for (Room r : rooms) {
+
+			        		  //if(r.getRoomID() == Integer.parseInt(columnValue)){
+							room = null;
+							break;
+							//}
+						}
+			        	room = null;
+			          }else if(i==7){
+			        	  for (Employee e : employees) {
+								if(e.getEmployeeID() == Integer.parseInt(columnValue)){
+									creator = e;
+									break;
+								}
+							}
+			          }
+			        }
+
+		        	Event i = new Event(eventID, title, startTime, endTime, description, room, creator);
+		        	events.add(i);//Maa sorge for at nyEvent-stringen har samme format som inn-parameterene til new Group
+			      } 
+			  counter++;
+		}
+	}
+
+	public ArrayList<Room> sporringRooms(Connection con, String sporring) throws SQLException {
+		Statement stmt = null;
+		stmt = con.createStatement();
+		ResultSet roomSet = stmt.executeQuery(sporring);
+		ResultSetMetaData roomsmd = roomSet.getMetaData();
+		metaData.add(roomsmd);
+		resultData.add(roomSet);
+		InitFetchRooms(metaData, resultData);
+		return rooms;
+	}
+
+	private void InitFetchRooms(ArrayList<ResultSetMetaData> metaData, ArrayList<ResultSet> resultData) throws SQLException {
+		int counter = 0;
+		
+		while (counter < metaData.size()) {
+			
+			int numberOfColumns = metaData.get(counter).getColumnCount();
+			
+			 int roomID = 0;
+			 String name = "";
+			 int capacity = 0;
+			 String description = "";
+			 
+			 while (resultData.get(counter).next()) {
+			        for (int i = 1; i <= numberOfColumns; i++) {
+			          String columnValue = resultData.get(counter).getString(i);
+			          if (i==1){
+			        	  roomID = Integer.parseInt(columnValue);
+			          }else if (i==2){
+			        	  name = columnValue;
+			          }else if (i==3){
+			        	  capacity = Integer.parseInt(columnValue);
+			          }else if (i==4){
+			        	  description = columnValue;
+			          }
+			        }
+
+		        	Room i = new Room(roomID, name, capacity, description);
+		        	rooms.add(i);//Maa sorge for at nyEvent-stringen har samme format som inn-parameterene til new Group
+			      } 
+			  counter++;
 		}
 	}
 	
