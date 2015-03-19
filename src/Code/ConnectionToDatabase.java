@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Collection;
 
-import com.sun.tools.internal.xjc.reader.Messages;
 
 public class ConnectionToDatabase {
 
@@ -866,13 +865,14 @@ public class ConnectionToDatabase {
 							}
 			          }else if(i==5){
 			        	  description = columnValue;
-			          }else if(i==6){
+			          }else if(i==6){		//denne delen fungerer, men rom er uansett null i run(). Problem når vi vil invitere deltakere. NullPointEr i løkka
 			        	  for (Room r : rooms) {
-
-			        		  //if(r.getRoomID() == Integer.parseInt(columnValue)){
-							room = null;
-							break;
-							//}
+			        		  if (columnValue != null){
+				        		  if(r.getRoomID() == Integer.parseInt(columnValue)){
+				        			  room = r;
+				        			  break;
+				        		  }
+			        		  }
 						}
 			        	room = null;
 			          }else if(i==7){

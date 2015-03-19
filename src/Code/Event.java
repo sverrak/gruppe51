@@ -45,7 +45,7 @@ public class Event implements Comparable<Event>{
 			String description, Room room, Employee creator) {
 		super();
 		this.eventID = eventID;
-		setTitle(title);
+		this.title = title;
 		this.creator = creator;
 		//this.eventID = eventID;
 		//setTime(startTime, endTime);
@@ -56,8 +56,7 @@ public class Event implements Comparable<Event>{
 		this.peopleInvited = new ArrayList<Employee>();
 		this.peopleGoing = new ArrayList<Employee>();
 		this.peopleDeclined = new ArrayList<Employee>();
-		this.place = null;
-		
+		this.place = null;		
 	}
 		
 	public String getTitle() {
