@@ -3,6 +3,10 @@ package Code;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,21 +61,6 @@ public class CalendarProgram {
 		return availableRooms;
 	}
 
-	public static boolean isInteger(String s) {
-	    return isInteger(s,10);
-	}
-	public static boolean isInteger(String s, int radix) {
-	    if(s.isEmpty()) return false;
-	    for(int i = 0; i < s.length(); i++) {
-	        if(i == 0 && s.charAt(i) == '-') {
-	            if(s.length() == 1) return false;
-	            else continue;
-	        }
-	        if(Character.digit(s.charAt(i),radix) < 0) return false;
-	    }
-	    return true;
-	}
-	
 	public Event getEventInput(Employee employee) throws SQLException{
 		//initalisering
 		System.out.println("");
@@ -162,8 +151,7 @@ public class CalendarProgram {
 		List<Employee> peopleInvited = new ArrayList<Employee>();
 		
 		int counter = 1;
-		
-		while(isInteger(input,10) && (counter < newEvent.getRoom().getCapacity() || ! newEvent.getPlace().isEmpty())){
+		while(((! input.equals("")) && counter < newEvent.getRoom().getCapacity()) || (! input.equals("")) && ! newEvent.getPlace().isEmpty()){
 			if(current_user.inviteEmployeeToEvent(availableEmployees.get(Integer.parseInt(input)), newEvent)){
 				peopleInvited.add(availableEmployees.get(Integer.parseInt(input)));
 				ctd.WriteMessageToDatabase(con, availableEmployees.get(Integer.parseInt(input)));
@@ -247,11 +235,15 @@ public class CalendarProgram {
 		      }// do nothing */
 			current_user = null;
 			employees = (ArrayList<Employee>) ctd.SporringEmployees(con, "SELECT * FROM Employee");
-			events = new ArrayList<Event>();
-			rooms = new ArrayList<Room>();
+			System.out.println("ID: " + employees.get(0).getEmployeeID());
+			System.out.println("Navn: " + employees.get(0).getName());
+			System.out.println(employees.get(0).getUsername());
+			System.out.println(employees.get(0).getPassword());
 			
-			this.groups = (ArrayList<Group>) ctd.SporringGroups(con, "SELECT * FROM Gruppe");
-
+			rooms = (ArrayList<Room>) ctd.sporringRooms(con, "SELECT * FROM Room");
+			events = (ArrayList<Event>) ctd.sporringEvents(con, "SELECT * FROM Event", employees);
+			groups = (ArrayList<Group>) ctd.SporringGroups(con, "SELECT * FROM Gruppe");
+			
 			try{
 				if(con == null){
 					con.close();					
