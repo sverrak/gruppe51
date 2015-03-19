@@ -38,6 +38,17 @@ public class Message {
 		
 	}
 	
+	public Message(int messageID, Employee sender, Employee receiver, java.util.Date timestamp, String content, String subject) {
+		this.messageID = messageID;
+		this.sender = sender;
+		this.receiver = receiver;
+		this.read = false;
+		this.content = content;
+		this.subject = subject;
+		java.util.Date date = timestamp;
+		this.timestamp = new java.sql.Timestamp(date.getTime());
+	}
+
 	public Timestamp getTimeStamp(){
 		return timestamp;
 	}
@@ -68,7 +79,6 @@ public class Message {
 	
 	public void sendMessage(){
 		this.receiver.addMessageToInbox(this);
-		System.out.println("Melding sendt til " + this.receiver + ":" + this.subject);
 	}
 	
 	@Override

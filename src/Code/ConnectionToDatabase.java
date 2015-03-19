@@ -27,6 +27,7 @@ public class ConnectionToDatabase {
 	  private ArrayList<Room> rooms = new ArrayList<Room>();
 	  private List<Group> groups = new ArrayList<Group>();
 	  private ArrayList<Event> events = new ArrayList<Event>();
+	  private ArrayList<Message> messages = new ArrayList<Message>();
 	
 
 	// Denne metoden brukes i initialiseringen for aa hente ut og sjekke om brukeren eksisterer i databasen
@@ -172,7 +173,7 @@ public class ConnectionToDatabase {
 		
 	}
 	
-	public void getMessages(Connection con) throws SQLException{
+	public void fetchMessages(Connection con) throws SQLException{
 		Statement stmt = null;
 		stmt = con.createStatement();
 		
@@ -963,6 +964,81 @@ public class ConnectionToDatabase {
 			  counter++;
 		}
 		return new ListContainer(events, employees);
+		
+	}
+
+	public ArrayList<Message> sporringMessages(Connection con, String sporring) throws SQLException {
+		Statement stmt = null;
+		stmt = con.createStatement();
+		ResultSet messageSet = stmt.executeQuery(sporring);
+		ResultSetMetaData messagesmd = messageSet.getMetaData();
+		metaData.add(messagesmd);
+		resultData.add(messageSet);
+		InitFetchMessages(metaData, resultData);
+		return messages ;
+	}
+
+	private void InitFetchMessages(ArrayList<ResultSetMetaData> metaData, ArrayList<ResultSet> resultData) throws SQLException {
+		int counter = 0;
+		
+		while (counter < metaData.size()) {
+			
+			int numberOfColumns = metaData.get(counter).getColumnCount();
+			
+			 int messageID = 0;
+			 String subject = "";
+			 String content = "";
+			 java.util.Date timestamp = null;
+			 int senderID = 0;
+			 int receiverID = 0;
+			 boolean isRead = false;
+			 SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy H:m:s");
+			 Employee sender = null;
+			 Employee receiver = null;
+			 
+			 while (resultData.get(counter).next()) {
+			        for (int i = 1; i <= numberOfColumns; i++) {
+			          String columnValue = resultData.get(counter).getString(i);
+			          if (i==1){
+			        	  messageID = Integer.parseInt(columnValue);
+			          }else if (i==2){
+			        	  subject = columnValue;
+			          }else if (i==3){
+			        	  content = (columnValue);
+			          }else if (i==4){
+			        	  try {
+			        		  	timestamp = (java.util.Date) formatter.parse(columnValue.substring(8, 10) + "/" + columnValue.substring(5, 7) + "/" + columnValue.substring(0, 4) + " " + columnValue.substring(11, columnValue.length() - 2));
+			        		  	
+							} catch (ParseException e) {
+								e.printStackTrace();
+							}
+			          }else if (i==5){
+			        	  senderID = Integer.parseInt(columnValue);
+			          }else if (i==6){
+			        	  receiverID = Integer.parseInt(columnValue);
+			          }else if (i==7){
+			        	  isRead = Boolean.parseBoolean(columnValue);
+			          }
+			        }
+			        
+			        
+			        for (Employee e : employees) {
+						if(senderID == e.getEmployeeID()){
+							sender = e;
+						}else if(receiverID == e.getEmployeeID()){
+							receiver = e;
+						}
+					}
+			        
+			        if(employees.contains(receiver)){
+			        	
+			        	Message i = new Message(messageID, sender, receiver, timestamp, content, subject);
+			        	i.sendMessage();
+			        	messages.add(i);//Maa sorge for at nyEvent-stringen har samme format som inn-parameterene til new Group			        	
+			        }
+			      } 
+			  counter++;
+		}
 		
 	}
 	

@@ -212,9 +212,7 @@ public class CalendarProgram {
 		String password ="12345";
 		System.out.println("Connecting to database...");
 		System.out.println("");
-		System.out.println("Fetching database tables...");
-		System.out.println("");
-		System.out.println("");
+		
 		try {
 			con = DriverManager.getConnection(host, username, password);
 			
@@ -234,6 +232,10 @@ public class CalendarProgram {
 		      }catch(SQLException se){
 		      }// do nothing */
 			current_user = null;
+
+			System.out.println("Fetching database tables...");
+			System.out.println("");
+			
 			employees = (ArrayList<Employee>) ctd.SporringEmployees(con, "SELECT * FROM Employee");
 			
 			rooms = (ArrayList<Room>) ctd.sporringRooms(con, "SELECT * FROM Room");
@@ -242,7 +244,10 @@ public class CalendarProgram {
 			ListContainer lc = ctd.sporringParticipations(con, "SELECT * FROM Eventdeltakelse", employees, events);
 			employees = lc.getEmployees();
 			events = lc.getEvents();
+			//Sender alle messagene til employeenes innbokser, saa trenger ikke ta vare pa messages utover dette
+			ctd.sporringMessages(con, "SELECT * FROM Message");
 			
+			System.out.println("Fetching completed.\n\n");
 			try{
 				if(con == null){
 					con.close();					
@@ -255,7 +260,7 @@ public class CalendarProgram {
 	}
 	
 	public Employee login() throws SQLException{
-		
+		System.out.println("Velkommen. Vennligst logg inn.");
 		String sporring = "SELECT * FROM Employee";
 		this.employees = ctd.SporringEmployees(con, sporring);
 		
@@ -340,7 +345,7 @@ public class CalendarProgram {
 	private void run() throws SQLException {
 		current_user = login();
 		
-		System.out.println("\nDu er naa logget inn. Skriv quit for aa logge ut");
+		System.out.println("\nDu er naa logget inn. Trykk '9' for aa logge ut\n");
 		System.out.println("Hei, " + current_user.getName() + "!");
 		
 		System.out.println("Du har " + current_user.countUnreadMessages() + " uleste meldinger i innboksen din\n");
