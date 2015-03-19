@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Collection;
 
-import com.sun.tools.internal.xjc.reader.Messages;
+
 
 public class ConnectionToDatabase {
 

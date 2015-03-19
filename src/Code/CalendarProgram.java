@@ -344,10 +344,10 @@ public class CalendarProgram {
 		while(current_user != null){
 			System.out.println("Hva vil du gjoere?");
 			if(current_user.isAdmin() == true){
-				System.out.println("1: Se alle upcoming events[goingTo] | 2: Legg til ny event | 3: Apne innboks | 4: Administrer dine events | 5: Administrer brukere | 9: quit");				
+				System.out.println("1: Se alle upcoming events[goingTo] | 2: Legg til ny event | 3: Apne innboks (" + current_user.countUnreadMessages() + ") | 4: Administrer dine events | 5: Administrer brukere | 9: quit");				
 			} 
 			else{
-				System.out.println("1: Se alle upcoming events[goingTo] | 2: Legg til ny event | 3: Apne innboks | 4: Administrer dine events | 9: quit");
+				System.out.println("1: Se alle upcoming events[goingTo] | 2: Legg til ny event | 3: Apne innboks (" + current_user.countUnreadMessages() + ") | 4: Administrer dine events | 9: quit");
 			}
 			
 			int option = 0;
@@ -419,8 +419,11 @@ public class CalendarProgram {
 					if(current_user.getInbox().size() > 0){
 						current_user.printInbox();
 						while(option != -1){
-							System.out.println("Hvilken melding vil du aapne?");
+							System.out.println("Hvilken melding vil du aapne? [-1 for quit]");
 							option = Integer.parseInt(user_input.nextLine());
+							if(option == -1){
+								break;
+							}
 							System.out.println(current_user.getInbox().get(option).toString());
 							System.out.println("\nVil du aapne flere meldinger?");
 							current_user.printInbox();						
