@@ -37,6 +37,7 @@ public class Event implements Comparable<Event>{
 		this.startTime = startTime;
 		this.endTime = endTime;
 		setDescription(description);
+		this.place = null;
 		this.room = null;
 		this.peopleInvited = new ArrayList<Employee>();
 		this.peopleGoing = new ArrayList<Employee>();
@@ -49,8 +50,8 @@ public class Event implements Comparable<Event>{
 		return title;
 	}
 	
-	public void setEventID(){
-		
+	public void setEventID(int id){
+		this.eventID = id;
 	}
 
 	public void setTitle(String title) {

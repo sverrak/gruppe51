@@ -76,9 +76,9 @@ public class CalendarProgram {
 		System.out.println("Beskrivelse: ");
 		description = user_input.nextLine();
 
-		System.out.println("Starttidspunkt, f.eks.: 16/03/2015 12:00:00: ");
+		System.out.println("Starttidspunkt, f.eks.: 20/03/2015 12:00:00: ");
 		String startTimeString = user_input.nextLine();			// formatet p� disse m� vi ha orden p�
-		System.out.println("Sluttidspunkt f.eks.: 16/03/2015 12:00:00: ");
+		System.out.println("Sluttidspunkt f.eks.: 20/03/2015 12:00:00: ");
 		String endTimeString = user_input.nextLine();
 		System.out.println("Kapasitet: ");
 		int capacity = Integer.parseInt(user_input.nextLine());
@@ -93,6 +93,8 @@ public class CalendarProgram {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		// henter event
 		/*finner strste eventID. Hvis eventlisten er tom, settes den til 1. 
 		int eventID = 1;
 		if(events.size() > 0 ){
@@ -102,10 +104,10 @@ public class CalendarProgram {
 		
 		Event newEvent = new Event(title, startTime, endTime, description, employee);
 		
-		
 		//finner ledige rom
 		ctd.fetchRooms(con);
 		this.rooms = ctd.checkRoomEvents(con);
+		events = ctd.fetchEvents();
 
 		List<Room> availableRooms = new ArrayList<Room>();
 		availableRooms = findLocation(startTime, endTime, capacity);
@@ -150,7 +152,7 @@ public class CalendarProgram {
 		List<Employee> peopleInvited = new ArrayList<Employee>();
 		
 		int counter = 1;
-		while(((! input.equals("")) && counter < newEvent.getRoom().getCapacity()) || (! input.equals("")) && ! newEvent.getPlace().isEmpty()){
+		while(((! input.equals("")) && counter < newEvent.getRoom().getCapacity()) || (! input.equals("")) && newEvent.getPlace().isEmpty()){
 			if(current_user.inviteEmployeeToEvent(availableEmployees.get(Integer.parseInt(input)), newEvent)){
 				peopleInvited.add(availableEmployees.get(Integer.parseInt(input)));
 				ctd.WriteMessageToDatabase(con, availableEmployees.get(Integer.parseInt(input)));
@@ -170,7 +172,15 @@ public class CalendarProgram {
 		
 		current_user.addEvent(newEvent);
 		newEvent.addEmployee(current_user);
-		newEvent.setEventID();
+		int biggestEvtID = 0;
+		for (Event evt : events){
+			if (evt.getEventID() > biggestEvtID){
+				biggestEvtID = evt.getEventID();
+			}
+		}
+		System.out.println("\n\n\n " + biggestEvtID);
+		newEvent.setEventID((biggestEvtID + 1));
+		events.add(newEvent);
 		ctd.WriteEventToDatabase(con, newEvent);
 		ctd.WriteEventDeltakelseToDatabase(con, newEvent, peopleInvited);
 		return newEvent;
@@ -332,9 +342,11 @@ public class CalendarProgram {
 	
 	private void run() throws SQLException {
 		current_user = login();
+		ctd.getMessages(con);
 		System.out.println("\nDu er naa logget inn. Skriv quit for aa logge ut");
 		System.out.println("Hei, " + current_user.getName() + "!");
 		
+		System.out.println(current_user.getInbox().size());
 		System.out.println("Du har " + current_user.countUnreadMessages() + " uleste meldinger i innboksen din\n");
 		while(current_user != null){
 			System.out.println("Hva vil du gjoere?");

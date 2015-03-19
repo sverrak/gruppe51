@@ -14,11 +14,17 @@ public class Message {
 	private final java.sql.Timestamp timestamp;
 	
 	public Message(Employee sender, Employee receiver, java.sql.Timestamp dateTime,
-			String content, String subject) {
+			String content, String subject,String isRead) {
 		super();
 		this.sender = sender;
 		this.receiver = receiver;
-		this.read = false;
+		if(isRead.equalsIgnoreCase("true")){
+			
+			this.read = true;
+		}
+		else{
+			this.read = false;
+		}
 		this.content = content;
 		this.subject = subject;
 		this.timestamp = dateTime;

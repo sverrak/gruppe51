@@ -25,6 +25,7 @@ public class ConnectionToDatabase {
 	  private ArrayList<ResultSet> resultData = new ArrayList<ResultSet>();	
 	  private List<Employee> employees = new ArrayList<Employee>();
 	  private List<Room> rooms = new ArrayList<Room>();
+	  private List<Event> events = new ArrayList<Event>();
 	
 
 	// Denne metoden brukes i initialiseringen for Œ hente ut og sjekke om brukeren eksisterer i databasen
@@ -187,31 +188,72 @@ public class ConnectionToDatabase {
 		java.sql.Timestamp dateTime = null;
 		int senderID = -1;
 		int receiverID = -1;
+		String isRead = "";
 		List<Employee> emps = new ArrayList<Employee>();
 		emps = SporringEmployees(con, "SELECT * FROM Employee");
 		Employee sender = null;
 		Employee receiver = null;
-		
+		int counter = 0;
 		while(rs.next()){
 			subject = rs.getString("subject");
 			content = rs.getString("content");
 			dateTime = (rs.getTimestamp("timeStamp"));
 			senderID = rs.getInt("sender_ID");
 			receiverID = rs.getInt("receiver_ID");
+			isRead = rs.getString("isRead");
 			for (Employee e : emps){
 				if (e.getEmployeeID() == senderID){
 					sender = e;
 				}
-				else if(e.getEmployeeID() == receiverID){
+			}
+			for (Employee e : emps){
+				if (e.getEmployeeID() == receiverID){
 					receiver = e;
 				}
 			}
 			
-			Message msg = new Message(sender, receiver, dateTime, subject, content);
+			Message msg = new Message(sender, receiver, dateTime, subject, content, isRead);
 			receiver.addMessageToInbox(msg);
+			counter+=1;
+			System.out.println("\n" + counter + " " + receiver.getName());
 		}
 
 	}
+	
+	public List<Event> getEvents(){
+		
+		return events;
+		
+	}
+	
+/*	public List<Event> fetchEvents(Connection con) throws SQLException{
+		Statement stmt = null;
+		stmt = con.createStatement();
+		String sql = "SELECT * FROM Event";
+		ResultSet rs = stmt.executeQuery(sql);
+		
+		int eventID = 0;
+		String title = "";
+        java.util.Date startDato = new java.util.Date();
+        java.util.Date endDato = new java.util.Date();
+        String eventDescription = "";
+        int creatorID = 0;
+        int roomID = 0;
+        
+		
+		while (rs.next()){
+	    	 
+			eventID = rs.getInt("eventID");
+			roomID = rs.getInt("roomID");
+	    	title = rs.getString("title");
+	        startDato = convertDateTimeToDate(rs.getString("startTime"));
+	        endDato = convertDateTimeToDate(rs.getString("endTime"));
+	        eventDescription = rs.getString("eventDescription");
+	        creatorID = rs.getInt("creator_ID");
+		}
+		
+		Event tempEvent = new Event(title, startTime, endTime, eventDescription, )
+	} */
 	
 	public void fetchRooms(Connection con) throws SQLException{
 		Statement stmt = null;
@@ -232,6 +274,8 @@ public class ConnectionToDatabase {
 			capacity = rs.getInt("capacity");
 			name = rs.getString("name");
 			
+			
+			
 			Room tempRoom = new Room(roomID, name, capacity, roomDescription);
 			rooms.add(tempRoom);
 		}
@@ -251,20 +295,18 @@ public class ConnectionToDatabase {
 
 	          java.util.Date startDato = new java.util.Date();
 	          java.util.Date endDato = new java.util.Date();
-	      //  String roomName = "";
-	      //  int roomCapacity = 0;
-	      //  String roomDescription = "";
+
 	          String eventDescription = "";
 	          int creatorID = 0;
 	          int roomID = 0;
 	          String title = "";
 	          Employee tempEmployee = null;
 	          int counter = 0;
+	          int eventID = 0;
 			      while (rs.next()) {
 			    	  	counter ++;
-				//    	  roomName = rs.getString("name");
-				//    	  roomDescription = rs.getString("eventDescription");
-				//    	  roomCapacity = rs.getInt("capacity");
+			    	  		
+			    	  	  eventID = rs.getInt("eventID");
 				    	  roomID = rs.getInt("roomID");
 				    	  title = rs.getString("title");
 				          startDato = convertDateTimeToDate(rs.getString("startTime"));
@@ -278,8 +320,10 @@ public class ConnectionToDatabase {
 					        	  }
 					          }
 	
-				//	          Room tempRoom = new Room(roomName, roomCapacity, roomDescription);
 					          Event tempEvent = new Event(title, startDato, endDato, eventDescription, tempEmployee);
+					          tempEvent.setEventID(eventID);
+					          events.add(tempEvent);
+
 					          for (Room room : rooms){
 					        	  if(room.getRoomID() == roomID){
 					        		  tempEvent.setRoom(room);
@@ -288,6 +332,11 @@ public class ConnectionToDatabase {
 					          }
 			      }
 			      return rooms;
+	}
+	
+	public List<Event> fetchEvents(){
+		System.out.println("Henter events");
+		return events;
 	}
 		
 
@@ -408,7 +457,7 @@ public class ConnectionToDatabase {
 		String sql = "INSERT INTO Gruppe (gruppeID, navn, ansvarlig, beskrivelse)" + "VALUES (?, ?, ?, ?)";
 		preparedStatement = con.prepareStatement(sql);
 		preparedStatement.setInt(1, g.getGroupID()); 
-		preparedStatement.setString(2, g.getGroupName());
+		preparedStatement.setString(2, g.getName());
 		preparedStatement.setInt(3, g.getResponsible().getEmployeeID());
 		preparedStatement.setString(4, g.getDescription());
 
