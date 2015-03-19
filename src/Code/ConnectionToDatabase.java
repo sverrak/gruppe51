@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Collection;
 
+import com.sun.tools.internal.xjc.reader.Messages;
+
 public class ConnectionToDatabase {
 
 	  private ResultSet resultSet = null; 
@@ -27,6 +29,7 @@ public class ConnectionToDatabase {
 	  private ArrayList<Room> rooms = new ArrayList<Room>();
 	  private List<Group> groups = new ArrayList<Group>();
 	  private ArrayList<Event> events = new ArrayList<Event>();
+	  private ArrayList<Message> messages = new ArrayList<Message>();
 	
 
 	// Denne metoden brukes i initialiseringen for aa hente ut og sjekke om brukeren eksisterer i databasen
@@ -126,6 +129,25 @@ public class ConnectionToDatabase {
 		preparedStatement.executeUpdate();	
 		
 	}
+	
+	public void updateEventDeltakelsesStatus(Connection con, Event e, Employee emp) throws SQLException{
+		
+		PreparedStatement preparedStatement = null;
+		String sql = "UPDATE Eventdeltakelse SET status = ? WHERE employeeID = ?, eventID = ?";
+		preparedStatement = con.prepareStatement(sql);
+		
+		if(emp.getEventsAttending().contains(e)){
+			preparedStatement.setString(1, "a");
+		} else if(emp.getDeclinedEvents().contains(e)){
+			preparedStatement.setString(1, "d");
+		} else{
+			preparedStatement.setString(1, "i");
+		}
+		preparedStatement.setInt(2, emp.getEmployeeID());
+		preparedStatement.setInt(3, e.getEventID());
+		
+		preparedStatement.executeUpdate();	
+	}
 	// Ikke implementert
 	public Boolean checkUserName(Connection con, String s) throws SQLException{
 		//Trenger en for-lokke som itererer gjennom alle eksisterende employees i selskapet og skriver dem til databasen
@@ -143,6 +165,7 @@ public class ConnectionToDatabase {
 		return false;	
 	}
 	
+	//Denne metoden sletter en bruker n�r admin velger � slette en bruker
 	public void deleteUser(Connection con, String sql, Employee e) throws SQLException{
 		
 		PreparedStatement preparedStatement = null;
@@ -152,6 +175,7 @@ public class ConnectionToDatabase {
 		preparedStatement.executeUpdate();
 	}
 	
+	//Denne metoden oppretter en ny Employee i databasen n�r admin har opprettet en ny bruker
 	public void NewEmployee(Connection con, Employee e) throws SQLException{
 		
 		PreparedStatement preparedStatement = null;
@@ -172,7 +196,10 @@ public class ConnectionToDatabase {
 		
 	}
 	
+
+	//Denne metoden henter Messages fra databasen, og lagrer de i en 
 	public void getMessages(Connection con) throws SQLException{
+
 		Statement stmt = null;
 		stmt = con.createStatement();
 		
@@ -206,11 +233,13 @@ public class ConnectionToDatabase {
 			}
 			
 			Message msg = new Message(sender, receiver, dateTime, subject, content);
+			messages.add(msg);
 			receiver.addMessageToInbox(msg);
 		}
 
 	}
 	
+	//Denne metoden benyttes for � hente Room fra databasen, og lagrer de i den lokale listen rooms
 	public void fetchRooms(Connection con) throws SQLException{
 		Statement stmt = null;
 		stmt = con.createStatement();
@@ -235,6 +264,7 @@ public class ConnectionToDatabase {
 		}
 	}
 	
+	//Sjekker hvilke rom som er ledige for et spesifisert event, m� derfor hente allerede eksisterende event og sjekke om rom eksisterer i noen av disse og i tilfelle til hvilken tid
 	public List<Room> checkRoomEvents(Connection con) throws SQLException{
 		
 		Statement stmt = null;
@@ -314,6 +344,8 @@ public class ConnectionToDatabase {
 		return rooms;
 	} */
 	
+	
+	//Viktig for � f� riktig format p� Date-objektene i javakoden s� de kan skrives til databasen
 	private java.sql.Timestamp convertDateToDateTime(java.util.Date date) throws SQLException{
 		
 		int year = date.getYear();
@@ -324,6 +356,7 @@ public class ConnectionToDatabase {
 		return timeS;
 	}
 
+	//S�rger for at event oppdateres etter at et nytt event er oppdatert
 	public void WriteEventToDatabase(Connection con, Event e) throws SQLException{
 		
 		PreparedStatement preparedStatement = null;
@@ -352,6 +385,7 @@ public class ConnectionToDatabase {
 		}
 	}	
 	
+	//S�rger for � skrive rom til databasen, er denne n�dvendig?
 	public void WriteRoomToDatabase(Connection con, Room r) throws SQLException{
 		
 		PreparedStatement preparedStatement =  null;
@@ -368,11 +402,12 @@ public class ConnectionToDatabase {
 		
 	}	
 	
+	//Denne s�rger for at meldinger blir lagret i databasen etter at disse er opprettet, f.eks n�r folk blir invitert til et event
 	public void WriteMessageToDatabase(Connection con, Employee e) throws SQLException{
 		PreparedStatement preparedStatement = null;
 		Message m = e.getInbox().get(e.getInbox().size()-1);
 		
-		String sql = "INSERT INTO Message (messageID, subject, content, timeStamp, sender_ID, receiver_ID)" + "VALUES (?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO Message (messageID, subject, content, timeStamp, sender_ID, receiver_ID, isRead)" + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 		preparedStatement = con.prepareStatement(sql);
 		preparedStatement.setInt(1, m.getMessageID());
 		preparedStatement.setString(2, m.getSubject());
@@ -380,12 +415,14 @@ public class ConnectionToDatabase {
 		preparedStatement.setTimestamp(4, m.getTimeStamp());
 		preparedStatement.setInt(5, m.getSender().getEmployeeID());
 		preparedStatement.setInt(6, m.getReceiver().getEmployeeID());
+		preparedStatement.setString(7, m.isRead().toString());
 		
 		
 		preparedStatement.executeUpdate(); //Her oppdateres databasen	
 		
 	}	
 	
+	//Denne metoden skriver gruppe til databasen, s�rger for at en gruppe oppdateres hvis endringer oppst�r
 	public void WriteGruppeToDatabase(Connection con, Group g) throws SQLException{
 		
 		PreparedStatement preparedStatement = null;
@@ -401,6 +438,7 @@ public class ConnectionToDatabase {
 
 	}
 	
+	//Denne metoden s�rger for at eventDeltakelse oppdateres i databasen, n�r et event har f�tt flere deltakere vil databasen oppdateres
 	public void WriteEventDeltakelseToDatabase(Connection con, Event ev, List<Employee> emp) throws SQLException{
 		
 		for(Employee e : emp){
@@ -963,6 +1001,81 @@ public class ConnectionToDatabase {
 			  counter++;
 		}
 		return new ListContainer(events, employees);
+		
+	}
+
+	public ArrayList<Message> sporringMessages(Connection con, String sporring) throws SQLException {
+		Statement stmt = null;
+		stmt = con.createStatement();
+		ResultSet messageSet = stmt.executeQuery(sporring);
+		ResultSetMetaData messagesmd = messageSet.getMetaData();
+		metaData.add(messagesmd);
+		resultData.add(messageSet);
+		InitFetchMessages(metaData, resultData);
+		return messages ;
+	}
+
+	private void InitFetchMessages(ArrayList<ResultSetMetaData> metaData, ArrayList<ResultSet> resultData) throws SQLException {
+		int counter = 0;
+		
+		while (counter < metaData.size()) {
+			
+			int numberOfColumns = metaData.get(counter).getColumnCount();
+			
+			 int messageID = 0;
+			 String subject = "";
+			 String content = "";
+			 java.util.Date timestamp = null;
+			 int senderID = 0;
+			 int receiverID = 0;
+			 boolean isRead = false;
+			 SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy H:m:s");
+			 Employee sender = null;
+			 Employee receiver = null;
+			 
+			 while (resultData.get(counter).next()) {
+			        for (int i = 1; i <= numberOfColumns; i++) {
+			          String columnValue = resultData.get(counter).getString(i);
+			          if (i==1){
+			        	  messageID = Integer.parseInt(columnValue);
+			          }else if (i==2){
+			        	  subject = columnValue;
+			          }else if (i==3){
+			        	  content = (columnValue);
+			          }else if (i==4){
+			        	  try {
+			        		  	timestamp = (java.util.Date) formatter.parse(columnValue.substring(8, 10) + "/" + columnValue.substring(5, 7) + "/" + columnValue.substring(0, 4) + " " + columnValue.substring(11, columnValue.length() - 2));
+			        		  	
+							} catch (ParseException e) {
+								e.printStackTrace();
+							}
+			          }else if (i==5){
+			        	  senderID = Integer.parseInt(columnValue);
+			          }else if (i==6){
+			        	  receiverID = Integer.parseInt(columnValue);
+			          }else if (i==7){
+			        	  isRead = Boolean.parseBoolean(columnValue);
+			          }
+			        }
+			        
+			        
+			        for (Employee e : employees) {
+						if(senderID == e.getEmployeeID()){
+							sender = e;
+						}else if(receiverID == e.getEmployeeID()){
+							receiver = e;
+						}
+					}
+			        
+			        if(employees.contains(receiver)){
+			        	
+			        	Message i = new Message(messageID, sender, receiver, timestamp, content, subject);
+			        	i.sendMessage();
+			        	messages.add(i);//Maa sorge for at nyEvent-stringen har samme format som inn-parameterene til new Group			        	
+			        }
+			      } 
+			  counter++;
+		}
 		
 	}
 	
