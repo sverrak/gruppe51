@@ -502,7 +502,7 @@ public class CalendarProgram {
 									System.out.println("peopleDeclind: " + chosen_event.getPeopleDeclined());
 								} else if (secondOptionChoice.equals("2")) {
 									System.out.println("Hva vil du endre?");
-									System.out.println("1: avlys event | 2: trekk invitasjon | 3: inviter deltakere | 4: endre rom | 4: annen endring");
+									System.out.println("1: avlys event | 2: trekk invitasjon | 3: inviter deltakere | 4: endre rom | 5: endring av tidspunkt");
 									thirdOptionChoice = user_input.nextLine();
 									if (thirdOptionChoice.equals("1")) {
 										System.out.println("Hva er grunnen til avlysningen?");
@@ -551,7 +551,10 @@ public class CalendarProgram {
 										}
 										ctd.WriteEventDeltakelseToDatabase(con,chosen_event, peopleInvited);
 									} else if (thirdOptionChoice.equals("4")) {
-
+										//databasefix for aa endre rom
+									} else if (thirdOptionChoice.equals("5")) {
+										//databasefix for aa endre tidspunkt
+										
 									}
 								}
 							}
