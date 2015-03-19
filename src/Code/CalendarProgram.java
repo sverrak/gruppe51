@@ -152,7 +152,7 @@ public class CalendarProgram {
 				
 				counter += 1;
 				if(counter == capacity){
-					System.out.println("Du har naa invitert ");
+					System.out.println("Du har n� invitert ");
 				}
 			} else{
 				System.out.println("Personen er allerede invitert til dette arrangementet.");
@@ -227,14 +227,13 @@ public class CalendarProgram {
 		      }// do nothing */
 			current_user = null;
 			employees = (ArrayList<Employee>) ctd.SporringEmployees(con, "SELECT * FROM Employee");
-			System.out.println("ID: " + employees.get(0).getEmployeeID());
-			System.out.println("Navn: " + employees.get(0).getName());
-			System.out.println(employees.get(0).getUsername());
-			System.out.println(employees.get(0).getPassword());
 			
 			rooms = (ArrayList<Room>) ctd.sporringRooms(con, "SELECT * FROM Room");
 			events = (ArrayList<Event>) ctd.sporringEvents(con, "SELECT * FROM Event", employees);
 			groups = (ArrayList<Group>) ctd.SporringGroups(con, "SELECT * FROM Gruppe");
+			ListContainer lc = ctd.sporringParticipations(con, "SELECT * FROM Eventdeltakelse", employees, events);
+			employees = lc.getEmployees();
+			events = lc.getEvents();
 			
 			try{
 				if(con == null){
@@ -329,6 +328,7 @@ public class CalendarProgram {
 	
 	private void run() throws SQLException {
 		current_user = login();
+		
 		System.out.println("\nDu er naa logget inn. Skriv quit for aa logge ut");
 		System.out.println("Hei, " + current_user.getName() + "!");
 		

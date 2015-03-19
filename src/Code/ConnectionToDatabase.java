@@ -531,7 +531,7 @@ public class ConnectionToDatabase {
 			        	  capacity = Integer.parseInt(columnValue);
 			          } else if (i==4){
 			        	  description = columnValue;
-			          } else if (i==5){ //Her maa roomSchedule ordnes?
+			          } else if (i==5){ //Her m� roomSchedule ordnes?
 			   //     	  roomSchedule = columnValue;
 			          }
 				  }
@@ -896,6 +896,74 @@ public class ConnectionToDatabase {
 			      } 
 			  counter++;
 		}
+	}
+
+	public ListContainer sporringParticipations(Connection con, String sporring, List<Employee> employees2, List<Event> events2) throws SQLException {
+		Statement stmt = null;
+		stmt = con.createStatement();
+		ResultSet participationSet = stmt.executeQuery(sporring);
+		ResultSetMetaData participationsmd = participationSet.getMetaData();
+		metaData.add(participationsmd);
+		resultData.add(participationSet);
+		ListContainer lc = InitFetchParticipation(metaData, resultData, employees2, events2);
+		return lc;
+	}
+
+	private ListContainer InitFetchParticipation(ArrayList<ResultSetMetaData> metaData, ArrayList<ResultSet> resultData, List<Employee> employees, List<Event> events) throws SQLException {
+		int counter = 0;
+		
+		while (counter < metaData.size()) {
+			
+			int numberOfColumns = metaData.get(counter).getColumnCount();
+			
+			 int eventID = 0;
+			 int employeeID = 0;
+			 String status = "";
+			 Boolean isHidden = false; 
+			 Employee emp = null;
+			 
+			 while (resultData.get(counter).next()) {
+			        for (int i = 1; i <= numberOfColumns; i++) {
+			          String columnValue = resultData.get(counter).getString(i);
+			          if (i==1){
+			        	  eventID = Integer.parseInt(columnValue);
+			          }else if (i==2){
+			        	  employeeID = Integer.parseInt(columnValue);
+			          }else if (i==3){
+			        	  status = columnValue;
+			          }else if (i==4){
+			        	  isHidden = Boolean.parseBoolean(columnValue);
+			          }
+			        }
+			        
+			        for (Employee employee : employees) {
+						if(employee.getEmployeeID() == employeeID){
+							emp = employee;
+							break;
+						}
+					}
+			        for (Event event : events) {
+						if(event.getEventID() == eventID){
+							//System.out.println(event.toString() + emp.toString() + status);
+							// i = invited, a = attending, d = declined
+							if (status.equals("i")) {
+								event.getPeopleInvited().add(emp);
+								emp.getUpcomingEvents().add(event);
+							}else if(status.equals("a")){
+								event.getPeopleGoing().add(emp);
+								emp.getEventsAttending().add(event);
+							}else if(status.equals("d")){
+								event.getPeopleDeclined().add(emp);
+								emp.getDeclinedEvents().add(event);
+							}
+							break;
+						}
+					}
+			      } 
+			  counter++;
+		}
+		return new ListContainer(events, employees);
+		
 	}
 	
 /*	public static class PrintColumnTypes  {
