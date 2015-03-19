@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Collection;
 
+import com.sun.tools.internal.xjc.reader.Messages;
+
 public class ConnectionToDatabase {
 
 	  private ResultSet resultSet = null; 
@@ -27,6 +29,7 @@ public class ConnectionToDatabase {
 	  private ArrayList<Room> rooms = new ArrayList<Room>();
 	  private List<Group> groups = new ArrayList<Group>();
 	  private ArrayList<Event> events = new ArrayList<Event>();
+	  private ArrayList<Message> messages = new ArrayList<Message>();
 	
 
 	// Denne metoden brukes i initialiseringen for aa hente ut og sjekke om brukeren eksisterer i databasen
@@ -126,6 +129,25 @@ public class ConnectionToDatabase {
 		preparedStatement.executeUpdate();	
 		
 	}
+	
+	public void updateEventDeltakelsesStatus(Connection con, Event e, Employee emp) throws SQLException{
+		
+		PreparedStatement preparedStatement = null;
+		String sql = "UPDATE Eventdeltakelse SET status = ? WHERE employeeID = ?, eventID = ?";
+		preparedStatement = con.prepareStatement(sql);
+		
+		if(emp.getEventsAttending().contains(e)){
+			preparedStatement.setString(1, "a");
+		} else if(emp.getDeclinedEvents().contains(e)){
+			preparedStatement.setString(1, "d");
+		} else{
+			preparedStatement.setString(1, "i");
+		}
+		preparedStatement.setInt(2, emp.getEmployeeID());
+		preparedStatement.setInt(3, e.getEventID());
+		
+		preparedStatement.executeUpdate();	
+	}
 	// Ikke implementert
 	public Boolean checkUserName(Connection con, String s) throws SQLException{
 		//Trenger en for-lokke som itererer gjennom alle eksisterende employees i selskapet og skriver dem til databasen
@@ -143,6 +165,7 @@ public class ConnectionToDatabase {
 		return false;	
 	}
 	
+	//Denne metoden sletter en bruker når admin velger å slette en bruker
 	public void deleteUser(Connection con, String sql, Employee e) throws SQLException{
 		
 		PreparedStatement preparedStatement = null;
@@ -152,6 +175,7 @@ public class ConnectionToDatabase {
 		preparedStatement.executeUpdate();
 	}
 	
+	//Denne metoden oppretter en ny Employee i databasen når admin har opprettet en ny bruker
 	public void NewEmployee(Connection con, Employee e) throws SQLException{
 		
 		PreparedStatement preparedStatement = null;
@@ -172,6 +196,7 @@ public class ConnectionToDatabase {
 		
 	}
 	
+	//Denne metoden henter Messages fra databasen, og lagrer de i en 
 	public void getMessages(Connection con) throws SQLException{
 		Statement stmt = null;
 		stmt = con.createStatement();
@@ -206,11 +231,13 @@ public class ConnectionToDatabase {
 			}
 			
 			Message msg = new Message(sender, receiver, dateTime, subject, content);
+			messages.add(msg);
 			receiver.addMessageToInbox(msg);
 		}
 
 	}
 	
+	//Denne metoden benyttes for å hente Room fra databasen, og lagrer de i den lokale listen rooms
 	public void fetchRooms(Connection con) throws SQLException{
 		Statement stmt = null;
 		stmt = con.createStatement();
@@ -235,6 +262,7 @@ public class ConnectionToDatabase {
 		}
 	}
 	
+	//Sjekker hvilke rom som er ledige for et spesifisert event, må derfor hente allerede eksisterende event og sjekke om rom eksisterer i noen av disse og i tilfelle til hvilken tid
 	public List<Room> checkRoomEvents(Connection con) throws SQLException{
 		
 		Statement stmt = null;
@@ -314,6 +342,8 @@ public class ConnectionToDatabase {
 		return rooms;
 	} */
 	
+	
+	//Viktig for å få riktig format på Date-objektene i javakoden så de kan skrives til databasen
 	private java.sql.Timestamp convertDateToDateTime(java.util.Date date) throws SQLException{
 		
 		int year = date.getYear();
@@ -324,6 +354,7 @@ public class ConnectionToDatabase {
 		return timeS;
 	}
 
+	//Sørger for at event oppdateres etter at et nytt event er oppdatert
 	public void WriteEventToDatabase(Connection con, Event e) throws SQLException{
 		
 		PreparedStatement preparedStatement = null;
@@ -352,6 +383,7 @@ public class ConnectionToDatabase {
 		}
 	}	
 	
+	//Sørger for å skrive rom til databasen, er denne nødvendig?
 	public void WriteRoomToDatabase(Connection con, Room r) throws SQLException{
 		
 		PreparedStatement preparedStatement =  null;
@@ -368,11 +400,12 @@ public class ConnectionToDatabase {
 		
 	}	
 	
+	//Denne sørger for at meldinger blir lagret i databasen etter at disse er opprettet, f.eks når folk blir invitert til et event
 	public void WriteMessageToDatabase(Connection con, Employee e) throws SQLException{
 		PreparedStatement preparedStatement = null;
 		Message m = e.getInbox().get(e.getInbox().size()-1);
 		
-		String sql = "INSERT INTO Message (messageID, subject, content, timeStamp, sender_ID, receiver_ID)" + "VALUES (?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO Message (messageID, subject, content, timeStamp, sender_ID, receiver_ID, isRead)" + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 		preparedStatement = con.prepareStatement(sql);
 		preparedStatement.setInt(1, m.getMessageID());
 		preparedStatement.setString(2, m.getSubject());
@@ -380,12 +413,14 @@ public class ConnectionToDatabase {
 		preparedStatement.setTimestamp(4, m.getTimeStamp());
 		preparedStatement.setInt(5, m.getSender().getEmployeeID());
 		preparedStatement.setInt(6, m.getReceiver().getEmployeeID());
+		preparedStatement.setString(7, m.isRead().toString());
 		
 		
 		preparedStatement.executeUpdate(); //Her oppdateres databasen	
 		
 	}	
 	
+	//Denne metoden skriver gruppe til databasen, sørger for at en gruppe oppdateres hvis endringer oppstår
 	public void WriteGruppeToDatabase(Connection con, Group g) throws SQLException{
 		
 		PreparedStatement preparedStatement = null;
@@ -401,6 +436,7 @@ public class ConnectionToDatabase {
 
 	}
 	
+	//Denne metoden sørger for at eventDeltakelse oppdateres i databasen, når et event har fått flere deltakere vil databasen oppdateres
 	public void WriteEventDeltakelseToDatabase(Connection con, Event ev, List<Employee> emp) throws SQLException{
 		
 		for(Employee e : emp){
