@@ -488,9 +488,12 @@ public class CalendarProgram {
 							firstOptionChoice = user_input.nextLine();
 							Event chosen_event = events.get(Integer.parseInt(firstOptionChoice));
 							while (!secondOptionChoice.equals("q")) {
-								System.out.println("Hva vil du gjore?");
+								System.out.println("Hva vil du gjore? ['q' for å quite]");
 								System.out.println("1: se peopleGoing, peopleDeclined og peopleInvited | 2: endre event)");
 								secondOptionChoice = user_input.nextLine();
+								if(secondOptionChoice.equals("q")){
+									break;
+								}
 								if (secondOptionChoice.equals("1")) {
 									System.out.println("Du ser naa paa " + chosen_event + ".");
 									System.out.println("Dette arrangementet har folgende deltakerstatus: ");
@@ -551,6 +554,9 @@ public class CalendarProgram {
 
 									}
 								}
+							}
+							if(secondOptionChoice.equals("q")){
+								break;
 							}
 						}
 					}
