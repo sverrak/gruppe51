@@ -51,9 +51,10 @@ public class CalendarProgram {
 		events.add(e);
 	}
 
-	public List<Room> findLocation(Date startTime, Date endTime, int capacity) {
+	public List<Room> findLocation(Date startTime, Date endTime, int capacity) throws SQLException {
 		List<Room> availableRooms = new ArrayList<Room>();
-		for (Room room : rooms) {
+		List<Room> rooms1 = ctd.checkRoomEvents(con); //Denne trengs for å sjekke at room'ene faktisk er ledige
+		for (Room room : rooms1) {
 			// System.out.println(room.getName());
 			// System.out.println("" + room.roomSchedule.size());
 			if (room.isAvailable(startTime, endTime)
@@ -256,10 +257,10 @@ public class CalendarProgram {
 			events = (ArrayList<Event>) ctd.sporringEvents(con, "SELECT * FROM Event", employees);
 			groups = (ArrayList<Group>) ctd.SporringGroups(con, "SELECT * FROM Gruppe");
 			ListContainer lc = ctd.sporringParticipations(con, "SELECT * FROM Eventdeltakelse", employees, events);
-			employees = lc.getEmployees();
-			events = lc.getEvents();
+			employees = lc.getEmployees(); // hvorfor hente inn employees over for så å endre listen til lc.getEmployees??
+			events = lc.getEvents(); //samme med events??
 			//Sender alle messagene til employeenes innbokser, saa trenger ikke ta vare pa messages utover dette
-			ctd.sporringMessages(con, "SELECT * FROM Message");
+			ctd.sporringMessages(con, "SELECT * FROM Message"); //denne metoden skal returnere en List<Message> messages, hvor lagres denne? er det nødvendig å returnere noe i metoden?
 			
 			System.out.println("Fetching completed.\n\n");
 			try{
@@ -275,8 +276,10 @@ public class CalendarProgram {
 
 	public Employee login() throws SQLException{
 		System.out.println("Velkommen. Vennligst logg inn.");
-		String sporring = "SELECT * FROM Employee";
-		this.employees = ctd.SporringEmployees(con, sporring);
+	//	String sporring = "SELECT * FROM Employee"; //naa blir dette allerede gjort i initialize
+	//	this.employees = ctd.SporringEmployees(con, sporring);
+		
+		
 		
 		user_input = new Scanner(System.in);
 		username = "";
