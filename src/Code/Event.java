@@ -21,11 +21,8 @@ public class Event implements Comparable<Event>{
 	private String place;
 	private List<Employee> peopleInvited;
 	private List<Employee> peopleGoing;
-	private List<Employee> peopleDeclined;
-	private List<Event> events;
-	
-	private static ArrayList<String> months = new ArrayList(Arrays.asList("jan","feb","mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"));
-	
+	private List<Employee> peopleDeclined;;
+	private int capacity;
 	
 	public Event(String title, Date startTime, Date endTime,
 			String description, Employee creator) {
@@ -66,9 +63,12 @@ public class Event implements Comparable<Event>{
 	public String getTitle() {
 		return title;
 	}
-	
+	//denne gjør ingenting!
 	public void setEventID(){
 		
+	}
+	public int getCapacity() {
+		return capacity;
 	}
 
 	public void setTitle(String title) {

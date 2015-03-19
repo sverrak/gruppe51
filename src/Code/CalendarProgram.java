@@ -55,7 +55,6 @@ public class CalendarProgram {
 	//		System.out.println("" + room.roomSchedule.size());
 			if(room.isAvailable(startTime, endTime) && room.getCapacity() >= capacity){
 				availableRooms.add(room);
-				System.out.println(room.getName() + ", was added to available rooms");
 			}
 		}
 		return availableRooms;
@@ -101,13 +100,8 @@ public class CalendarProgram {
 		}*/
 		//oppretter event
 		
-		Event newEvent = new Event(title, startTime, endTime, description, employee);
+		Event newEvent = current_user.createEvent(title, startTime, endTime, description);
 		
-		
-		//finner ledige rom
-		ctd.fetchRooms(con);
-		this.rooms = ctd.checkRoomEvents(con);
-
 		List<Room> availableRooms = new ArrayList<Room>();
 		availableRooms = findLocation(startTime, endTime, capacity);
 		
@@ -139,7 +133,7 @@ public class CalendarProgram {
 		//print roomSchedulen til Room
 		//System.out.println(newEvent.getRoom().getRoomSchedule().toString());
 		
-		//legge til deltakere
+		//legge til deltakere. FLYTTER DENNE TIL EGEN METODE EGET STED
 		List<Employee> availableEmployees = getAvailableEmployees(startTime, endTime);
 		for (int i = 0; i < getAvailableEmployees(startTime, endTime).size(); i++) {
 			System.out.println("" + i + ": " + availableEmployees.get(i));
@@ -151,7 +145,7 @@ public class CalendarProgram {
 		List<Employee> peopleInvited = new ArrayList<Employee>();
 		
 		int counter = 1;
-		while(((! input.equals("")) && counter < newEvent.getRoom().getCapacity()) || (! input.equals("")) && ! newEvent.getPlace().isEmpty()){
+		while(isInteger(input,10) && (counter < newEvent.getRoom().getCapacity() || ! newEvent.getPlace().isEmpty())){
 			if(current_user.inviteEmployeeToEvent(availableEmployees.get(Integer.parseInt(input)), newEvent)){
 				peopleInvited.add(availableEmployees.get(Integer.parseInt(input)));
 				ctd.WriteMessageToDatabase(con, availableEmployees.get(Integer.parseInt(input)));
@@ -168,12 +162,10 @@ public class CalendarProgram {
 			System.out.println("Noen flere[tom streng for aa avslutte]?");
 			input = user_input.nextLine();
 		}
-		
-		current_user.addEvent(newEvent);
-		newEvent.addEmployee(current_user);
+		user_input.close();
+
 		newEvent.setEventID();
-		ctd.WriteEventToDatabase(con, newEvent);
-		ctd.WriteEventDeltakelseToDatabase(con, newEvent, peopleInvited);
+		ctd.WriteEventDeltakelseToDatabase(con, newEvent, peopleInvited);		// skal flyttes
 		return newEvent;
 	}
 	private List<Employee> getAvailableEmployees(Date startTime, Date endTime) {
@@ -255,10 +247,7 @@ public class CalendarProgram {
 	}
 	
 	public Employee login() throws SQLException{
-		
-		String sporring = "SELECT * FROM Employee";
-		this.employees = ctd.SporringEmployees(con, sporring);
-		
+			
 		user_input = new Scanner(System.in);
 		username = "";
 		password = null;
@@ -286,9 +275,9 @@ public class CalendarProgram {
 	}
 	private void createNewUser() throws SQLException{
 		System.out.println("Fyll inn feltene til den nye brukeren!\n");
-		String sporring = "SELECT * FROM Employee";
-		employees = ctd.SporringEmployees(con, sporring);
-		int employeeID = employees.get(employees.size()-1).getEmployeeID() + 1;
+//		String sporring = "SELECT * FROM Employee";
+//		employees = ctd.SporringEmployees(con, sporring);
+//		int employeeID = employees.get(employees.size()-1).getEmployeeID() + 1;
 		username = "";
 		while(username == null || username.equals("")){
 			System.out.println("Oensket brukernavn: ");
@@ -414,8 +403,7 @@ public class CalendarProgram {
 					}
 					}
 				} else if(option == 2){
-					Event event = getEventInput(current_user);
-					current_user.addEvent(event);
+					Event event = getEventInput(current_user);	//eventet blir opprettet gjennom kall current_user.createEvent(), men ikke skrevet til databasen
 					ctd.WriteEventToDatabase(con, event);
 					
 				
@@ -455,12 +443,13 @@ public class CalendarProgram {
 								System.out.println("Hva vil du gjore?");
 								System.out.println("1: se peopleGoing, peopleDeclined og peopleInvited | 2: endre event)");
 								secondOptionChoice = user_input.nextLine();
+								Event chosen_event = events.get(Integer.parseInt(firstOptionChoice));
 								if(secondOptionChoice.equals("1")){
-									System.out.println("Du ser naa paa " + events.get(Integer.parseInt(firstOptionChoice)) + ".");
+									System.out.println("Du ser naa paa " + chosen_event + ".");
 									System.out.println("Dette arrangementet har folgende deltakerstatus: ");
-									System.out.println("peopleInvited: " + events.get(Integer.parseInt(firstOptionChoice)).getPeopleInvited());
-									System.out.println("peopleGoing: " + events.get(Integer.parseInt(firstOptionChoice)).getPeopleGoing());
-									System.out.println("peopleDeclind: " + events.get(Integer.parseInt(firstOptionChoice)).getPeopleDeclined());
+									System.out.println("peopleInvited: " + chosen_event.getPeopleInvited());
+									System.out.println("peopleGoing: " + chosen_event.getPeopleGoing());
+									System.out.println("peopleDeclind: " + chosen_event.getPeopleDeclined());
 								} else if(secondOptionChoice.equals("2")){									
 									System.out.println("Hva vil du endre?");
 									System.out.println("1: avlys event | 2: trekk invitasjon | 3: inviter deltakere | 4: endre rom | 4: annen endring");
@@ -468,12 +457,12 @@ public class CalendarProgram {
 									if(thirdOptionChoice.equals("1")){
 										System.out.println("Hva er grunnen til avlysningen?");
 										String reason = user_input.nextLine();
-										current_user.cancelEvent(events.get(Integer.parseInt(firstOptionChoice)), reason);
+										current_user.cancelEvent(chosen_event, reason);
 										System.out.println("Eventen er slettet.");
 									} else if(thirdOptionChoice.equals("2")){
 										System.out.println("Hvem vil du trekke invitasjonen til?");
-										for (int i = 0; i < events.get(Integer.parseInt(firstOptionChoice)).getPeopleInvited().size(); i++) {
-											System.out.println(i + "" + events.get(Integer.parseInt(firstOptionChoice)).getPeopleInvited().get(i));
+										for (int i = 0; i < chosen_event.getPeopleInvited().size(); i++) {
+											System.out.println(i + "" + chosen_event.getPeopleInvited().get(i));
 										}
 										
 										fourthOptionChoice = user_input.nextLine();
@@ -481,7 +470,37 @@ public class CalendarProgram {
 										current_user.withdrawInvitation(events.get(Integer.parseInt(firstOptionChoice)).getPeopleInvited().get(Integer.parseInt(fourthOptionChoice)), events.get(Integer.parseInt(firstOptionChoice)));
 										
 									} else if(thirdOptionChoice.equals("3")){
+										//legge til deltakere.
+										Scanner user_input = new Scanner(System.in);
+										List<Employee> availableEmployees = getAvailableEmployees(chosen_event.getStartTime(), chosen_event.getEndTime());
+										for (int i = 0; i < getAvailableEmployees(chosen_event.getStartTime(), chosen_event.getEndTime()).size(); i++) {
+											System.out.println("" + i + ": " + availableEmployees.get(i));
+										}
 										
+										System.out.println("Hvem vil du invitere til dette arrangementet[tom streng for aa avslutte]?");
+										String input = user_input.nextLine();
+										
+										List<Employee> peopleInvited = new ArrayList<Employee>();
+										
+										int counter = 1;
+										while(isInteger(input,10) && (counter < chosen_event.getRoom().getCapacity() || ! chosen_event.getPlace().isEmpty())){
+											if(current_user.inviteEmployeeToEvent(availableEmployees.get(Integer.parseInt(input)), chosen_event)){
+												peopleInvited.add(availableEmployees.get(Integer.parseInt(input)));
+												ctd.WriteMessageToDatabase(con, availableEmployees.get(Integer.parseInt(input)));
+												
+												counter += 1;
+												if(counter == chosen_event.getCapacity()){
+													System.out.println("Du har naa invitert ");
+												}
+											} else{
+												System.out.println("Personen er allerede invitert til dette arrangementet.");
+											}
+											/*newEvent.addEmployee(availableEmployees.get(Integer.parseInt(input)));
+											availableEmployees.get(Integer.parseInt(input)).addEvent(newEvent);*/
+											System.out.println("Noen flere[tom streng for aa avslutte]?");
+											input = user_input.nextLine();
+										}
+										ctd.WriteEventDeltakelseToDatabase(con, chosen_event, peopleInvited);
 									} else if(thirdOptionChoice.equals("4")){
 										
 									}
@@ -691,5 +710,20 @@ public class CalendarProgram {
 		biti.addEmployeeToGroup(sverre, gruppe51);
 		biti.createGroupEvent("Scrum meeting", dato1, dato2, "gaar gjennom ukas oppgaver", gruppe51);
 		biti.printGroupSchedule(gruppe51, 12, 2015);
+	}
+	
+	public static boolean isInteger(String s) {
+		return isInteger(s,10);
+		}
+	public static boolean isInteger(String s, int radix) {
+	    if(s.isEmpty()) return false;
+	    for(int i = 0; i < s.length(); i++) {
+	        if(i == 0 && s.charAt(i) == '-') {
+	            if(s.length() == 1) return false;
+		            else continue;
+	        }
+		        if(Character.digit(s.charAt(i),radix) < 0) return false;
+		    }
+	    return true;
 	}
 }

@@ -60,10 +60,6 @@ public class Employee {
 		eventsAttending = new ArrayList<Event>();
 	}
 	
-	public int getEmployeeID(){
-		return employeeID;
-	}
-
 	public List<Event> getEventsAttending() {
 		return eventsAttending;
 	}
@@ -128,17 +124,19 @@ public class Employee {
 
 // skal opprette nytt event med personen som inviterer som attending
 // hva brukes den til?
+	/*
 	public void addEvent(Event event){
 		event.getPeopleGoing().add(this);
 /*		if(eventsAttending != null){		// hva er dette godt for?
 
 			if (eventsAttending.size() == 0){
 				eventsAttending.add(event);
-			}else{ */
+			}else{ 
 				if(isAvailable(event.getStartTime(), event.getEndTime())){
 					eventsAttending.add(event);	
 				}
 	}
+*/
 	
 	public Event createEvent(String title, Date startTime, Date endTime, String description){
 		if (eventsAttending.size() == 0 || this.isAvailable(startTime, endTime)){
