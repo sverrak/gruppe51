@@ -42,6 +42,24 @@ public class Event implements Comparable<Event>{
 		this.peopleGoing = new ArrayList<Employee>();
 		this.peopleDeclined = new ArrayList<Employee>();
 		this.place = null;
+	}
+	
+	public Event(int eventID, String title, Date startTime, Date endTime,
+			String description, Room room, Employee creator) {
+		super();
+		this.eventID = eventID;
+		setTitle(title);
+		this.creator = creator;
+		//this.eventID = eventID;
+		//setTime(startTime, endTime);
+		this.startTime = startTime;
+		this.endTime = endTime;
+		setDescription(description);
+		this.room = room;
+		this.peopleInvited = new ArrayList<Employee>();
+		this.peopleGoing = new ArrayList<Employee>();
+		this.peopleDeclined = new ArrayList<Employee>();
+		this.place = null;
 		
 	}
 		

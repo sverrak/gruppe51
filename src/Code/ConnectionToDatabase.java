@@ -24,8 +24,9 @@ public class ConnectionToDatabase {
 	  private ArrayList<ResultSetMetaData> metaData = new ArrayList<ResultSetMetaData>();
 	  private ArrayList<ResultSet> resultData = new ArrayList<ResultSet>();	
 	  private List<Employee> employees = new ArrayList<Employee>();
-	  private List<Room> rooms = new ArrayList<Room>();
+	  private ArrayList<Room> rooms = new ArrayList<Room>();
 	  private List<Group> groups = new ArrayList<Group>();
+	  private ArrayList<Event> events = new ArrayList<Event>();
 	
 
 	// Denne metoden brukes i initialiseringen for aa hente ut og sjekke om brukeren eksisterer i databasen
@@ -567,7 +568,7 @@ public class ConnectionToDatabase {
 				          if (i==5){
 				        	  description = columnValue;
 				          }
-				          if (i==6){  //hvordan faa inn en Employee her?
+				          if (i==6){  //hvordan f� inn en Employee her?
 				        	  for (i = 0; i < employees.size(); i++){
 				        		
 				        		  if (employees.get(i).getName().equalsIgnoreCase(columnValue)) {
@@ -772,6 +773,126 @@ public class ConnectionToDatabase {
 					}
 		        	Group i = new Group(groupID, name, description, e);
 		        	groups.add(i);//Maa sorge for at nyGroup-stringen har samme format som inn-parameterene til new Group
+			      } 
+			  counter++;
+		}
+	}
+
+	public ArrayList<Event> sporringEvents(Connection con, String sporring, List<Employee> employees) throws SQLException {
+		Statement stmt = null;
+		stmt = con.createStatement();
+		ResultSet eventSet = stmt.executeQuery(sporring);
+		ResultSetMetaData eventsmd = eventSet.getMetaData();
+		metaData.add(eventsmd);
+		resultData.add(eventSet);
+		InitFetchEvents(metaData, resultData, (ArrayList<Employee>) employees);
+		return events;
+	}
+
+	private void InitFetchEvents(ArrayList<ResultSetMetaData> metaData, ArrayList<ResultSet> resultData, ArrayList<Employee> employees) throws SQLException {
+		int counter = 0;
+		
+		while (counter < metaData.size()) {
+			
+			int numberOfColumns = metaData.get(counter).getColumnCount();
+			
+			 int eventID = 0;
+			 String title = "";
+			 java.util.Date startTime = null;
+			 java.util.Date endTime = null;
+			 String description = "";
+			 Room room = null;
+			 Employee creator = null;
+			 SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy H:m:s");
+			  
+			  while (resultData.get(counter).next()) {
+			        for (int i = 1; i <= numberOfColumns; i++) {
+			          String columnValue = resultData.get(counter).getString(i);
+			          if (i==1){
+			        	  eventID = Integer.parseInt(columnValue);
+			          }else if (i==2){
+			        	  title = columnValue;
+			          }else if (i==3){
+			        	  try {
+			        		  	startTime = (java.util.Date) formatter.parse(columnValue.substring(8, 10) + "/" + columnValue.substring(5, 7) + "/" + columnValue.substring(0, 4) + " " + columnValue.substring(11, columnValue.length() - 2));
+			        		  	
+							} catch (ParseException e) {
+								e.printStackTrace();
+							}
+			          }else if (i==4){
+			        	  try {
+			        		  endTime = (java.util.Date) formatter.parse(columnValue.substring(8, 10) + "/" + columnValue.substring(5, 7) + "/" + columnValue.substring(0, 4) + " " + columnValue.substring(11, columnValue.length() - 2));
+			        		  	
+							} catch (ParseException e) {
+								e.printStackTrace();
+							}
+			          }else if(i==5){
+			        	  description = columnValue;
+			          }else if(i==6){
+			        	  for (Room r : rooms) {
+
+			        		  //if(r.getRoomID() == Integer.parseInt(columnValue)){
+							room = null;
+							break;
+							//}
+						}
+			        	room = null;
+			          }else if(i==7){
+			        	  for (Employee e : employees) {
+								if(e.getEmployeeID() == Integer.parseInt(columnValue)){
+									creator = e;
+									break;
+								}
+							}
+			          }
+			        }
+
+		        	Event i = new Event(eventID, title, startTime, endTime, description, room, creator);
+		        	events.add(i);//Maa sorge for at nyEvent-stringen har samme format som inn-parameterene til new Group
+			      } 
+			  counter++;
+		}
+	}
+
+	public ArrayList<Room> sporringRooms(Connection con, String sporring) throws SQLException {
+		Statement stmt = null;
+		stmt = con.createStatement();
+		ResultSet roomSet = stmt.executeQuery(sporring);
+		ResultSetMetaData roomsmd = roomSet.getMetaData();
+		metaData.add(roomsmd);
+		resultData.add(roomSet);
+		InitFetchRooms(metaData, resultData);
+		return rooms;
+	}
+
+	private void InitFetchRooms(ArrayList<ResultSetMetaData> metaData, ArrayList<ResultSet> resultData) throws SQLException {
+		int counter = 0;
+		
+		while (counter < metaData.size()) {
+			
+			int numberOfColumns = metaData.get(counter).getColumnCount();
+			
+			 int roomID = 0;
+			 String name = "";
+			 int capacity = 0;
+			 String description = "";
+			 
+			 while (resultData.get(counter).next()) {
+			        for (int i = 1; i <= numberOfColumns; i++) {
+			          String columnValue = resultData.get(counter).getString(i);
+			          if (i==1){
+			        	  roomID = Integer.parseInt(columnValue);
+			          }else if (i==2){
+			        	  name = columnValue;
+			          }else if (i==3){
+			        	  capacity = Integer.parseInt(columnValue);
+			          }else if (i==4){
+			        	  description = columnValue;
+			          }
+			        }
+
+		        	Room i = new Room(roomID, name, capacity, description);
+		        	rooms.add(i);//Maa sorge for at nyEvent-stringen har samme format som inn-parameterene til new Group
 			      } 
 			  counter++;
 		}
