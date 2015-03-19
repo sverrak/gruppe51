@@ -459,6 +459,7 @@ public class CalendarProgram {
 								break;
 							}
 							System.out.println(current_user.getInbox().get(option).readMessage());
+							ctd.UpdateMessage(con, current_user.getInbox().get(option));
 							System.out.println("\nVil du aapne flere meldinger?");
 							current_user.printInbox();
 						}
