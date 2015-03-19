@@ -458,13 +458,13 @@ public class CalendarProgram {
 							if(option == -1){
 								break;
 							}
-							System.out.println(current_user.getInbox().get(option).toString());
+							System.out.println(current_user.getInbox().get(option).readMessage());
 							System.out.println("\nVil du aapne flere meldinger?");
 							current_user.printInbox();
 						}
 
 					} else {
-						System.out.println("Ingen meldinger aa vise\n");
+						System.out.println("\nIngen meldinger aa vise\n");
 					}
 				} else if (option == 4) {
 					List<Event> myEvents = new ArrayList<Event>();
