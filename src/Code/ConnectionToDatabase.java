@@ -530,7 +530,7 @@ public class ConnectionToDatabase {
 			        	  capacity = Integer.parseInt(columnValue);
 			          } else if (i==4){
 			        	  description = columnValue;
-			          } else if (i==5){ //Her m� roomSchedule ordnes?
+			          } else if (i==5){ //Her maa roomSchedule ordnes?
 			   //     	  roomSchedule = columnValue;
 			          }
 				  }

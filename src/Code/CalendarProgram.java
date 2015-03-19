@@ -165,12 +165,12 @@ public class CalendarProgram {
 		
 		while(isInteger(input,10) && (counter < newEvent.getRoom().getCapacity() || ! newEvent.getPlace().isEmpty())){
 			if(current_user.inviteEmployeeToEvent(availableEmployees.get(Integer.parseInt(input)), newEvent)){
-				peopleInvited.add(availableEmployees.get(Integer.parseInt(input)));			// blir galt hvis bruker skriver inn noe annet enn int
+				peopleInvited.add(availableEmployees.get(Integer.parseInt(input)));
 				ctd.WriteMessageToDatabase(con, availableEmployees.get(Integer.parseInt(input)));
 				
 				counter += 1;
 				if(counter == capacity){
-					System.out.println("Du har n� invitert ");
+					System.out.println("Du har naa invitert ");
 				}
 			} else{
 				System.out.println("Personen er allerede invitert til dette arrangementet.");
