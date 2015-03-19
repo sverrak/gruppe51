@@ -173,7 +173,8 @@ public class Employee {
 		if (upcomingEvents.contains(event)){
 			event.getPeopleDeclined().add(this);
 			event.getPeopleInvited().remove(this);
-			upcomingEvents.remove(event);
+			this.upcomingEvents.remove(event);
+			this.declinedEvents.add(event);
 			Message msg = new Message(this, event.getCreator(),"I decline your invitation to event " + event.getTitle(), "Invitation Decline");
 			msg.sendMessage();
 			return true;

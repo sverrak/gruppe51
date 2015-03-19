@@ -372,10 +372,10 @@ public class CalendarProgram {
 		while (current_user != null) {
 			System.out.println("Hva vil du gjoere?");
 			if(current_user.isAdmin() == true){
-				System.out.println("1: Se alle upcoming events[goingTo] | 2: Legg til ny event | 3: Apne innboks (" + current_user.countUnreadMessages() + ") | 4: Administrer dine events | 5: Administrer brukere | 9: quit");				
+				System.out.println("1: Se alle upcoming events[goingTo] | 2: Legg til ny event | 3: Apne innboks (" + current_user.countUnreadMessages() + ") | 4: Administrer dine events | 5: Administrer brukere | 6: Svar paa invitasjon | 9: quit");				
 			} 
 			else{
-				System.out.println("1: Se alle upcoming events[goingTo] | 2: Legg til ny event | 3: Apne innboks (" + current_user.countUnreadMessages() + ") | 4: Administrer dine events | 9: quit");
+				System.out.println("1: Se alle upcoming events[goingTo] | 2: Legg til ny event | 3: Apne innboks (" + current_user.countUnreadMessages() + ") | 4: Administrer dine events | 6: Svar paa invitasjon | 9: quit");
 			}
 
 			int option = 0;
@@ -491,9 +491,12 @@ public class CalendarProgram {
 							firstOptionChoice = user_input.nextLine();
 							Event chosen_event = events.get(Integer.parseInt(firstOptionChoice));
 							while (!secondOptionChoice.equals("q")) {
-								System.out.println("Hva vil du gjore?");
+								System.out.println("Hva vil du gjore? ['q' for å quite]");
 								System.out.println("1: se peopleGoing, peopleDeclined og peopleInvited | 2: endre event)");
 								secondOptionChoice = user_input.nextLine();
+								if(secondOptionChoice.equals("q")){
+									break;
+								}
 								if (secondOptionChoice.equals("1")) {
 									System.out.println("Du ser naa paa " + chosen_event + ".");
 									System.out.println("Dette arrangementet har folgende deltakerstatus: ");
@@ -502,12 +505,14 @@ public class CalendarProgram {
 									System.out.println("peopleDeclind: " + chosen_event.getPeopleDeclined());
 								} else if (secondOptionChoice.equals("2")) {
 									System.out.println("Hva vil du endre?");
-									System.out.println("1: avlys event | 2: trekk invitasjon | 3: inviter deltakere | 4: endre rom | 4: annen endring");
+									System.out.println("1: avlys event | 2: trekk invitasjon | 3: inviter deltakere | 4: endre rom | 5: endring av tidspunkt");
 									thirdOptionChoice = user_input.nextLine();
 									if (thirdOptionChoice.equals("1")) {
 										System.out.println("Hva er grunnen til avlysningen?");
 										String reason = user_input.nextLine();
+										//db-metode for aa slette event, fredrik
 										current_user.cancelEvent(chosen_event, reason);
+										
 										System.out.println("Eventen er slettet.");
 									} else if (thirdOptionChoice.equals("2")) {
 										System.out.println("Hvem vil du trekke invitasjonen til?");
@@ -518,7 +523,8 @@ public class CalendarProgram {
 										fourthOptionChoice = user_input.nextLine();
 
 										current_user.withdrawInvitation(events.get(Integer.parseInt(firstOptionChoice)).getPeopleInvited().get(Integer.parseInt(fourthOptionChoice)),events.get(Integer.parseInt(firstOptionChoice)));
-
+										//fjern eventdeltakelse(employee, event) fra databasen, Fredrik
+										
 									} else if (thirdOptionChoice.equals("3")) {
 										// legge til deltakere.
 										Scanner user_input = new Scanner(System.in);
@@ -550,9 +556,15 @@ public class CalendarProgram {
 										}
 										ctd.WriteEventDeltakelseToDatabase(con,chosen_event, peopleInvited);
 									} else if (thirdOptionChoice.equals("4")) {
-
+										//databasefix for aa endre rom
+									} else if (thirdOptionChoice.equals("5")) {
+										//databasefix for aa endre tidspunkt
+										
 									}
 								}
+							}
+							if(secondOptionChoice.equals("q")){
+								break;
 							}
 						}
 					}
@@ -655,6 +667,35 @@ public class CalendarProgram {
 							createNewUser();
 						}
 					}
+				}else if (option == 6) {
+					if(current_user.getUpcomingEvents().size() != 0){
+						System.out.println("");
+						for (int i = 0; i < current_user.getUpcomingEvents().size(); i++) {
+							System.out.println("" + i + ": " + current_user.getUpcomingEvents().get(i));
+						}
+						System.out.println("Hvilken event vil du svare paa? [-1 for aa quite]");
+						String firstOptionChoice = user_input.nextLine();
+						String secondOptionChoice = "";
+						if(! firstOptionChoice.equals("-1") && Integer.parseInt(firstOptionChoice) < current_user.getUpcomingEvents().size()){
+							System.out.println("Vil du delta paa denne eventen? ['ja'/'nei']");
+							secondOptionChoice = user_input.nextLine();
+							if(secondOptionChoice.equalsIgnoreCase("ja")){
+								Event e = current_user.getUpcomingEvents().get(Integer.parseInt(firstOptionChoice));
+								current_user.acceptInvitation(e);
+								ctd.updateEventDeltakelsesStatus(con, e, current_user);
+								System.out.println("\nInvitasjonen er akseptert");
+							}else{
+								Event e = current_user.getUpcomingEvents().get(Integer.parseInt(firstOptionChoice));
+								current_user.declineInvitation(e);
+								ctd.updateEventDeltakelsesStatus(con, e, current_user);
+								System.out.println("\nInvitasjonen er avslått");
+							}
+							System.out.println("\n");
+						}
+					} else{
+						System.out.println("Du har ingen upcomingEvents\n");
+					}
+					
 				} else if (option == 9) {
 					current_user = null;
 					System.out.println("Du er naa logget ut.\n\n");
