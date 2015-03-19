@@ -514,7 +514,8 @@ public class CalendarProgram {
 										fourthOptionChoice = user_input.nextLine();
 
 										current_user.withdrawInvitation(events.get(Integer.parseInt(firstOptionChoice)).getPeopleInvited().get(Integer.parseInt(fourthOptionChoice)),events.get(Integer.parseInt(firstOptionChoice)));
-
+										//fjern eventdeltakelse(employee, event) fra databasen, Fredrik
+										
 									} else if (thirdOptionChoice.equals("3")) {
 										// legge til deltakere.
 										Scanner user_input = new Scanner(System.in);
