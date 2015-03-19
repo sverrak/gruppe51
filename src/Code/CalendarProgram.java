@@ -81,8 +81,7 @@ public class CalendarProgram {
 		description = user_input.nextLine();
 
 		System.out.println("Starttidspunkt, f.eks.: 16/03/2015 12:00:00: ");
-		String startTimeString = user_input.nextLine(); // formatet pï¿½ disse
-														// mï¿½ vi ha orden pï¿½
+		String startTimeString = user_input.nextLine(); // formatet pï¿½ disse mï¿½ vi ha orden pï¿½
 		System.out.println("Sluttidspunkt f.eks.: 16/03/2015 12:00:00: ");
 		String endTimeString = user_input.nextLine();
 		System.out.println("Kapasitet: ");
@@ -143,10 +142,9 @@ public class CalendarProgram {
 		}
 		// print roomSchedulen til Room
 		// System.out.println(newEvent.getRoom().getRoomSchedule().toString());
-
+/*
 		// legge til deltakere. FLYTTER DENNE TIL EGEN METODE EGET STED
-		List<Employee> availableEmployees = getAvailableEmployees(startTime,
-				endTime);
+		List<Employee> availableEmployees = getAvailableEmployees(startTime, endTime);
 		for (int i = 0; i < getAvailableEmployees(startTime, endTime).size(); i++) {
 			System.out.println("" + i + ": " + availableEmployees.get(i));
 		}
@@ -158,38 +156,29 @@ public class CalendarProgram {
 		List<Employee> peopleInvited = new ArrayList<Employee>();
 
 		int counter = 1;
-		while (isInteger(input, 10)
-				&& (counter < newEvent.getRoom().getCapacity() || !newEvent
-						.getPlace().isEmpty())) {
-			if (current_user.inviteEmployeeToEvent(
-					availableEmployees.get(Integer.parseInt(input)), newEvent)) {
-				peopleInvited.add(availableEmployees.get(Integer
-						.parseInt(input)));
-				ctd.WriteMessageToDatabase(con,
-						availableEmployees.get(Integer.parseInt(input)));
+		while (isInteger(input, 10)	&& (counter < newEvent.getRoom().getCapacity() || !newEvent.getPlace().isEmpty())) {
+			if (current_user.inviteEmployeeToEvent(availableEmployees.get(Integer.parseInt(input)), newEvent)) {
+				peopleInvited.add(availableEmployees.get(Integer.parseInt(input)));
+				ctd.WriteMessageToDatabase(con, availableEmployees.get(Integer.parseInt(input)));
 
 				counter += 1;
 				if (counter == capacity) {
 					System.out.println("Du har nï¿½ invitert ");
 				}
 			} else {
-				System.out
-						.println("Personen er allerede invitert til dette arrangementet.");
+				System.out.println("Personen er allerede invitert til dette arrangementet.");
 			}
-			/*
-			 * newEvent.addEmployee(availableEmployees.get(Integer.parseInt(input
-			 * )));
-			 * availableEmployees.get(Integer.parseInt(input)).addEvent(newEvent
-			 * );
-			 */
-			System.out.println("Noen flere[tom streng for aa avslutte]?");
+			
+			newEvent.addEmployee(availableEmployees.get(Integer.parseInt(input)));
+			current_user.inviteEmployeeToEvent(availableEmployees.get(Integer.parseInt(input)), newEvent);
+			System.out.println("Noen flere[tom streng for aa avslutte]?");			
 			input = user_input.nextLine();
 		}
-		user_input.close();
 
 		newEvent.setEventID();
-		ctd.WriteEventDeltakelseToDatabase(con, newEvent, peopleInvited); // skal
-																			// flyttes
+		ctd.WriteEventDeltakelseToDatabase(con, newEvent, peopleInvited); 
+		*/
+		user_input.close();
 		return newEvent;
 	}
 
@@ -254,6 +243,13 @@ public class CalendarProgram {
 			
 			rooms = (ArrayList<Room>) ctd.sporringRooms(con, "SELECT * FROM Room");
 			events = (ArrayList<Event>) ctd.sporringEvents(con, "SELECT * FROM Event", employees);
+			
+			System.out.println("\nGutta, vi har et problem... :\n");
+			//det i lokka nedenfor SKAL VEKK
+			for (Event event : events){
+			System.out.println(event.getTitle()  + " has room/location: " + event.getRoom());	
+			}
+			
 			groups = (ArrayList<Group>) ctd.SporringGroups(con, "SELECT * FROM Gruppe");
 			ListContainer lc = ctd.sporringParticipations(con, "SELECT * FROM Eventdeltakelse", employees, events);
 			employees = lc.getEmployees();
@@ -535,14 +531,18 @@ public class CalendarProgram {
 
 										List<Employee> peopleInvited = new ArrayList<Employee>();
 
-										int counter = 1;
-										while (isInteger(input, 10)	&& (counter < chosen_event.getRoom().getCapacity() || !chosen_event.getPlace().isEmpty())) {
-											if (current_user.inviteEmployeeToEvent(availableEmployees.get(Integer.parseInt(input)),chosen_event)) {
-												peopleInvited.add(availableEmployees.get(Integer.parseInt(input)));
-												ctd.WriteMessageToDatabase(con,availableEmployees.get(Integer.parseInt(input)));
+										int num_people = chosen_event.getPeopleInvited().size() + chosen_event.getPeopleGoing().size();
+										// klarer ikke å invitere deltakere dersom steg ikke er angitt
+										System.out.println(chosen_event.getPlace());//SKAL VEKK
+										System.out.println(chosen_event.getRoom());//SKAL VEKK		Alle rom er null! Klarer ikke hente info om rom tilhørende events fra databasen
+										while (isInteger(input, 10)	&& (chosen_event.getPlace() != null) || num_people < chosen_event.getRoom().getCapacity()) {
+											Employee person_invited = availableEmployees.get(Integer.parseInt(input));
+											if (current_user.inviteEmployeeToEvent(person_invited, chosen_event)) {
+												peopleInvited.add(person_invited);
+												ctd.WriteMessageToDatabase(con, person_invited);
 
-												counter += 1;
-												if (counter == chosen_event.getCapacity()) {
+												num_people += 1;
+												if (num_people == chosen_event.getCapacity()) {
 													System.out.println("Du har naa invitert ");
 												}
 											} else {
@@ -551,6 +551,7 @@ public class CalendarProgram {
 											System.out.println("Noen flere[tom streng for aa avslutte]?");
 											input = user_input.nextLine();
 										}
+										user_input.close();
 										ctd.WriteEventDeltakelseToDatabase(con,chosen_event, peopleInvited);
 									} else if (thirdOptionChoice.equals("4")) {
 										//databasefix for aa endre rom
