@@ -369,10 +369,10 @@ public class CalendarProgram {
 		while (current_user != null) {
 			System.out.println("Hva vil du gjoere?");
 			if(current_user.isAdmin() == true){
-				System.out.println("1: Se alle upcoming events[goingTo] | 2: Legg til ny event | 3: Apne innboks (" + current_user.countUnreadMessages() + ") | 4: Administrer dine events | 5: Administrer brukere | 9: quit");				
+				System.out.println("1: Se alle upcoming events[goingTo] | 2: Legg til ny event | 3: Apne innboks (" + current_user.countUnreadMessages() + ") | 4: Administrer dine events | 5: Administrer brukere | 6: Svar paa invitasjon | 9: quit");				
 			} 
 			else{
-				System.out.println("1: Se alle upcoming events[goingTo] | 2: Legg til ny event | 3: Apne innboks (" + current_user.countUnreadMessages() + ") | 4: Administrer dine events | 9: quit");
+				System.out.println("1: Se alle upcoming events[goingTo] | 2: Legg til ny event | 3: Apne innboks (" + current_user.countUnreadMessages() + ") | 4: Administrer dine events | 6: Svar paa invitasjon | 9: quit");
 			}
 
 			int option = 0;
@@ -507,7 +507,9 @@ public class CalendarProgram {
 									if (thirdOptionChoice.equals("1")) {
 										System.out.println("Hva er grunnen til avlysningen?");
 										String reason = user_input.nextLine();
+										//db-metode for aa slette event, fredrik
 										current_user.cancelEvent(chosen_event, reason);
+										
 										System.out.println("Eventen er slettet.");
 									} else if (thirdOptionChoice.equals("2")) {
 										System.out.println("Hvem vil du trekke invitasjonen til?");
@@ -662,6 +664,35 @@ public class CalendarProgram {
 							createNewUser();
 						}
 					}
+				}else if (option == 6) {
+					if(current_user.getUpcomingEvents().size() != 0){
+						System.out.println("");
+						for (int i = 0; i < current_user.getUpcomingEvents().size(); i++) {
+							System.out.println("" + i + ": " + current_user.getUpcomingEvents().get(i));
+						}
+						System.out.println("Hvilken event vil du svare paa? [-1 for aa quite]");
+						String firstOptionChoice = user_input.nextLine();
+						String secondOptionChoice = "";
+						if(! firstOptionChoice.equals("-1") && Integer.parseInt(firstOptionChoice) < current_user.getUpcomingEvents().size()){
+							System.out.println("Vil du delta paa denne eventen? ['ja'/'nei']");
+							secondOptionChoice = user_input.nextLine();
+							if(secondOptionChoice.equalsIgnoreCase("ja")){
+								Event e = current_user.getUpcomingEvents().get(Integer.parseInt(firstOptionChoice));
+								current_user.acceptInvitation(e);
+								ctd.updateEventDeltakelsesStatus(con, e, current_user);
+								System.out.println("\nInvitasjonen er akseptert");
+							}else{
+								Event e = current_user.getUpcomingEvents().get(Integer.parseInt(firstOptionChoice));
+								current_user.declineInvitation(e);
+								ctd.updateEventDeltakelsesStatus(con, e, current_user);
+								System.out.println("\nInvitasjonen er avslått");
+							}
+							System.out.println("\n");
+						}
+					} else{
+						System.out.println("Du har ingen upcomingEvents\n");
+					}
+					
 				} else if (option == 9) {
 					current_user = null;
 					System.out.println("Du er naa logget ut.\n\n");

@@ -133,9 +133,9 @@ public class ConnectionToDatabase {
 	public void updateEventDeltakelsesStatus(Connection con, Event e, Employee emp) throws SQLException{
 		
 		PreparedStatement preparedStatement = null;
-		String sql = "UPDATE Eventdeltakelse SET status = ? WHERE employeeID = ?, eventID = ?";
+		String sql = "UPDATE Eventdeltakelse SET status = ? WHERE employee_ID = ? AND event_ID = ?";
+
 		preparedStatement = con.prepareStatement(sql);
-		
 		if(emp.getEventsAttending().contains(e)){
 			preparedStatement.setString(1, "a");
 		} else if(emp.getDeclinedEvents().contains(e)){

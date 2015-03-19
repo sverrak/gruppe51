@@ -63,7 +63,7 @@ public class Event implements Comparable<Event>{
 	public String getTitle() {
 		return title;
 	}
-	//denne gj�r ingenting!
+	//denne gj�r ingenting!
 	public void setEventID(){
 		
 	}
@@ -202,7 +202,7 @@ public class Event implements Comparable<Event>{
 	*/
 	@Override
 	public String toString() {
-		String str = this.title + " har foelgende deltakere " + peopleGoing + " [attending] " + peopleInvited + " [invited] ";
+		String str = this.title;
 		return  str;
 	}
 	
