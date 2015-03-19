@@ -55,7 +55,6 @@ public class CalendarProgram {
 	//		System.out.println("" + room.roomSchedule.size());
 			if(room.isAvailable(startTime, endTime) && room.getCapacity() >= capacity){
 				availableRooms.add(room);
-				System.out.println(room.getName() + ", was added to available rooms");
 			}
 		}
 		return availableRooms;
@@ -103,11 +102,6 @@ public class CalendarProgram {
 		
 		Event newEvent = new Event(title, startTime, endTime, description, employee);
 		
-		
-		//finner ledige rom
-		ctd.fetchRooms(con);
-		this.rooms = ctd.checkRoomEvents(con);
-
 		List<Room> availableRooms = new ArrayList<Room>();
 		availableRooms = findLocation(startTime, endTime, capacity);
 		
@@ -256,10 +250,7 @@ public class CalendarProgram {
 	}
 	
 	public Employee login() throws SQLException{
-		
-		String sporring = "SELECT * FROM Employee";
-		this.employees = ctd.SporringEmployees(con, sporring);
-		
+			
 		user_input = new Scanner(System.in);
 		username = "";
 		password = null;
@@ -287,9 +278,9 @@ public class CalendarProgram {
 	}
 	private void createNewUser() throws SQLException{
 		System.out.println("Fyll inn feltene til den nye brukeren!\n");
-		String sporring = "SELECT * FROM Employee";
-		employees = ctd.SporringEmployees(con, sporring);
-		int employeeID = employees.get(employees.size()-1).getEmployeeID() + 1;
+//		String sporring = "SELECT * FROM Employee";
+//		employees = ctd.SporringEmployees(con, sporring);
+//		int employeeID = employees.get(employees.size()-1).getEmployeeID() + 1;
 		username = "";
 		while(username == null || username.equals("")){
 			System.out.println("Oensket brukernavn: ");

@@ -60,10 +60,6 @@ public class Employee {
 		eventsAttending = new ArrayList<Event>();
 	}
 	
-	public int getEmployeeID(){
-		return employeeID;
-	}
-
 	public List<Event> getEventsAttending() {
 		return eventsAttending;
 	}
