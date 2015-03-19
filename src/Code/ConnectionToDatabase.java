@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Collection;
 
+
+
 public class ConnectionToDatabase {
 
 	  private ResultSet resultSet = null; 
@@ -873,14 +875,13 @@ public class ConnectionToDatabase {
 							}
 			          }else if(i==5){
 			        	  description = columnValue;
-			          }else if(i==6){		//denne delen fungerer, men rom er uansett null i run(). Problem når vi vil invitere deltakere. NullPointEr i løkka
+			          }else if(i==6){
 			        	  for (Room r : rooms) {
-			        		  if (columnValue != null){
-				        		  if(r.getRoomID() == Integer.parseInt(columnValue)){
-				        			  room = r;
-				        			  break;
-				        		  }
-			        		  }
+
+			        		  //if(r.getRoomID() == Integer.parseInt(columnValue)){
+							room = null;
+							break;
+							//}
 						}
 			        	room = null;
 			          }else if(i==7){
