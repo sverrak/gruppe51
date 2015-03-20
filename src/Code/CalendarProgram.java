@@ -166,20 +166,16 @@ public class CalendarProgram {
 			
 			if (newEvent.getRoom() == null){
 				
-						if (current_user.inviteEmployeeToEvent(
-								availableEmployees.get(Integer.parseInt(input)), newEvent)) {
-							peopleInvited.add(availableEmployees.get(Integer
-									.parseInt(input)));
-							ctd.WriteMessageToDatabase(con,
-									availableEmployees.get(Integer.parseInt(input)));
+						if (current_user.inviteEmployeeToEvent(availableEmployees.get(Integer.parseInt(input)), newEvent)) {
+							peopleInvited.add(availableEmployees.get(Integer.parseInt(input)));
+							ctd.WriteMessageToDatabase(con,availableEmployees.get(Integer.parseInt(input)));
 							
 							counter += 1;
 							if (counter == capacity) {
 								System.out.println("Antall inviterte er naa lik oppgitt kapasitet!");
 							}
 						} else {
-							System.out
-							.println("Personen er allerede invitert til dette arrangementet.");
+							System.out.println("Personen er allerede invitert til dette arrangementet.");
 						}
 						/*
 						 * newEvent.addEmployee(availableEmployees.get(Integer.parseInt(input
@@ -391,8 +387,14 @@ public class CalendarProgram {
 	}
 
 	private void run() throws SQLException {
+		System.out.println("Bare grupperom 1 blir hentet ned!");
+		for (Event event : events){
+			System.out.println(event + " har lokasjon " + event.getRoom());
+			System.out.println(event.getPeopleGoing());
+		}
 		current_user = login();
-	
+		
+		
 		System.out.println("\nDu er naa logget inn. Trykk '9' for aa logge ut\n");
 		System.out.println("Hei, " + current_user.getName() + "!");
 
@@ -508,20 +510,19 @@ public class CalendarProgram {
 						}
 					}
 					if (myEvents.size() == 0) {
-						System.out
-								.println("\nDu har ikke opprettet noen events enda.\n");
+						System.out.println("\nDu har ikke opprettet noen events enda.\n");
 					} else {
 						String firstOptionChoice = "";
 						String secondOptionChoice = "";
 						String thirdOptionChoice = "";
-						String fourthOptionChoice = "";
+						String fourthOptionChoice = "";			// endret her tester. var inni lokka for
+						System.out.println("Hvilken av disse vil du endre?");
+						firstOptionChoice = user_input.nextLine();
 						while (!firstOptionChoice.equals("q")) {
-							System.out.println("Hvilken av disse vil du endre?");
-							firstOptionChoice = user_input.nextLine();
 							Event chosen_event = events.get(Integer.parseInt(firstOptionChoice));
 							while (!secondOptionChoice.equals("q")) {
 								System.out.println("Hva vil du gjore? ['q' for √• quite]");
-								System.out.println("1: se peopleGoing, peopleDeclined og peopleInvited | 2: endre event)");
+								System.out.println("1: se detaljer (peopleGoing, peopleDeclined og peopleInvited; lokasjon) | 2: endre event)");
 								secondOptionChoice = user_input.nextLine();
 								if(secondOptionChoice.equals("q")){
 									break;
@@ -532,6 +533,12 @@ public class CalendarProgram {
 									System.out.println("peopleInvited: "+ chosen_event.getPeopleInvited());
 									System.out.println("peopleGoing: "	+ chosen_event.getPeopleGoing());
 									System.out.println("peopleDeclind: " + chosen_event.getPeopleDeclined());
+									if (chosen_event.getRoom() != null){
+										System.out.println("Rom: " + chosen_event.getRoom().getName());
+									}
+									else{
+										System.out.println("Sted: " + chosen_event.getPlace());
+									}
 								} else if (secondOptionChoice.equals("2")) {
 									System.out.println("Hva vil du endre?");
 									System.out.println("1: avlys event | 2: trekk invitasjon | 3: inviter deltakere | 4: endre rom | 5: endring av tidspunkt");
@@ -569,14 +576,14 @@ public class CalendarProgram {
 
 										List<Employee> peopleInvited = new ArrayList<Employee>();
 
-										int counter = 1;
-										while (isInteger(input, 10)	&& (counter < chosen_event.getRoom().getCapacity() || !chosen_event.getPlace().isEmpty())) { // dette kan bli problematisk hvis chosen_event.getRoom() == null
+										int num_people = chosen_event.getPeopleGoing().size() + chosen_event.getPeopleInvited().size(); 
+										while (isInteger(input, 10)	&& (num_people < chosen_event.getRoom().getCapacity() || !chosen_event.getPlace().isEmpty())) { // dette kan bli problematisk hvis chosen_event.getRoom() == null
 											if (current_user.inviteEmployeeToEvent(availableEmployees.get(Integer.parseInt(input)),chosen_event)) {
 												peopleInvited.add(availableEmployees.get(Integer.parseInt(input)));
 												ctd.WriteMessageToDatabase(con,availableEmployees.get(Integer.parseInt(input)));
 
-												counter += 1;
-												if (counter == chosen_event.getCapacity()) {
+												num_people += 1;
+												if (num_people == chosen_event.getCapacity()) {
 													System.out.println("Du har naa invitert ");
 												}
 											} else {
@@ -586,14 +593,17 @@ public class CalendarProgram {
 											input = user_input.nextLine();
 										}
 										ctd.WriteEventDeltakelseToDatabase(con,chosen_event, peopleInvited);
+										user_input.close();
 									} else if (thirdOptionChoice.equals("4")) {
 										
-										System.out.println("\nEventet: " + chosen_event.getTitle() + ", er satt til å avholdes på: ");
-										if(chosen_event.getRoom() == null){
-											System.out.println(chosen_event.getPlace());
+										System.out.println("\nEventet: " + chosen_event.getTitle() + ", er satt til aa avholdes paa: ");
+										if(chosen_event.getPlace() == null){
+								//			System.out.println("printer rom");	// skal vekk
+											System.out.println(chosen_event.getRoom().getName());
 										}
 										else{
-											System.out.println(chosen_event.getRoom().getName() + "\n");
+								//			System.out.println("printer place");	// skal vekk
+											System.out.println(chosen_event.getPlace() + "\n");
 										}
 										//databasefix for aa endre rom
 										List<Room> availableRoomsChange = new ArrayList<Room>();
@@ -609,15 +619,14 @@ public class CalendarProgram {
 											System.out.println("Velg nytt rom eller press enter for aa skrive inn egendefinert sted");
 											String 	changeRoomInput = user_input.nextLine();
 											if(changeRoomInput.isEmpty()){
-												System.out
-														.println("Skriv inn navn på stedet du ønsker å arrangere eventet: ");
+												System.out.println("Skriv inn navn på stedet du ønsker å arrangere eventet: ");
 												String place1 = user_input.nextLine();
 												chosen_event.getRoom().removeEvent(chosen_event);
 												chosen_event.setRoomToNull();
 												chosen_event.SetPlace(place1);
 											}
 											else{
-												if(!(chosen_event.getRoom() == null)){
+												if(chosen_event.getRoom() != null){
 													chosen_event.getRoom().removeEvent(chosen_event);
 												}
 												int chosenInput = Integer.parseInt(changeRoomInput);
@@ -654,9 +663,6 @@ public class CalendarProgram {
 										
 									}
 								}
-							}
-							if(secondOptionChoice.equals("q")){
-								break;
 							}
 						}
 

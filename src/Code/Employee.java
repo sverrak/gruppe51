@@ -447,7 +447,7 @@ public class Employee {
 	public void printWeeklySchedule(int weekOfYear, int year){
 			ArrayList<ArrayList<String>> schedule = generateWeeklySchedule(weekOfYear, year);	
 			
-			String str = "|08:00|----------S�NDAG------------+-----------MANDAG-----------+-----------TIRSDAG----------+----------ONSDAG------------+-------------TORSDAG--------+-----------FREDAG-----------+-----------L�RDAG-----------+\n";
+			String str = "|08:00|----------SONDAG------------+-----------MANDAG-----------+-----------TIRSDAG----------+----------ONSDAG------------+-------------TORSDAG--------+-----------FREDAG-----------+-----------LORDAG-----------+\n";
 			for (int row = 0; row < 32; row++) {
 			str += "|+++++|";
 				List<ArrayList<String>> rader = new ArrayList<ArrayList<String>>();

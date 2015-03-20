@@ -964,6 +964,7 @@ public class ConnectionToDatabase {
 		metaData.add(roomsmd);
 		resultData.add(roomSet);
 		InitFetchRooms(metaData, resultData);
+//		fetchRooms(con);
 		return rooms;
 	}
 
