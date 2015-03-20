@@ -522,13 +522,13 @@ public class CalendarProgram {
 						firstOptionChoice = user_input.nextLine();
 						while (!firstOptionChoice.equals("q")) {
 							Event chosen_event = events.get(Integer.parseInt(firstOptionChoice));
+							if(secondOptionChoice.equals("q")){
+								break;
+							}
 							while (!secondOptionChoice.equals("q")) {
 								System.out.println("Hva vil du gjore? ['q' for aa quite]");
 								System.out.println("1: se detaljer (peopleGoing, peopleDeclined og peopleInvited; lokasjon) | 2: endre event)");
 								secondOptionChoice = user_input.nextLine();
-								if(secondOptionChoice.equals("q")){
-									break;
-								}
 								if (secondOptionChoice.equals("1")) {
 									System.out.println("Du ser naa paa " + chosen_event + ".");
 									System.out.println("Dette arrangementet har folgende deltakerstatus: ");
@@ -580,7 +580,7 @@ public class CalendarProgram {
 										List<Employee> peopleInvited = new ArrayList<Employee>();
 
 										int num_people = chosen_event.getPeopleGoing().size() + chosen_event.getPeopleInvited().size(); 
-										while (isInteger(input, 10)	&& (num_people < chosen_event.getRoom().getCapacity() || !chosen_event.getPlace().isEmpty())) { // dette kan bli problematisk hvis chosen_event.getRoom() == null
+										while (isInteger(input, 10)){	//  && (num_people < chosen_event.getRoom().getCapacity() || !chosen_event.getPlace().isEmpty())) { // dette kan bli problematisk hvis chosen_event.getRoom() == null
 											if (current_user.inviteEmployeeToEvent(availableEmployees.get(Integer.parseInt(input)),chosen_event)) {
 												peopleInvited.add(availableEmployees.get(Integer.parseInt(input)));
 												ctd.WriteMessageToDatabase(con,availableEmployees.get(Integer.parseInt(input)));
