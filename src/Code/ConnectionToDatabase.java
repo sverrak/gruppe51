@@ -149,13 +149,34 @@ public class ConnectionToDatabase {
 		preparedStatement.executeUpdate();	
 	}
 	
+	public void UpdateEventRoom(Connection con, Event e) throws SQLException{
+		
+		PreparedStatement preparedStatement = null;
+		String sql = "UPDATE Event SET roomID  = ?, place = ? WHERE eventID = ?";
+		preparedStatement = con.prepareStatement(sql);
+		
+		if(e.getRoom() == null){
+			preparedStatement.setNull(1, 0);
+		}
+		else{
+			preparedStatement.setInt(1, e.getRoom().getRoomID());				
+		}
+		preparedStatement.setString(2, e.getPlace());
+		preparedStatement.setInt(3, e.getEventID());
+		
+		preparedStatement.executeUpdate();
+	}
+	
 	public void UpdateMessage(Connection con, Message m) throws SQLException{
+		
 		PreparedStatement preparedStatement = null;
 		String sql = "UPDATE Message SET isRead = ? WHERE messageID = ?";
 		preparedStatement = con.prepareStatement(sql);
 		
 		preparedStatement.setString(1, m.isRead().toString());
 		preparedStatement.setInt(2, m.getMessageID());
+		
+		preparedStatement.executeUpdate();
 	}
 	// Ikke implementert
 	public Boolean checkUserName(Connection con, String s) throws SQLException{
@@ -373,7 +394,7 @@ public class ConnectionToDatabase {
 		java.sql.Timestamp endT = convertDateToDateTime(e.getEndTime());
 		
 		
-		String sql = "INSERT INTO Event (eventID, title, startTime, endTime, eventDescription, roomID, creator_ID )" + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO Event (eventID, title, startTime, endTime, eventDescription, roomID, creator_ID, place )" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 		preparedStatement = con.prepareStatement(sql);
 
 		preparedStatement.setInt(1, e.getEventID());
@@ -381,13 +402,20 @@ public class ConnectionToDatabase {
 		preparedStatement.setTimestamp(3, startT);
 		preparedStatement.setTimestamp(4, endT);
 		preparedStatement.setString(5, e.getDescription()); 
-		preparedStatement.setInt(6, e.getRoom().getRoomID()); 		
+		if(e.getRoom()==null){
+			preparedStatement.setNull(6, 0);
+		}
+		else{
+			
+			preparedStatement.setInt(6, e.getRoom().getRoomID()); 		
+		}
 		preparedStatement.setInt(7, e.getCreator().getEmployeeID()); 
+		preparedStatement.setString(8, e.getPlace()); 
+		
 
 		
 		try{
 		preparedStatement.executeUpdate(); //Her oppdateres databasen
-		System.out.println("" + e.getTitle() + ", ble opprettet som et event i databasen\n");
 		}
 		catch(SQLException el){
 			el.printStackTrace();
@@ -456,7 +484,7 @@ public class ConnectionToDatabase {
 			
 			String sql = "INSERT INTO Eventdeltakelse (event_ID, employee_ID, status, isHidden)" + "VALUES (?, ?, ?, ?)";
 			preparedStatement = con.prepareStatement(sql);
-			
+
 			preparedStatement.setInt(1, ev.getEventID()); 
 			preparedStatement.setInt(2, e.getEmployeeID());
 			
@@ -473,7 +501,7 @@ public class ConnectionToDatabase {
 	
 			preparedStatement.executeUpdate(); //Her oppdateres databasen
 			
-			preparedStatement.close();
+		//	preparedStatement.close();
 		}
 	}
 	
@@ -848,6 +876,7 @@ public class ConnectionToDatabase {
 			 java.util.Date startTime = null;
 			 java.util.Date endTime = null;
 			 String description = "";
+			 String place = null;
 			 Room room = null;
 			 Employee creator = null;
 			 SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy H:m:s");
@@ -891,10 +920,12 @@ public class ConnectionToDatabase {
 									break;
 								}
 							}
+			          }else if(i == 8){
+			        	  place = columnValue;
 			          }
 			        }
 
-		        	Event i = new Event(eventID, title, startTime, endTime, description, room, creator);
+		        	Event i = new Event(eventID, title, startTime, endTime, description, room, creator, place);
 		        	events.add(i);//Maa sorge for at nyEvent-stringen har samme format som inn-parameterene til new Group
 			      } 
 			  counter++;
@@ -1078,8 +1109,9 @@ public class ConnectionToDatabase {
 			        
 			        if(employees.contains(receiver)){
 			        	
-			        	Message i = new Message(messageID, sender, receiver, timestamp, content, subject);
+			        	Message i = new Message(messageID, sender, receiver, timestamp, content, subject, isRead);
 			        	i.sendMessage();
+			        	
 			        	messages.add(i);//Maa sorge for at nyEvent-stringen har samme format som inn-parameterene til new Group			        	
 			        }
 			      } 

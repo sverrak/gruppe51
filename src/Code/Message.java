@@ -38,11 +38,11 @@ public class Message {
 		
 	}
 	
-	public Message(int messageID, Employee sender, Employee receiver, java.util.Date timestamp, String content, String subject) {
+	public Message(int messageID, Employee sender, Employee receiver, java.util.Date timestamp, String content, String subject, Boolean isRead) {
 		this.messageID = messageID;
 		this.sender = sender;
 		this.receiver = receiver;
-		this.read = false;
+		this.read = isRead;
 		this.content = content;
 		this.subject = subject;
 		java.util.Date date = timestamp;

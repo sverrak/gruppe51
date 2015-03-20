@@ -42,7 +42,7 @@ public class Event implements Comparable<Event>{
 	}
 	
 	public Event(int eventID, String title, Date startTime, Date endTime,
-			String description, Room room, Employee creator) {
+			String description, Room room, Employee creator, String place) {
 		super();
 		this.eventID = eventID;
 		setTitle(title);
@@ -56,16 +56,23 @@ public class Event implements Comparable<Event>{
 		this.peopleInvited = new ArrayList<Employee>();
 		this.peopleGoing = new ArrayList<Employee>();
 		this.peopleDeclined = new ArrayList<Employee>();
-		this.place = null;
+		this.place = place;
 		
 	}
 		
 	public String getTitle() {
 		return title;
 	}
-	//denne gj�r ingenting!
-	public void setEventID(){
+
+	public void setEventID(List<Event> evts){
+		int biggestEventID = 0;
 		
+		for (Event e: evts){
+			if (e.getEventID() > biggestEventID){
+				biggestEventID = e.getEventID();
+			}
+		}
+		this.eventID = biggestEventID + 1;
 	}
 	public int getCapacity() {
 		return capacity;
@@ -174,6 +181,9 @@ public class Event implements Comparable<Event>{
 		if(this.room == null){
 			this.room = room;			
 		}
+	}
+	public void setRoomToNull(){
+		this.room = null;
 	}
 	
 	public void fireChange(String attribute, String oldField){
