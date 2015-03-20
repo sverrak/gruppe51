@@ -108,6 +108,8 @@ public class CalendarProgram {
 
 		Event newEvent = current_user.createEvent(title, startTime, endTime,
 				description);
+		
+		if (!(newEvent == null)){
 
 		List<Room> availableRooms = new ArrayList<Room>();
 		availableRooms = findLocation(startTime, endTime, capacity);
@@ -139,7 +141,7 @@ public class CalendarProgram {
 			int valg = Integer.parseInt(roomInput);
 			valg -= 1;
 			newEvent.setRoom(availableRooms.get(valg));
-			System.out.println("\nDu har valg: "
+			System.out.println("\nDu har valgt: "
 					+ availableRooms.get(valg).getName() + "\n");
 		}
 		// print roomSchedulen til Room
@@ -218,7 +220,7 @@ public class CalendarProgram {
 					ctd.WriteEventToDatabase(con, newEvent); //skriver event til database
 					ctd.WriteEventDeltakelseToDatabase(con, newEvent, peopleInvited); // skriver eventdeltakelse til database
 					//fortsetter i run
-
+		}
 	}
 
 	private List<Employee> getAvailableEmployees(Date startTime, Date endTime) {
