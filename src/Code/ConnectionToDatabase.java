@@ -282,7 +282,6 @@ public class ConnectionToDatabase {
 		String roomDescription = "";
 		int capacity = 0;
 		String name = "";
-		String place = "";
 		
 		while (rs.next()){
 			
@@ -909,7 +908,10 @@ public class ConnectionToDatabase {
 			        	  description = columnValue;
 			          }else if(i==6){
 			        	  
-			        	  if(!(columnValue == null)){
+			        	  if (columnValue == null){
+			        		  roomID = 0;
+			        	  }
+			        	  else{
 			        		  roomID = Integer.parseInt(columnValue);
 			        	  }
 			        	  
@@ -921,6 +923,7 @@ public class ConnectionToDatabase {
 								}
 							}
 			          }else if(i == 8){
+			        	  
 			        	  place = columnValue;
 			          }
 			        }
@@ -928,6 +931,9 @@ public class ConnectionToDatabase {
 			        for (Room room1 : rooms){
 			        	if (room1.getRoomID() == roomID){
 			        		tempRoom = room1;
+			        	}
+			        	else{
+			        		tempRoom = null;
 			        	}
 			        }
 

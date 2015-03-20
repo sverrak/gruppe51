@@ -250,7 +250,7 @@ public class Employee {
 			System.out.println("Update type not recognized. No update happened to " + event);
 			return;
 		}
-		System.out.println("\n + oensker du aa fjerne eventen paa bakgrunn av dette? (ja/nei)");
+		System.out.println("\n + oensker du aa fjerne eventet paa bakgrunn av dette? (ja/nei)");
 		Scanner scanner = new Scanner(System.in);
 		String input = scanner.next(); 
 		while (! (input.equals("ja") || input.equals("nei"))){

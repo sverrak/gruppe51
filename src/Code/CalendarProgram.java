@@ -613,11 +613,11 @@ public class CalendarProgram {
 												chosen_event.SetPlace(place1);
 											}
 											else{
-												int chosenInput = Integer.parseInt(changeRoomInput);
-												chosen_event.SetPlace(null);
 												if(!(chosen_event.getRoom() == null)){
 													chosen_event.getRoom().removeEvent(chosen_event);
 												}
+												int chosenInput = Integer.parseInt(changeRoomInput);
+												chosen_event.SetPlace(null);
 												chosen_event.setRoom(availableRoomsChange.get(chosenInput-1));	
 												availableRoomsChange.get(chosenInput-1).addEventToRoom(chosen_event);
 											}
