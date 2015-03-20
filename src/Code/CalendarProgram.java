@@ -540,6 +540,7 @@ public class CalendarProgram {
 										System.out.println("Hva er grunnen til avlysningen?");
 										String reason = user_input.nextLine();
 										//db-metode for aa slette event, fredrik
+										ctd.deleteEvent(con, chosen_event);
 										current_user.cancelEvent(chosen_event, reason);
 										
 										System.out.println("Eventen er slettet.");
@@ -553,7 +554,7 @@ public class CalendarProgram {
 										Employee empRemove = events.get(Integer.parseInt(firstOptionChoice)).getPeopleInvited().get(Integer.parseInt(fourthOptionChoice));
 										current_user.withdrawInvitation(events.get(Integer.parseInt(firstOptionChoice)).getPeopleInvited().get(Integer.parseInt(fourthOptionChoice)),events.get(Integer.parseInt(firstOptionChoice)));
 										ctd.updateEventDeltakelsesStatus(con, chosen_event, empRemove);
-										//fjern eventdeltakelse(employee, event) fra databasen, Fredrik
+										//fjern eventdeltakelse(employee, event) fra databasen, Fredrik // DETTE ER ORDNET
 										
 									} else if (thirdOptionChoice.equals("3")) {
 										// legge til deltakere.

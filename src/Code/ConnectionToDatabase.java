@@ -149,6 +149,18 @@ public class ConnectionToDatabase {
 		preparedStatement.executeUpdate();	
 	}
 	
+	public void deleteEvent(Connection con, Event e) throws SQLException{
+		
+		PreparedStatement preparedStatement = null;
+		String sql = "DELETE FROM Event WHERE eventID  = ?";
+		preparedStatement = con.prepareStatement(sql);
+		
+		preparedStatement.setInt(1, e.getEventID());
+		
+		preparedStatement.executeUpdate();
+		
+	}
+	
 	public void UpdateEventRoom(Connection con, Event e) throws SQLException{
 		
 		PreparedStatement preparedStatement = null;
