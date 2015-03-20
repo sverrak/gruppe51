@@ -234,6 +234,8 @@ public class Employee {
 				declinedEvents.add(event);		//la til dette. Haaper ikke noe f�kkes opp...
 				Collections.sort(declinedEvents);
 				event.getPeopleDeclined().add(this);
+				event.getPeopleInvited().remove(this);
+				event.getPeopleGoing().remove(this);
 			}
 		}
 		
@@ -343,7 +345,7 @@ public class Employee {
 		if(! (employee.getUpcomingEvents().contains(event) || employee.getEventsAttending().contains(event))){
 			return false;
 		}
-		employee.removeEvent(event, false);
+		employee.removeEvent(event, true);
 		return true;
 	}
 	

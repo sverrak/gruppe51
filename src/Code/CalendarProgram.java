@@ -550,8 +550,9 @@ public class CalendarProgram {
 										}
 
 										fourthOptionChoice = user_input.nextLine();
-
+										Employee empRemove = events.get(Integer.parseInt(firstOptionChoice)).getPeopleInvited().get(Integer.parseInt(fourthOptionChoice));
 										current_user.withdrawInvitation(events.get(Integer.parseInt(firstOptionChoice)).getPeopleInvited().get(Integer.parseInt(fourthOptionChoice)),events.get(Integer.parseInt(firstOptionChoice)));
+										ctd.updateEventDeltakelsesStatus(con, chosen_event, empRemove);
 										//fjern eventdeltakelse(employee, event) fra databasen, Fredrik
 										
 									} else if (thirdOptionChoice.equals("3")) {
