@@ -205,16 +205,16 @@ public class CalendarProgram {
 							System.out
 							.println("Personen er allerede invitert til dette arrangementet.");
 						}
-
 			}
 						
 		}
 
-			//		user_input.close();
-			
+					user_input.close();
+					peopleInvited.add(current_user);
 					newEvent.setEventID(events); //setter eventID til �n st�rre enn den st�rste
 					ctd.WriteEventToDatabase(con, newEvent); //skriver event til database
 					ctd.WriteEventDeltakelseToDatabase(con, newEvent, peopleInvited); // skriver eventdeltakelse til database
+					ctd.updateEventDeltakelsesStatus(con, newEvent, current_user, "a");
 					//fortsetter i run
 		}
 	}
@@ -387,11 +387,13 @@ public class CalendarProgram {
 	}
 
 	private void run() throws SQLException {
+		/*
 		System.out.println("Bare grupperom 1 blir hentet ned!");
 		for (Event event : events){
 			System.out.println(event + " har lokasjon " + event.getRoom());
 			System.out.println(event.getPeopleGoing());
 		}
+		*/
 		current_user = login();
 		
 		
@@ -521,7 +523,7 @@ public class CalendarProgram {
 						while (!firstOptionChoice.equals("q")) {
 							Event chosen_event = events.get(Integer.parseInt(firstOptionChoice));
 							while (!secondOptionChoice.equals("q")) {
-								System.out.println("Hva vil du gjore? ['q' for å quite]");
+								System.out.println("Hva vil du gjore? ['q' for aa quite]");
 								System.out.println("1: se detaljer (peopleGoing, peopleDeclined og peopleInvited; lokasjon) | 2: endre event)");
 								secondOptionChoice = user_input.nextLine();
 								if(secondOptionChoice.equals("q")){

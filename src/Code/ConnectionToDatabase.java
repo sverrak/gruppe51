@@ -1151,7 +1151,7 @@ public class ConnectionToDatabase {
 		String sql = "UPDATE Eventdeltakelse SET status = ? WHERE employee_ID = ? AND event_ID = ?";
 
 		preparedStatement = con.prepareStatement(sql);
-		preparedStatement.setString(1, "d");
+		preparedStatement.setString(1, string);
 		
 		preparedStatement.setInt(2, current_user.getEmployeeID());
 		preparedStatement.setInt(3, event.getEventID());

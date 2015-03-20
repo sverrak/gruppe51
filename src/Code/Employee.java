@@ -41,6 +41,7 @@ public class Employee {
 		upcomingEvents = new ArrayList<Event>();
 		declinedEvents = new ArrayList<Event>();
 		eventsAttending = new ArrayList<Event>();
+		hiddenEvents = new ArrayList<Event>();
 	}
 	
 	public Employee(int employeeID, String name, String position, String username, 
