@@ -439,11 +439,10 @@ public class CalendarProgram {
 						if (firstOptionChoice.equalsIgnoreCase("f")) {
 
 							if (weekOfYear != 1) {
-								current_user.generateWeeklySchedule(weekOfYear--, year);
+								current_user.generateWeeklySchedule(weekOfYear--, year);		// hvorfor ikke printWeeklySchedule?
 							} else {
 								// Kode for å finne antall uker i forrige year.
-								// Skriver java.util siden vi har en klasse som
-								// heter Calendar
+								// Skriver java.util siden vi har en klasse som heter Calendar
 								java.util.Calendar cal = java.util.Calendar.getInstance();
 								cal.set(java.util.Calendar.YEAR, year - 1);
 								cal.set(java.util.Calendar.MONTH, java.util.Calendar.DECEMBER);
@@ -456,7 +455,9 @@ public class CalendarProgram {
 																					// =
 																					// 0
 								int numberOfWeeks = (ordinalDay - weekDay + 10) / 7;
-								current_user.generateWeeklySchedule(numberOfWeeks, year--);
+					//			current_user.generateWeeklySchedule(numberOfWeeks, year--);		// hvorfor ikke printWeeklySchedule?
+								year--;
+								weekOfYear = numberOfWeeks;
 							}
 						} else if (firstOptionChoice.equalsIgnoreCase("n")) {
 							// Kode for å finne antall uker i forrige year.
@@ -474,9 +475,12 @@ public class CalendarProgram {
 							int numberOfWeeks = (ordinalDay - weekDay + 10) / 7;
 
 							if (weekOfYear != numberOfWeeks) {
-								current_user.generateWeeklySchedule(weekOfYear++, year);
+					//			current_user.generateWeeklySchedule(weekOfYear++, year);		// hvorfor ikke printWeeklySchedule?
+								weekOfYear++;
 							} else {
-								current_user.generateWeeklySchedule(1, year++);
+					//			current_user.generateWeeklySchedule(1, year++);			// hvorfor ikke printWeeklySchedule?
+								year++;
+								weekOfYear = 1;
 							}
 						} else if (firstOptionChoice.equalsIgnoreCase("q")) {
 							break;
