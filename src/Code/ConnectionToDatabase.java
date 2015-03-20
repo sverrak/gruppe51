@@ -1144,6 +1144,21 @@ public class ConnectionToDatabase {
 		}
 		
 	}
+
+	public void updateEventDeltakelsesStatus(Connection con, Event event, Employee current_user, String string) throws SQLException {
+
+		PreparedStatement preparedStatement = null;
+		String sql = "UPDATE Eventdeltakelse SET status = ? WHERE employee_ID = ? AND event_ID = ?";
+
+		preparedStatement = con.prepareStatement(sql);
+		preparedStatement.setString(1, "d");
+		
+		preparedStatement.setInt(2, current_user.getEmployeeID());
+		preparedStatement.setInt(3, event.getEventID());
+		
+		preparedStatement.executeUpdate();	
+		
+	}
 	
 /*	public static class PrintColumnTypes  {
 
