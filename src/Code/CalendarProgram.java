@@ -615,15 +615,38 @@ public class CalendarProgram {
 											else{
 												int chosenInput = Integer.parseInt(changeRoomInput);
 												chosen_event.SetPlace(null);
+												if(!(chosen_event.getRoom() == null)){
+													chosen_event.getRoom().removeEvent(chosen_event);
+												}
 												chosen_event.setRoom(availableRoomsChange.get(chosenInput-1));	
 												availableRoomsChange.get(chosenInput-1).addEventToRoom(chosen_event);
 											}
 											
 											ctd.UpdateEventRoom(con, chosen_event);
-											System.out.println("\nstedet hvor eventet avholdes er naa endret\n");
+											System.out.println("\nStedet hvor eventet avholdes er naa endret\n");
 											
 									} else if (thirdOptionChoice.equals("5")) {
 										//databasefix for aa endre tidspunkt
+										Date newStartTime = new Date();
+										Date newEndTime = new Date();
+										System.out.println("Eventet: " + chosen_event.getTitle() + ", har folgende start-tidspunkt: " + chosen_event.getStartTime().toString() + ", og slutter: " + chosen_event.getEndTime().toString());
+										
+										System.out.println("\nSkriv inn ny startTime [dd/mm/yyyy HH:MM:SS]");
+										String startTimeString = user_input.nextLine();
+										System.out.println("\nSkriv inn ny endTime [dd/mm/yyyy HH:MM:SS]");
+										String endTimeString = user_input.nextLine();
+										
+										SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy H:m:s");
+
+										try {
+											newStartTime = formatter.parse(startTimeString);
+											newEndTime = formatter.parse(endTimeString);
+										} catch (ParseException e) {
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+										}
+										
+											chosen_event.setTime(newStartTime, newEndTime);										}
 										
 									}
 								}
@@ -632,7 +655,7 @@ public class CalendarProgram {
 								break;
 							}
 						}
-					}
+
 				} else if (option == 5 && current_user.isAdmin()) {
 					int choice = 0;
 

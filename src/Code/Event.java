@@ -178,9 +178,7 @@ public class Event implements Comparable<Event>{
 	
 	// Skal vi ha støtte for dette? Må bare kalles med rom man VET er ledige, ref findLocation() i kalender-klassen
 	public void setRoom(Room room) {
-		if(this.room == null){
 			this.room = room;			
-		}
 	}
 	public void setRoomToNull(){
 		this.room = null;

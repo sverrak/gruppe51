@@ -271,6 +271,7 @@ public class ConnectionToDatabase {
 	
 	//Denne metoden benyttes for � hente Room fra databasen, og lagrer de i den lokale listen rooms
 	public void fetchRooms(Connection con) throws SQLException{
+		
 		Statement stmt = null;
 		stmt = con.createStatement();
 		
@@ -281,6 +282,7 @@ public class ConnectionToDatabase {
 		String roomDescription = "";
 		int capacity = 0;
 		String name = "";
+		String place = "";
 		
 		while (rs.next()){
 			
@@ -325,7 +327,7 @@ public class ConnectionToDatabase {
 					          }
 	
 					          Event tempEvent = new Event(title, startDato, endDato, eventDescription, tempEmployee);
-					          for (Room room : rooms){
+					          for (Room room :rooms){
 					        	  if(room.getRoomID() == roomID){
 					        		  tempEvent.setRoom(room);
 					        	  	  room.addEventToRoom(tempEvent);
@@ -877,7 +879,8 @@ public class ConnectionToDatabase {
 			 java.util.Date endTime = null;
 			 String description = "";
 			 String place = null;
-			 Room room = null;
+			 int roomID = 0;
+			 Room tempRoom = null;
 			 Employee creator = null;
 			 SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy H:m:s");
 			  
@@ -905,14 +908,11 @@ public class ConnectionToDatabase {
 			          }else if(i==5){
 			        	  description = columnValue;
 			          }else if(i==6){
-			        	  for (Room r : rooms) {
-
-			        		  //if(r.getRoomID() == Integer.parseInt(columnValue)){
-							room = null;
-							break;
-							//}
-						}
-			        	room = null;
+			        	  
+			        	  if(!(columnValue == null)){
+			        		  roomID = Integer.parseInt(columnValue);
+			        	  }
+			        	  
 			          }else if(i==7){
 			        	  for (Employee e : employees) {
 								if(e.getEmployeeID() == Integer.parseInt(columnValue)){
@@ -924,8 +924,14 @@ public class ConnectionToDatabase {
 			        	  place = columnValue;
 			          }
 			        }
+			        
+			        for (Room room1 : rooms){
+			        	if (room1.getRoomID() == roomID){
+			        		tempRoom = room1;
+			        	}
+			        }
 
-		        	Event i = new Event(eventID, title, startTime, endTime, description, room, creator, place);
+		        	Event i = new Event(eventID, title, startTime, endTime, description, tempRoom, creator, place);
 		        	events.add(i);//Maa sorge for at nyEvent-stringen har samme format som inn-parameterene til new Group
 			      } 
 			  counter++;
