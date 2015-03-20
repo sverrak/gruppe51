@@ -53,7 +53,7 @@ public class CalendarProgram {
 
 	public List<Room> findLocation(Date startTime, Date endTime, int capacity) throws SQLException {
 		List<Room> availableRooms = new ArrayList<Room>();
-		List<Room> rooms1 = ctd.checkRoomEvents(con); //Denne trengs for Œ sjekke at room'ene faktisk er ledige
+		List<Room> rooms1 = ctd.checkRoomEvents(con); //Denne trengs for ï¿½ sjekke at room'ene faktisk er ledige
 		for (Room room : rooms1) {
 			// System.out.println(room.getName());
 			// System.out.println("" + room.roomSchedule.size());
@@ -216,7 +216,7 @@ public class CalendarProgram {
 
 			//		user_input.close();
 			
-					newEvent.setEventID(events); //setter eventID til Žn st¿rre enn den st¿rste
+					newEvent.setEventID(events); //setter eventID til ï¿½n stï¿½rre enn den stï¿½rste
 					ctd.WriteEventToDatabase(con, newEvent); //skriver event til database
 					ctd.WriteEventDeltakelseToDatabase(con, newEvent, peopleInvited); // skriver eventdeltakelse til database
 					//fortsetter i run
@@ -286,10 +286,10 @@ public class CalendarProgram {
 			events = (ArrayList<Event>) ctd.sporringEvents(con, "SELECT * FROM Event", employees);
 			groups = (ArrayList<Group>) ctd.SporringGroups(con, "SELECT * FROM Gruppe");
 			ListContainer lc = ctd.sporringParticipations(con, "SELECT * FROM Eventdeltakelse", employees, events);
-			employees = lc.getEmployees(); // hvorfor hente inn employees over for sŒ Œ endre listen til lc.getEmployees??
+			employees = lc.getEmployees(); // hvorfor hente inn employees over for sï¿½ ï¿½ endre listen til lc.getEmployees??
 			events = lc.getEvents(); //samme med events??
 			//Sender alle messagene til employeenes innbokser, saa trenger ikke ta vare pa messages utover dette
-			ctd.sporringMessages(con, "SELECT * FROM Message"); //denne metoden skal returnere en List<Message> messages, hvor lagres denne? er det n¿dvendig Œ returnere noe i metoden?
+			ctd.sporringMessages(con, "SELECT * FROM Message"); //denne metoden skal returnere en List<Message> messages, hvor lagres denne? er det nï¿½dvendig ï¿½ returnere noe i metoden?
 			
 			System.out.println("Fetching completed.\n\n");
 			try{
@@ -479,7 +479,7 @@ public class CalendarProgram {
 						}
 					}
 				} else if (option == 2) { //funker
-					getEventInput(current_user);// eventet blir opprettet gjennom kall current_user.createEvent(), her blir bŒde event og eventdeltakelse skrevet til databasen
+					getEventInput(current_user);// eventet blir opprettet gjennom kall current_user.createEvent(), her blir bï¿½de event og eventdeltakelse skrevet til databasen
 
 				} else if (option == 3) {
 					if (current_user.getInbox().size() > 0) {
@@ -544,6 +544,7 @@ public class CalendarProgram {
 										current_user.cancelEvent(chosen_event, reason);
 										
 										System.out.println("Eventen er slettet.");
+										break;
 									} else if (thirdOptionChoice.equals("2")) {
 										System.out.println("Hvem vil du trekke invitasjonen til?");
 										for (int i = 0; i < chosen_event.getPeopleInvited().size(); i++) {
@@ -588,7 +589,7 @@ public class CalendarProgram {
 										ctd.WriteEventDeltakelseToDatabase(con,chosen_event, peopleInvited);
 									} else if (thirdOptionChoice.equals("4")) {
 										
-										System.out.println("\nEventet: " + chosen_event.getTitle() + ", er satt til Œ avholdes pŒ: ");
+										System.out.println("\nEventet: " + chosen_event.getTitle() + ", er satt til ï¿½ avholdes pï¿½: ");
 										if(chosen_event.getRoom() == null){
 											System.out.println(chosen_event.getPlace());
 										}
@@ -610,7 +611,7 @@ public class CalendarProgram {
 											String 	changeRoomInput = user_input.nextLine();
 											if(changeRoomInput.isEmpty()){
 												System.out
-														.println("Skriv inn navn pŒ stedet du ¿nsker Œ arrangere eventet: ");
+														.println("Skriv inn navn pï¿½ stedet du ï¿½nsker ï¿½ arrangere eventet: ");
 												String place1 = user_input.nextLine();
 												chosen_event.getRoom().removeEvent(chosen_event);
 												chosen_event.setRoomToNull();
@@ -760,32 +761,53 @@ public class CalendarProgram {
 						}
 					}
 				}else if (option == 6) {
-					if(current_user.getUpcomingEvents().size() != 0){
-						System.out.println("");
-						for (int i = 0; i < current_user.getUpcomingEvents().size(); i++) {
-							System.out.println("" + i + ": " + current_user.getUpcomingEvents().get(i));
-						}
-						System.out.println("Hvilken event vil du svare paa? [-1 for aa quite]");
-						String firstOptionChoice = user_input.nextLine();
-						String secondOptionChoice = "";
-						if(! firstOptionChoice.equals("-1") && Integer.parseInt(firstOptionChoice) < current_user.getUpcomingEvents().size()){
-							System.out.println("Vil du delta paa denne eventen?Â ['ja'/'nei']");
-							secondOptionChoice = user_input.nextLine();
-							if(secondOptionChoice.equalsIgnoreCase("ja")){
-								Event e = current_user.getUpcomingEvents().get(Integer.parseInt(firstOptionChoice));
-								current_user.acceptInvitation(e);
-								ctd.updateEventDeltakelsesStatus(con, e, current_user);
-								System.out.println("\nInvitasjonen er akseptert");
-							}else{
-								Event e = current_user.getUpcomingEvents().get(Integer.parseInt(firstOptionChoice));
-								current_user.declineInvitation(e);
-								ctd.updateEventDeltakelsesStatus(con, e, current_user);
-								System.out.println("\nInvitasjonen er avslÃ¥tt");
+					System.out.println("Hva onsker du aa gjore?");
+					System.out.println("1: Svare paa invitasjon | 2: kansellere deltakelse");
+					String initOptionChoice = user_input.nextLine();
+					if(initOptionChoice.equals("1")){
+						if(current_user.getUpcomingEvents().size() != 0){
+							System.out.println("");
+							for (int i = 0; i < current_user.getUpcomingEvents().size(); i++) {
+								System.out.println("" + i + ": " + current_user.getUpcomingEvents().get(i));
 							}
-							System.out.println("\n");
+							System.out.println("Hvilken event vil du svare paa? [-1 for aa quite]");
+							String firstOptionChoice = user_input.nextLine();
+							String secondOptionChoice = "";
+							if(! firstOptionChoice.equals("-1") && Integer.parseInt(firstOptionChoice) < current_user.getUpcomingEvents().size()){
+								System.out.println("Vil du delta paa denne eventen?Â ['ja'/'nei']");
+								secondOptionChoice = user_input.nextLine();
+								if(secondOptionChoice.equalsIgnoreCase("ja")){
+									Event e = current_user.getUpcomingEvents().get(Integer.parseInt(firstOptionChoice));
+									current_user.acceptInvitation(e);
+									ctd.updateEventDeltakelsesStatus(con, e, current_user);
+									System.out.println("\nInvitasjonen er akseptert");
+								}else{
+									Event e = current_user.getUpcomingEvents().get(Integer.parseInt(firstOptionChoice));
+									current_user.declineInvitation(e);
+									ctd.updateEventDeltakelsesStatus(con, e, current_user);
+									System.out.println("\nInvitasjonen er avslÃ¥tt");
+								}
+								System.out.println("\n");
+							}
+						} else{
+							System.out.println("Du har ingen upcomingEvents\n");
 						}
-					} else{
-						System.out.println("Du har ingen upcomingEvents\n");
+					} else if(initOptionChoice.equals("2")){
+						if(current_user.getEventsAttending().size() > 0){
+							System.out.println("");
+							for (int i = 0; i < current_user.getEventsAttending().size(); i++) {
+								System.out.println("" + i + ": " + current_user.getEventsAttending().get(i));
+							}
+							System.out.println("\nHvilken event onsker du aa kansellere?");
+							String firstOptionChoice = user_input.nextLine();
+							Event e = current_user.getEventsAttending().get(Integer.parseInt(firstOptionChoice));
+							current_user.changeYourMind(e);
+							ctd.updateEventDeltakelsesStatus(con, e, current_user, "d");
+							System.out.println("\n" + e + " kansellert.\n");
+						}else{
+							System.out.println("Du har ikke akseptert noen invitasjoner enda");
+						}
+						
 					}
 					
 				} else if (option == 9) {

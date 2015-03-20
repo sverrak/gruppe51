@@ -285,12 +285,12 @@ public class Employee {
 	}
 	
 	public void printInbox(){
-		System.out.println("ID-Lest\t\tFra\t\tEmne");
+		System.out.println("ID\tLest\t\tFra\t\tEmne");
 		for (int i = 0; i < inbox.size(); i++) {
 			if(inbox.get(i).isRead()){
-				System.out.println("" + i + ": [X]\t\t" + inbox.get(i).getSender() + "\t\t" + inbox.get(i).getSubject());
+				System.out.println("" + i + "\t[X]\t\t" + inbox.get(i).getSender() + "\t\t" + inbox.get(i).getSubject());
 			} else{
-				System.out.println("" + i + ": [ ]\t\t" + inbox.get(i).getSender() + "\t\t" + inbox.get(i).getSubject());
+				System.out.println("" + i + "\t[ ]\t\t" + inbox.get(i).getSender() + "\t\t" + inbox.get(i).getSubject());
 
 			}
 		}
@@ -609,6 +609,15 @@ public class Employee {
 			return;
 		}else{
 			group.printWeeklySchedule(weekOfYear, year);
+		}
+	}
+
+	public void changeYourMind(Event event) {
+		if(this.getEventsAttending().contains(event)){
+			event.getPeopleGoing().remove(this);
+			event.getPeopleDeclined().add(this);
+			this.eventsAttending.remove(event);
+			this.declinedEvents.add(event);
 		}
 	}
 }
