@@ -51,7 +51,7 @@ class Client(object):
     def start(self, host, port):
         self.__init__()
 
-        inInfo="78.91.50.242:9955"
+        inInfo="78.91.82.222:9950"
         if inInfo:
             host=inInfo.split(":")[0]
             port=int(inInfo.split(":")[1])

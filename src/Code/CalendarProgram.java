@@ -123,16 +123,13 @@ public class CalendarProgram {
 		}
 
 		// bruker velger rom
-		System.out
-				.println("\nSkriv nummeret paa rommet du vil benytte deg av! \n\nTrykk enter hvis du ikke vil spesifisere et rom");
+		System.out.println("\nSkriv nummeret paa rommet du vil benytte deg av! \n\nTrykk enter hvis du ikke vil spesifisere et rom");
 		String roomInput = user_input.nextLine();
 		if (roomInput.equals("")) {
-			System.out
-					.println("Vil du spesifisere et sted eventet skal avholdes?");
+			System.out.println("Vil du spesifisere et sted eventet skal avholdes?");
 			String response1 = user_input.nextLine();
 			if (response1.equalsIgnoreCase("ja")) {
-				System.out
-						.println("Skriv inn navn p� stedet du vil avholde eventet: ");
+				System.out.println("Skriv inn navn p� stedet du vil avholde eventet: ");
 				String sted = user_input.nextLine();
 				newEvent.SetPlace(sted);
 			}
@@ -141,21 +138,18 @@ public class CalendarProgram {
 			int valg = Integer.parseInt(roomInput);
 			valg -= 1;
 			newEvent.setRoom(availableRooms.get(valg));
-			System.out.println("\nDu har valgt: "
-					+ availableRooms.get(valg).getName() + "\n");
+			System.out.println("\nDu har valgt: "+ availableRooms.get(valg).getName() + "\n");
 		}
 		// print roomSchedulen til Room
 		// System.out.println(newEvent.getRoom().getRoomSchedule().toString());
 
 		// legge til deltakere. FLYTTER DENNE TIL EGEN METODE EGET STED
-		List<Employee> availableEmployees = getAvailableEmployees(startTime,
-				endTime);
+		List<Employee> availableEmployees = getAvailableEmployees(startTime, endTime);
 		for (int i = 0; i < getAvailableEmployees(startTime, endTime).size(); i++) {
 			System.out.println("" + i + ": " + availableEmployees.get(i));
 		}
 
-		System.out
-				.println("Hvem vil du invitere til dette arrangementet[tom streng for aa avslutte]?");
+		System.out.println("Hvem vil du invitere til dette arrangementet[tom streng for aa avslutte]?");
 		String input = user_input.nextLine();
 
 		List<Employee> peopleInvited = new ArrayList<Employee>();
@@ -177,21 +171,13 @@ public class CalendarProgram {
 						} else {
 							System.out.println("Personen er allerede invitert til dette arrangementet.");
 						}
-						/*
-						 * newEvent.addEmployee(availableEmployees.get(Integer.parseInt(input
-						 * )));
-						 * availableEmployees.get(Integer.parseInt(input)).addEvent(newEvent
-						 * );
-						 */
 						System.out.println("Noen flere[tom streng for aa avslutte]?");
 						input = user_input.nextLine();
 					}else{
 						if (current_user.inviteEmployeeToEvent(
 								availableEmployees.get(Integer.parseInt(input)), newEvent)) {
-							peopleInvited.add(availableEmployees.get(Integer
-									.parseInt(input)));
-							ctd.WriteMessageToDatabase(con,
-									availableEmployees.get(Integer.parseInt(input)));
+							peopleInvited.add(availableEmployees.get(Integer.parseInt(input)));
+							ctd.WriteMessageToDatabase(con, availableEmployees.get(Integer.parseInt(input)));
 							
 							counter += 1;
 							if (counter < newEvent.getRoom().getCapacity()) {

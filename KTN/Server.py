@@ -147,8 +147,8 @@ class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
 # Kjøres når programmet startes
 if __name__ == "__main__":
     # Definer host og port for serveren
-    HOST = '78.91.50.242'
-    PORT = 9955
+    HOST = '78.91.82.222'
+    PORT = 9950
     
 
     # Set up and initiate the TCP server
