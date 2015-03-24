@@ -37,9 +37,9 @@ class ClientHandler(SocketServer.BaseRequestHandler):
          
                      
         # send_updates to work in a thread.
-        self.t = threading.Thread(target=self.send_updates)
-        self.t.setDaemon=True
-        self.t.start()
+        self.thread = threading.Thread(target=self.send_updates)
+        self.thread.setDaemon=True
+        self.thread.start()
          
         while True:
             #wait here for data
@@ -125,7 +125,8 @@ class ClientHandler(SocketServer.BaseRequestHandler):
             self.broadcast(self.timestamp() + "\t@" + self.username + " has left the chat.")
         except ValueError:
             send({'response': 'logout', 'error':'Not logged in!', 'nick': self.username})
-     
+
+     # herfra skal det sendes til MessageReceiver!
     def send(self, data):
         self.request.sendall(json.dumps(data))
      

@@ -20,4 +20,11 @@ class MessageReceiver(Thread):
 
     def run(self):
         # TODO: Make MessageReceiver receive and handle payloads
+        
         pass
+
+
+
+    # skal ta imot pakker fra server og videresende til client
+    def forward(self, data):
+        self.request.sendall(json.dumps(data))

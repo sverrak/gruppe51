@@ -3,12 +3,16 @@ import socket
 import json
 import threading
 import re
+import MessageReceiver
  
 class Client(object):
  
     def __init__(self):
         #TCP stream
         self.connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        messageReceiver = MessageReceiver() #nytt. FEILMELDING: module object is not callable
+        messageReceiver.__init__(messageReceiver, self, self.connection)  #nytt
+        messageReceiver.run()       #nytt
      
     def process_json(self, data):
         index = 0
