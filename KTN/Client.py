@@ -3,16 +3,14 @@ import socket
 import json
 import threading
 import re
-import MessageReceiver
+from MessageReceiver import MessageReceiver
  
 class Client(object):
  
     def __init__(self):
         #TCP stream
         self.connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        messageReceiver = MessageReceiver() #nytt. FEILMELDING: module object is not callable
-        messageReceiver.__init__(messageReceiver, self, self.connection)  #nytt
-        messageReceiver.run()       #nytt
+#        self.messageReceiver = MessageReceiver(self, self.connection) #nytt. FEILMELDING: module object is not callable
      
     def process_json(self, data):
         index = 0
@@ -49,18 +47,18 @@ class Client(object):
 
         if decoded.get("response", "") == "help":
             print decoded["help"].encode('utf-8')
-
-
+            # her skjer det fint lite
  
     def start(self, host, port):
         self.__init__()
 
-        inInfo="78.91.82.222:9950"
+        inInfo="78.91.83.113:9949"
         if inInfo:
             host=inInfo.split(":")[0]
             port=int(inInfo.split(":")[1])
              
         self.connection.connect((host, port))
+       # messageReceiver.start()       #nytt. i stedet for run. virker rart, men det Daniel sa
         self.logged_in = False 
         self.commands = {"logout":self.disconnect, "help":self.help, "names":self.names}
          
@@ -74,7 +72,7 @@ class Client(object):
         t = threading.Thread(target=self.take_input)
         t.setDaemon=True
         t.start()
-        print "\nType '/help' if you don't know what to do\n"
+        print "\nType 'help' if you don't know what to do\n"
         print "Chat history:"
         while self.logged_in:
             received_data = self.connection.recv(1024).strip()

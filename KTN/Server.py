@@ -137,7 +137,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
                     for x in range(self.sentdata, len(all_messages)):
                         self.send({"response":"message", "message":all_messages[x]})
                         self.sentdata += 1
-            #Hvis ikke, vil cpuen klikke
+            #Hvis ikke, vil cpu'en klikke
             time.sleep(0.2) #0.2 seconds
  
  
@@ -148,8 +148,8 @@ class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
 # Kjøres når programmet startes
 if __name__ == "__main__":
     # Definer host og port for serveren
-    HOST = '78.91.82.222'
-    PORT = 9950
+    HOST = ''   # den skjønner at serveren skal kjøre på din maskin selv. Skal ikke skrive inn egen IP
+    PORT = 9949
     
 
     # Set up and initiate the TCP server
